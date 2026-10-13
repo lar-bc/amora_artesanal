@@ -48,8 +48,8 @@ O sistema atende a dois perfis principais de usuários:
 
 ## 🛠️ Stack Tecnológica
 
-- **Front-end:** HTML5 semântico, CSS3 responsivo e moderno, JavaScript puro (AJAX, controle dinâmico de carrinho).
-- **Back-end:** PHP 8+ com PDO (Prepared Statements).
+- **Front-end:** HTML5 semântico e CSS3 puro, responsivo e moderno (100% livre de JavaScript).
+- **Back-end:** PHP 8+ com processamento Server-Side nativo, controle de rotas, sessões, formulários e PDO Prepared Statements.
 - **Banco de Dados:** MySQL / MariaDB (com fallback automático e autônomo para SQLite para execução rápida local).
 - **Ícones & Tipografia:** FontAwesome 6, Google Fonts (*Playfair Display* e *Poppins*).
 
