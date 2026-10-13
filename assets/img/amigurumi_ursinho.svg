@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <rect width="100%" height="100%" fill="#fcf6f0" rx="16"/>
+  <ellipse cx="150" cy="260" rx="70" ry="18" fill="#ead8c7"/>
+  <!-- Orelhas -->
+  <circle cx="100" cy="110" r="22" fill="#bc8a5f" stroke="#8a5a36" stroke-width="2"/>
+  <circle cx="100" cy="110" r="12" fill="#fdeeed"/>
+  <circle cx="200" cy="110" r="22" fill="#bc8a5f" stroke="#8a5a36" stroke-width="2"/>
+  <circle cx="200" cy="110" r="12" fill="#fdeeed"/>
+  <!-- Cabeça -->
+  <circle cx="150" cy="145" r="55" fill="#bc8a5f" stroke="#8a5a36" stroke-width="2"/>
+  <!-- Focinho -->
+  <ellipse cx="150" cy="160" rx="22" ry="16" fill="#fdeeed"/>
+  <polygon points="144,153 156,153 150,161" fill="#5c3d2e"/>
+  <!-- Olhos -->
+  <circle cx="130" cy="138" r="5" fill="#2d1e18"/>
+  <circle cx="170" cy="138" r="5" fill="#2d1e18"/>
+  <circle cx="132" cy="136" r="1.5" fill="#ffffff"/>
+  <circle cx="172" cy="136" r="1.5" fill="#ffffff"/>
+  <!-- Gravatinha laço -->
+  <path d="M135 205 L150 213 L135 221 Z M165 205 L150 213 L165 221 Z" fill="#c86d7e"/>
+  <circle cx="150" cy="213" r="4" fill="#a04b5b"/>
+  <!-- Corpo -->
+  <ellipse cx="150" cy="235" rx="42" ry="30" fill="#bc8a5f" stroke="#8a5a36" stroke-width="2"/>
+</svg>

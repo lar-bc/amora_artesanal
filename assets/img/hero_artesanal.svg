@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <rect width="100%" height="100%" fill="#fffaf5" rx="30"/>
+  <circle cx="200" cy="200" r="160" fill="#fdeeed"/>
+  <circle cx="200" cy="200" r="130" fill="#f9e2e5"/>
+  <!-- Vela Central -->
+  <rect x="150" y="170" width="100" height="120" rx="16" fill="#ffffff" stroke="#e8b4b8" stroke-width="3"/>
+  <rect x="158" y="200" width="84" height="60" rx="8" fill="#fdeeed"/>
+  <text x="200" y="235" font-family="'Playfair Display', serif" font-size="12" fill="#c86d7e" text-anchor="middle" font-weight="bold">Amora</text>
+  <text x="200" y="250" font-family="'Poppins', sans-serif" font-size="9" fill="#5c3d2e" text-anchor="middle">Aromaterapia</text>
+  <!-- Pavio e Chama -->
+  <line x1="200" y1="170" x2="200" y2="150" stroke="#5c3d2e" stroke-width="3" stroke-linecap="round"/>
+  <path d="M200 115 Q218 135 200 150 Q182 135 200 115 Z" fill="#f59e0b"/>
+  <path d="M200 125 Q210 138 200 148 Q190 138 200 125 Z" fill="#fef08a"/>
+  <!-- Flores secas ao redor -->
+  <circle cx="120" cy="260" r="18" fill="#c86d7e" opacity="0.8"/>
+  <circle cx="280" cy="260" r="18" fill="#c86d7e" opacity="0.8"/>
+  <circle cx="110" cy="180" r="14" fill="#df8d9c" opacity="0.7"/>
+  <circle cx="290" cy="180" r="14" fill="#df8d9c" opacity="0.7"/>
+  <text x="200" y="340" font-family="'Playfair Display', serif" font-size="18" fill="#5c3d2e" text-anchor="middle" font-weight="bold">Feito à Mão com Amor</text>
+</svg>
