@@ -1,27 +1,24 @@
 <?php
 /**
  * Gerenciamento do Carrinho de Compras (UC04, RF06, CA04)
+ * Desenvolvido 100% em PHP e HTML
  */
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// Tratamento de requisições POST para atualizar ou remover itens
+// Tratamento de requisições POST para atualizar ou remover itens (100% PHP/HTML)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $acao = $_POST['acao'] ?? '';
-    $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
     if ($acao === 'atualizar') {
         $key = $_POST['key'] ?? '';
-        $quantidade = (int)($_POST['quantidade'] ?? 1);
-        atualizarQuantidadeCarrinho($key, $quantidade);
+        $delta = isset($_POST['delta']) ? (int)$_POST['delta'] : 0;
+        $carrinho = getCarrinho();
 
-        if ($isAjax) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'sucesso' => true,
-                'totais' => getTotaisCarrinho()
-            ]);
-            exit;
+        if (isset($carrinho[$key])) {
+            $quantidadeAtual = (int)$carrinho[$key]['quantidade'];
+            $novaQtd = ($delta !== 0) ? ($quantidadeAtual + $delta) : (int)($_POST['quantidade'] ?? 1);
+            atualizarQuantidadeCarrinho($key, $novaQtd);
         }
     } elseif ($acao === 'remover') {
         $key = $_POST['key'] ?? '';
@@ -32,10 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         setFlash('info', 'Seu carrinho foi esvaziado.');
     }
 
-    if (!$isAjax) {
-        header('Location: ' . BASE_URL . '/carrinho.php');
-        exit;
-    }
+    header('Location: ' . BASE_URL . '/carrinho.php');
+    exit;
 }
 
 $carrinho = getCarrinho();
@@ -77,7 +72,7 @@ require_once __DIR__ . '/includes/header.php';
             <!-- Lista de Itens do Carrinho -->
             <div class="cart-items-card">
                 <?php foreach ($carrinho as $item): ?>
-                    <div class="cart-item" data-key="<?= sanitizar($item['key']) ?>" data-price="<?= $item['preco'] ?>">
+                    <div class="cart-item">
                         <!-- Imagem Miniatura -->
                         <div class="cart-thumb">
                             <img src="<?= BASE_URL ?>/<?= sanitizar($item['imagem_url']) ?>" alt="<?= sanitizar($item['nome']) ?>">
@@ -99,19 +94,30 @@ require_once __DIR__ . '/includes/header.php';
                             <?php endif; ?>
                         </div>
 
-                        <!-- Controle de Quantidade Dinâmico (CA04) -->
-                        <div class="qty-control">
-                            <button type="button" class="qty-btn btn-qty-minus">-</button>
-                            <input type="text" class="qty-input" value="<?= $item['quantidade'] ?>" min="1" max="<?= $item['estoque_max'] ?>" readonly>
-                            <button type="button" class="qty-btn btn-qty-plus">+</button>
+                        <!-- Controle de Quantidade em PHP/HTML Puro (RF06, CA04) -->
+                        <div>
+                            <form action="<?= BASE_URL ?>/carrinho.php" method="POST" style="display: flex; align-items: center; gap: 4px; margin: 0;">
+                                <input type="hidden" name="acao" value="atualizar">
+                                <input type="hidden" name="key" value="<?= sanitizar($item['key']) ?>">
+                                
+                                <button type="submit" name="delta" value="-1" class="qty-btn" title="Diminuir quantidade" style="border: 1px solid var(--cor-borda); border-radius: var(--raio-pilula); cursor: pointer;">-</button>
+                                
+                                <input type="number" name="quantidade" value="<?= $item['quantidade'] ?>" min="1" max="<?= $item['estoque_max'] ?>" class="qty-input" style="width: 48px; border: 1px solid var(--cor-borda); border-radius: 6px; text-align: center; font-weight: 600; padding: 4px;">
+                                
+                                <button type="submit" name="delta" value="1" class="qty-btn" title="Aumentar quantidade" style="border: 1px solid var(--cor-borda); border-radius: var(--raio-pilula); cursor: pointer;">+</button>
+                                
+                                <button type="submit" class="btn btn-secondary btn-sm" style="padding: 5px 10px; font-size: 0.78rem; margin-left: 4px;" title="Atualizar quantidade informada">
+                                    Atualizar
+                                </button>
+                            </form>
                         </div>
 
-                        <!-- Subtotal do Item -->
+                        <!-- Subtotal do Item Calculado pelo PHP -->
                         <div class="cart-item-total">
                             <?= formatarMoeda((float)($item['preco'] * $item['quantidade'])) ?>
                         </div>
 
-                        <!-- Botão Remover -->
+                        <!-- Botão Remover via Formulário HTML -->
                         <div>
                             <form action="<?= BASE_URL ?>/carrinho.php" method="POST" style="margin: 0;">
                                 <input type="hidden" name="acao" value="remover">
@@ -131,17 +137,17 @@ require_once __DIR__ . '/includes/header.php';
                 
                 <div class="summary-row">
                     <span style="color: var(--cor-marrom-claro);">Subtotal de Itens:</span>
-                    <span id="cart-subtotal-geral" style="font-weight: 600;"><?= $totais['valor_formatado'] ?></span>
+                    <span style="font-weight: 600;"><?= $totais['valor_formatado'] ?></span>
                 </div>
                 
                 <div class="summary-row">
-                    <span style="color: var(--cor-marrom-claro);">Frete / Entrega:</span>
-                    <span style="color: var(--cor-sucesso); font-weight: 600;">A calcular no checkout</span>
+                    <span style="color: var(--cor-marrom-claro);">Frete Especial:</span>
+                    <span style="color: var(--cor-sucesso); font-weight: 600;">Grátis</span>
                 </div>
 
                 <div class="summary-row summary-total">
                     <span>Total:</span>
-                    <span id="cart-total-geral"><?= $totais['valor_formatado'] ?></span>
+                    <span><?= $totais['valor_formatado'] ?></span>
                 </div>
 
                 <div style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">

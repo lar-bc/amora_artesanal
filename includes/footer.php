@@ -1,6 +1,6 @@
 <?php
 /**
- * Rodapé Global do Sistema Amora Artesanal
+ * Rodapé Global do Sistema Amora Artesanal (100% PHP e HTML)
  */
 ?>
     <!-- Rodapé Principal -->
@@ -51,19 +51,16 @@
                         Desenvolvimento de Sistemas
                     </p>
                     <div style="margin-top: 10px;">
-                        <span class="badge-status entregue" style="font-size: 0.75rem;">Versão 1.0.0</span>
+                        <span class="badge-status entregue" style="font-size: 0.75rem;">100% PHP, HTML e CSS</span>
                     </div>
                 </div>
             </div>
 
             <!-- Rodapé Inferior -->
             <div class="footer-bottom">
-                <p>&copy; <?= date('Y') ?> Amora Artesanal. Todos os direitos reservados. Plataforma desenvolvida com apoio de Inteligência Artificial.</p>
+                <p>&copy; <?= date('Y') ?> Amora Artesanal. Todos os direitos reservados. Plataforma desenvolvida em PHP, HTML5 e CSS3.</p>
             </div>
         </div>
     </footer>
-
-    <!-- Scripts -->
-    <script src="<?= BASE_URL ?>/assets/js/main.js"></script>
 </body>
 </html>

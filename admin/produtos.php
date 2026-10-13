@@ -82,7 +82,7 @@ $pageTitle = 'Gerenciar Catálogo & Estoque';
             </div>
 
             <div style="min-width: 200px;">
-                <select name="categoria" class="form-control" onchange="this.form.submit()">
+                <select name="categoria" class="form-control">
                     <option value="">Todas as Categorias</option>
                     <?php foreach ($categorias as $cat): ?>
                         <option value="<?= $cat['id'] ?>" <?= $categoriaId === (int)$cat['id'] ? 'selected' : '' ?>>
