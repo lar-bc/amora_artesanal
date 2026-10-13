@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <rect width="100%" height="100%" fill="#fff5f7" rx="16"/>
+  <ellipse cx="150" cy="260" rx="70" ry="18" fill="#edd5d8"/>
+  <!-- Orelhas compridas -->
+  <ellipse cx="120" cy="75" rx="14" ry="45" fill="#ffffff" stroke="#c86d7e" stroke-width="2"/>
+  <ellipse cx="120" cy="75" rx="8" ry="32" fill="#fdeeed"/>
+  <ellipse cx="180" cy="75" rx="14" ry="45" fill="#ffffff" stroke="#c86d7e" stroke-width="2"/>
+  <ellipse cx="180" cy="75" rx="8" ry="32" fill="#fdeeed"/>
+  <!-- Cabeça -->
+  <circle cx="150" cy="150" r="50" fill="#ffffff" stroke="#c86d7e" stroke-width="2"/>
+  <!-- Focinho -->
+  <ellipse cx="150" cy="162" rx="14" ry="10" fill="#fdeeed"/>
+  <polygon points="146,158 154,158 150,164" fill="#c86d7e"/>
+  <circle cx="132" cy="144" r="4" fill="#5c3d2e"/>
+  <circle cx="168" cy="144" r="4" fill="#5c3d2e"/>
+  <!-- Vestidinho floral -->
+  <path d="M125 200 L175 200 L190 255 L110 255 Z" fill="#f9d2d9" stroke="#c86d7e" stroke-width="2"/>
+  <circle cx="135" cy="225" r="4" fill="#c86d7e"/>
+  <circle cx="165" cy="225" r="4" fill="#c86d7e"/>
+  <circle cx="150" cy="240" r="4" fill="#c86d7e"/>
+</svg>

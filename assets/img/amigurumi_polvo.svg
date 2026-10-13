@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <rect width="100%" height="100%" fill="#fef6f8" rx="16"/>
+  <ellipse cx="150" cy="260" rx="70" ry="18" fill="#edd5d8"/>
+  <!-- Cabeça redonda -->
+  <ellipse cx="150" cy="130" rx="55" ry="60" fill="#f7b7c2" stroke="#c86d7e" stroke-width="2.5"/>
+  <!-- Olhinhos e bochechas -->
+  <circle cx="132" cy="135" r="5" fill="#5c3d2e"/>
+  <circle cx="168" cy="135" r="5" fill="#5c3d2e"/>
+  <ellipse cx="122" cy="148" rx="7" ry="4" fill="#ff7088" opacity="0.6"/>
+  <ellipse cx="178" cy="148" rx="7" ry="4" fill="#ff7088" opacity="0.6"/>
+  <path d="M144 148 Q150 155 156 148" stroke="#5c3d2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <!-- Tentáculos em espiral -->
+  <path d="M110 185 Q100 230 115 245" stroke="#f7b7c2" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M130 190 Q125 240 140 250" stroke="#f7b7c2" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M150 190 Q155 240 160 250" stroke="#f7b7c2" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M170 190 Q175 240 180 250" stroke="#f7b7c2" stroke-width="12" fill="none" stroke-linecap="round"/>
+  <path d="M190 185 Q200 230 190 245" stroke="#f7b7c2" stroke-width="12" fill="none" stroke-linecap="round"/>
+</svg>

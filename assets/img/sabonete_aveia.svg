@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <rect width="100%" height="100%" fill="#fefdf9" rx="16"/>
+  <ellipse cx="150" cy="240" rx="90" ry="22" fill="#ede6d6"/>
+  <rect x="80" y="130" width="140" height="90" rx="20" fill="#f0e2c8" stroke="#a38965" stroke-width="3"/>
+  <rect x="95" y="145" width="110" height="60" rx="12" fill="#faf4e8"/>
+  <text x="150" y="172" font-family="'Playfair Display', serif" font-size="12" fill="#5c3d2e" text-anchor="middle" font-weight="bold">Aveia & Camomila</text>
+  <text x="150" y="190" font-family="'Poppins', sans-serif" font-size="9" fill="#8a6a59" text-anchor="middle">Pele Sensível</text>
+  <circle cx="150" cy="105" r="8" fill="#f59e0b"/>
+</svg>
