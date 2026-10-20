@@ -90,6 +90,9 @@ $pageTitle = 'Chat de Atendimento ao Cliente';
                     <?php foreach ($clientesComConversa as $c): ?>
                         <a href="<?= BASE_URL ?>/admin/chat.php?cliente_id=<?= $c['id'] ?>" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; border: 1px solid <?= ($c['id'] == $clienteIdAtivo) ? 'var(--cor-rosa-queimado)' : 'var(--cor-borda)' ?>; background: <?= ($c['id'] == $clienteIdAtivo) ? 'var(--cor-rosa-claro)' : '#fff' ?>; transition: var(--transicao);">
                             <div>
+                                <span style="background: var(--cor-rosa-medio); color: white; padding: 2px 7px; border-radius: 10px; font-size: 0.72rem; font-weight: 700; display: inline-block; margin-bottom: 2px;">
+                                    #CLI-<?= str_pad($c['id'], 5, '0', STR_PAD_LEFT) ?>
+                                </span>
                                 <strong style="color: var(--cor-marrom-suave); font-size: 0.92rem; display: block;"><?= sanitizar($c['nome']) ?></strong>
                                 <span style="font-size: 0.78rem; color: var(--cor-marrom-claro);"><?= sanitizar($c['telefone'] ?? $c['email']) ?></span>
                             </div>
@@ -106,12 +109,17 @@ $pageTitle = 'Chat de Atendimento ao Cliente';
             <!-- Caixa de Chat Ativa -->
             <div class="admin-card" style="padding: 0; margin: 0; overflow: hidden; display: flex; flex-direction: column; height: 580px;">
                 <?php if ($clienteAtivo): ?>
-                    <!-- Topo da Conversa com Dados do Cliente -->
+                    <!-- Topo da Conversa com Dados e Código do Cliente -->
                     <div style="background: var(--cor-rosa-claro); padding: 16px 20px; border-bottom: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center;">
                         <div>
-                            <strong style="font-size: 1.1rem; color: var(--cor-marrom-suave);"><?= sanitizar($clienteAtivo['nome']) ?></strong>
-                            <div style="font-size: 0.8rem; color: var(--cor-marrom-claro);">
-                                E-mail: <?= sanitizar($clienteAtivo['email']) ?> &bull; Tel: <?= sanitizar($clienteAtivo['telefone'] ?? 'Não informado') ?>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="background: var(--cor-rosa-queimado); color: white; padding: 3px 10px; border-radius: 14px; font-size: 0.82rem; font-weight: 700;">
+                                    #CLI-<?= str_pad($clienteAtivo['id'], 5, '0', STR_PAD_LEFT) ?>
+                                </span>
+                                <strong style="font-size: 1.15rem; color: var(--cor-marrom-suave);"><?= sanitizar($clienteAtivo['nome']) ?></strong>
+                            </div>
+                            <div style="font-size: 0.82rem; color: var(--cor-marrom-claro); margin-top: 3px;">
+                                E-mail: <strong><?= sanitizar($clienteAtivo['email']) ?></strong> &bull; Tel: <?= sanitizar($clienteAtivo['telefone'] ?? 'Não informado') ?> &bull; Cidade: <?= sanitizar($clienteAtivo['cidade'] ?? 'Porto Velho') ?>/<?= sanitizar($clienteAtivo['estado'] ?? 'RO') ?>
                             </div>
                         </div>
                         <div>

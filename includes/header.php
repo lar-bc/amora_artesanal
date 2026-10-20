@@ -26,11 +26,14 @@ $paginaAtual = basename($_SERVER['PHP_SELF'] ?? 'index.php');
 </head>
 <body>
 
-    <!-- Barra de Notificação Superior com Contato Oficial -->
+    <!-- Barra de Notificação Superior com Central de Ajuda Oficial -->
     <div class="top-bar">
         <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <span>✨ Produtos feitos à mão com afeto e exclusividade | Encomendas personalizadas com carinho</span>
-            <span><i class="fa-brands fa-whatsapp"></i> Atendimento WhatsApp: <strong>(69) 98425-6710</strong></span>
+            <span>✨ Produtos feitos à mão com afeto e exclusividade | Encomendas sob medida com carinho</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC Central de Ajuda: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
         </div>
     </div>
 
@@ -64,6 +67,9 @@ $paginaAtual = basename($_SERVER['PHP_SELF'] ?? 'index.php');
             <div class="nav-actions">
                 <?php if (usuarioLogado()): ?>
                     <div style="font-size: 0.9rem; color: var(--cor-marrom-suave); display: flex; align-items: center; gap: 8px;">
+                        <span title="Seu Código Único de Identificação" style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-medio); padding: 3px 8px; border-radius: 12px; font-weight: 700; color: var(--cor-rosa-queimado); font-size: 0.78rem;">
+                            <i class="fa-solid fa-id-badge"></i> #<?= sanitizar($usuarioAtual['codigo_cliente'] ?? ('CLI-' . str_pad($usuarioAtual['id'], 5, '0', STR_PAD_LEFT))) ?>
+                        </span>
                         <span>Olá, <strong><?= sanitizar(explode(' ', $usuarioAtual['nome'])[0]) ?></strong></span>
                         <a href="<?= BASE_URL ?>/logout.php" title="Sair da conta" class="btn-icon" style="width: 36px; height: 36px; font-size: 0.9rem;">
                             <i class="fa-solid fa-arrow-right-from-bracket"></i>

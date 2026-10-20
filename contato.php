@@ -4,6 +4,7 @@
  */
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
+require_once __DIR__ . '/includes/auth.php';
 
 $erro = '';
 $sucesso = '';
@@ -57,59 +58,93 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- Seção de Contato e Formulário -->
     <div style="display: grid; grid-template-columns: 1fr 1.3fr; gap: 40px; background: var(--cor-branco); padding: 40px; border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave); margin-bottom: 50px;">
-        <!-- Informações Oficiais e Botões de Ação Imediata -->
+        <!-- Informações Oficiais da Central de Ajuda e Contato -->
         <div style="background: var(--cor-rosa-claro); padding: 30px; border-radius: var(--raio-borda); border: 1px solid var(--cor-rosa-medio); display: flex; flex-direction: column; justify-content: space-between;">
             <div>
-                <h3 style="font-size: 1.4rem; color: var(--cor-rosa-queimado); margin-bottom: 16px;">
-                    Canais de Atendimento Oficial
+                <div style="display: inline-block; background: var(--cor-rosa-medio); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <i class="fa-solid fa-headset"></i> Central de Atendimento ao Cliente
+                </div>
+                <h3 style="font-size: 1.45rem; color: var(--cor-rosa-queimado); margin-bottom: 12px;">
+                    Central de Ajuda & Suporte Amora
                 </h3>
-                <p style="font-size: 0.95rem; line-height: 1.7; color: var(--cor-marrom-texto); margin-bottom: 24px;">
-                    Cada peça que criamos carrega história, perfume e dedicação. Fale conosco pelo canal que for mais prático para você!
+                <p style="font-size: 0.92rem; line-height: 1.6; color: var(--cor-marrom-texto); margin-bottom: 22px;">
+                    Dúvidas sobre entregas, pedidos sob medida ou pós-compra? Nossa equipe está pronta para te atender com carinho e agilidade!
                 </p>
 
                 <div style="display: flex; flex-direction: column; gap: 16px; font-size: 0.92rem; margin-bottom: 24px;">
-                    <!-- WhatsApp Oficial com Link Direto -->
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div class="btn-icon" style="width: 42px; height: 42px; background: #e7f8ee; color: #25d366; font-size: 1.3rem;">
+                    <!-- SAC Nacional 0800 (Fictício realista) -->
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px; background: #fff0f3; color: var(--cor-rosa-queimado); font-size: 1.25rem;">
+                            <i class="fa-solid fa-phone-volume"></i>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">SAC NACIONAL (LIGAÇÃO GRATUITA)</span>
+                            <strong style="color: var(--cor-rosa-queimado); font-size: 1.2rem; letter-spacing: 0.5px;">0800 892 4567</strong>
+                            <div style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Disponível para todo o Brasil (fixo e celular)</div>
+                        </div>
+                    </div>
+
+                    <!-- Telefone Fixo Ateliê -->
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px; background: #fff6ee; color: #d0753b; font-size: 1.2rem;">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">CENTRAL LOCAL (PORTO VELHO / RO)</span>
+                            <strong style="color: var(--cor-marrom-suave); font-size: 1.05rem;">(69) 3219-4500</strong>
+                            <div style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Recepção e pedidos do Ateliê</div>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Oficial -->
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px; background: #e7f8ee; color: #25d366; font-size: 1.3rem;">
                             <i class="fa-brands fa-whatsapp"></i>
                         </div>
                         <div>
-                            <strong>WhatsApp Direto do Ateliê:</strong>
-                            <div><a href="https://wa.me/5569984256710?text=Olá! Gostaria de informações sobre produtos e encomendas da Amora Artesanal." target="_blank" style="color: var(--cor-rosa-queimado); font-weight: 700; font-size: 1.05rem;">(69) 98425-6710</a></div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">WHATSAPP OFICIAL DE ATENDIMENTO</span>
+                            <div><a href="https://wa.me/5569984123456?text=Olá! Vim pela Central de Ajuda do site Amora Artesanal e gostaria de tirar uma dúvida." target="_blank" style="color: #208743; font-weight: 700; font-size: 1.05rem;">(69) 98412-3456</a></div>
+                            <div style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Clique para abrir conversa no WhatsApp</div>
                         </div>
                     </div>
 
                     <!-- Chat Integrado no Site -->
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div class="btn-icon" style="width: 42px; height: 42px;"><i class="fa-regular fa-comments"></i></div>
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px; background: #f0f4ff; color: #3b6cd0; font-size: 1.2rem;">
+                            <i class="fa-regular fa-comments"></i>
+                        </div>
                         <div>
-                            <strong>Chat Online na Plataforma:</strong>
-                            <div><a href="<?= BASE_URL ?>/chat.php" style="color: var(--cor-rosa-queimado); font-weight: 600;">Abrir Chat em Tempo Real &rarr;</a></div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">CHAT ONLINE EM TEMPO REAL</span>
+                            <div><a href="<?= BASE_URL ?>/chat.php" style="color: #3b6cd0; font-weight: 700;">Conectar com Ateliê agora &rarr;</a></div>
+                            <div style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Atendimento exclusivo e seguro pelo site</div>
                         </div>
                     </div>
 
-                    <!-- E-mail -->
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div class="btn-icon" style="width: 42px; height: 42px;"><i class="fa-solid fa-envelope"></i></div>
+                    <!-- E-mail de Suporte -->
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px;"><i class="fa-solid fa-envelope"></i></div>
                         <div>
-                            <strong>E-mail Institucional:</strong>
-                            <div>contato@amoraartesanal.com.br</div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">E-MAIL DE SUPORTE</span>
+                            <div style="color: var(--cor-marrom-suave); font-weight: 600; font-size: 0.92rem;">ajuda@amoraartesanal.com.br</div>
                         </div>
                     </div>
 
-                    <!-- Localização -->
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div class="btn-icon" style="width: 42px; height: 42px;"><i class="fa-solid fa-location-dot"></i></div>
+                    <!-- Endereço Físico do Ateliê -->
+                    <div style="display: flex; gap: 12px; align-items: center; background: #fff; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--cor-borda);">
+                        <div class="btn-icon" style="width: 44px; height: 44px;"><i class="fa-solid fa-location-dot"></i></div>
                         <div>
-                            <strong>Ateliê de Produção:</strong>
-                            <div>Av. Tiradentes, 3000 - Embratel, Porto Velho - RO</div>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">ATELIÊ & PONTO DE RETIRADA</span>
+                            <div style="font-size: 0.88rem; color: var(--cor-marrom-suave);">Av. Calama, 4985 - Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-408)</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div style="padding-top: 20px; border-top: 1px solid var(--cor-borda); font-size: 0.85rem; color: var(--cor-marrom-claro);">
-                ✨ Horário de Atendimento: Segunda a Sexta, das 08h às 18h.
+            <div style="padding-top: 18px; border-top: 1px solid var(--cor-borda); font-size: 0.85rem; color: var(--cor-marrom-suave); line-height: 1.6;">
+                <strong>🕒 Horário de Atendimento da Central de Ajuda:</strong><br>
+                &bull; <strong>Segunda a Sexta:</strong> 08:00 às 18:00<br>
+                &bull; <strong>Sábados:</strong> 08:00 às 13:00<br>
+                &bull; <strong>Domingos e Feriados:</strong> Plantão pelo formulário e Chat Online
             </div>
         </div>
 
@@ -135,12 +170,12 @@ require_once __DIR__ . '/includes/header.php';
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                     <div class="form-group">
                         <label for="email" class="form-label">Seu E-mail *</label>
-                        <input type="email" name="email" id="email" class="form-control" placeholder="seuemail@exemplo.com" value="<?= sanitizar($email) ?>" required>
+                        <input type="email" name="email" id="email" class="form-control" placeholder="seu.nome@gmail.com" value="<?= sanitizar($email) ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="telefone" class="form-label">Telefone / WhatsApp</label>
-                        <input type="text" name="telefone" id="telefone" class="form-control" placeholder="(69) 99999-9999" value="<?= sanitizar($telefone) ?>">
+                        <label for="telefone" class="form-label">Telefone / WhatsApp (máx 15 caracteres)</label>
+                        <input type="text" name="telefone" id="telefone" class="form-control" placeholder="(69) 99999-9999" maxlength="15" value="<?= sanitizar($telefone) ?>">
                     </div>
                 </div>
 

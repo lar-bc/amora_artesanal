@@ -28,6 +28,14 @@ if (empty($carrinho)) {
 $usuario = getUsuarioLogado();
 $erro = '';
 
+$db = getDBConnection();
+
+// Verificar se o cliente já comprou antes ou se já é cadastrado com endereço
+$stmtHist = $db->prepare("SELECT COUNT(*) FROM pedidos WHERE usuario_id = ?");
+$stmtHist->execute([$usuario['id']]);
+$totalPedidosAnteriores = (int)$stmtHist->fetchColumn();
+$jaComprouAntes = $totalPedidosAnteriores > 0;
+
 // Preencher dados do endereço a partir do cadastro do usuário
 $cep = $usuario['cep'] ?? '';
 $logradouro = $usuario['logradouro'] ?? '';
@@ -36,6 +44,10 @@ $complemento = $usuario['complemento'] ?? '';
 $bairro = $usuario['bairro'] ?? '';
 $cidade = $usuario['cidade'] ?? '';
 $estado = $usuario['estado'] ?? '';
+$temEnderecoSalvo = !empty($logradouro) && !empty($cidade);
+
+// Se já comprou antes ou se já tem endereço cadastrado, dispensa preenchimento manual
+$dispensaPreenchimentoEndereco = $temEnderecoSalvo || $jaComprouAntes;
 $formaPagamento = 'Pix';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -86,6 +98,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $estado,
                 $cep
             );
+
+            // Salvar informações pessoais atualizadas da conta (RNF persistência)
+            salvarDadosPessoaisCliente((int)$usuario['id'], [
+                'cep' => $cep,
+                'logradouro' => $logradouro,
+                'numero' => $numero,
+                'bairro' => $bairro,
+                'cidade' => $cidade,
+                'estado' => $estado,
+                'complemento' => $complemento
+            ]);
 
             // Gerar código de rastreamento oficial
             $codigoRastreio = 'AM' . rand(10000000, 99999999) . 'BR';
@@ -195,59 +218,193 @@ require_once __DIR__ . '/includes/header.php';
             <form action="<?= BASE_URL ?>/checkout.php" method="POST">
                 <input type="hidden" name="csrf_token" value="<?= getCsrfToken() ?>">
 
-                <!-- 1. Endereço de Entrega (Auto-preenchido do cadastro) -->
+                <!-- Identificação Única do Cliente para não haver confusão -->
+                <div style="background: #fffcf9; border: 1px solid var(--cor-rosa-medio); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--cor-marrom-claro); display: block; font-weight: 600;">CLIENTE IDENTIFICADO NO SISTEMA:</span>
+                        <strong style="color: var(--cor-marrom-suave); font-size: 0.95rem;"><?= sanitizar($usuario['nome']) ?></strong>
+                        <span style="font-size: 0.82rem; color: var(--cor-marrom-claro); margin-left: 6px;">(<?= sanitizar($usuario['email']) ?>)</span>
+                    </div>
+                    <span style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-id-badge"></i> #<?= sanitizar($usuario['codigo_cliente'] ?? ('CLI-' . str_pad($usuario['id'], 5, '0', STR_PAD_LEFT))) ?>
+                    </span>
+                </div>
+
+                <!-- 1. Itens do Pedido & Detalhes com Alterações Solicitadas -->
                 <div style="border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 24px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
                         <h3 style="font-size: 1.25rem; color: var(--cor-rosa-queimado); margin: 0;">
-                            <i class="fa-solid fa-location-dot"></i> 1. Endereço de Entrega Cadastrado
+                            <i class="fa-solid fa-box-open"></i> 1. Produtos & Alterações Solicitadas
                         </h3>
-                        <span style="font-size: 0.8rem; color: var(--cor-sucesso); font-weight: 600;">
-                            <i class="fa-solid fa-circle-check"></i> Dados do seu perfil
+                        <span style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
+                            <?= count($carrinho) ?> item(ns) na compra
                         </span>
                     </div>
 
-                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
-                        <div class="form-group">
-                            <label for="cep" class="form-label">CEP *</label>
-                            <input type="text" name="cep" id="cep" class="form-control" value="<?= sanitizar($cep) ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="cidade" class="form-label">Cidade *</label>
-                            <input type="text" name="cidade" id="cidade" class="form-control" value="<?= sanitizar($cidade) ?>" required>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 14px;">
-                        <div class="form-group">
-                            <label for="logradouro" class="form-label">Rua / Avenida *</label>
-                            <input type="text" name="logradouro" id="logradouro" class="form-control" value="<?= sanitizar($logradouro) ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="numero" class="form-label">Número *</label>
-                            <input type="text" name="numero" id="numero" class="form-control" value="<?= sanitizar($numero) ?>" required>
-                        </div>
-                    </div>
-
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
-                        <div class="form-group">
-                            <label for="bairro" class="form-label">Bairro *</label>
-                            <input type="text" name="bairro" id="bairro" class="form-control" value="<?= sanitizar($bairro) ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="estado" class="form-label">Estado *</label>
-                            <input type="text" name="estado" id="estado" class="form-control" value="<?= sanitizar($estado) ?>" required maxlength="2">
-                        </div>
-                        <div class="form-group">
-                            <label for="complemento" class="form-label">Complemento</label>
-                            <input type="text" name="complemento" id="complemento" class="form-control" value="<?= sanitizar($complemento) ?>" placeholder="Apto, Bloco...">
-                        </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <?php foreach ($carrinho as $item): ?>
+                            <div style="background: #fffcf9; border: 1px solid var(--cor-borda); border-radius: 8px; padding: 14px; display: flex; gap: 14px; align-items: center;">
+                                <img src="<?= BASE_URL ?>/<?= sanitizar($item['imagem_url']) ?>" alt="<?= sanitizar($item['nome']) ?>" style="width: 58px; height: 58px; border-radius: 8px; object-fit: contain; background: #fff; border: 1px solid var(--cor-borda); padding: 4px;">
+                                <div style="flex-grow: 1;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+                                        <strong style="color: var(--cor-marrom-suave); font-size: 0.95rem;"><?= sanitizar($item['nome']) ?></strong>
+                                        <span style="font-weight: 700; color: var(--cor-rosa-queimado); font-size: 0.95rem;">
+                                            <?= formatarMoeda((float)($item['preco'] * $item['quantidade'])) ?>
+                                        </span>
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--cor-marrom-claro); margin-top: 2px;">
+                                        Quantidade: <strong><?= $item['quantidade'] ?></strong> &bull; Preço unitário: <?= formatarMoeda((float)$item['preco']) ?>
+                                    </div>
+                                    <?php if (!empty($item['personalizacao'])): ?>
+                                        <div style="background: #fff0f3; border: 1px dashed var(--cor-rosa-medio); padding: 6px 12px; border-radius: 6px; margin-top: 8px; font-size: 0.82rem;">
+                                            <strong style="color: var(--cor-rosa-queimado);"><i class="fa-solid fa-wand-magic-sparkles"></i> Alteração / Personalização Solicitada:</strong>
+                                            <div style="color: var(--cor-marrom-suave); margin-top: 2px; font-weight: 500;">
+                                                "<?= sanitizar($item['personalizacao']) ?>"
+                                            </div>
+                                        </div>
+                                    <?php else: ?>
+                                        <div style="font-size: 0.78rem; color: var(--cor-marrom-claro); margin-top: 4px;">
+                                            <i class="fa-solid fa-check"></i> Sem alteração adicional (modelo padrão do Ateliê)
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <!-- 2. Formas de Pagamento Seguras -->
+                <!-- 2. Endereço de Entrega (Não precisa digitar de novo se já for cadastrado ou comprou antes) -->
+                <div style="border-bottom: 1px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 24px;">
+                    <?php if ($dispensaPreenchimentoEndereco): ?>
+                        <!-- Card inteligente para cliente que já comprou antes ou já tem endereço -->
+                        <div style="background: #fbfdfb; border: 1.5px solid #82c78f; border-radius: 10px; padding: 18px 20px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
+                                        <i class="fa-solid fa-house-circle-check"></i>
+                                    </div>
+                                    <div>
+                                        <h3 style="font-size: 1.15rem; color: #1e5a26; margin: 0;">2. Endereço de Entrega Selecionado</h3>
+                                        <span style="font-size: 0.78rem; color: #2e7d32; font-weight: 600;">
+                                            <i class="fa-solid fa-check"></i> Endereço salvo na sua conta <?= $jaComprouAntes ? '(Histórico de compras validado)' : '' ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <span style="background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold;">
+                                    Não precisa preencher de novo
+                                </span>
+                            </div>
+
+                            <div style="background: #ffffff; padding: 14px 18px; border-radius: 8px; border: 1px solid #c8e6c9; font-size: 0.92rem; color: var(--cor-marrom-suave); line-height: 1.6;">
+                                <div><strong>Rua/Avenida:</strong> <?= sanitizar($logradouro) ?>, nº <?= sanitizar($numero) ?> <?= !empty($complemento) ? ' (' . sanitizar($complemento) . ')' : '' ?></div>
+                                <div><strong>Bairro:</strong> <?= sanitizar($bairro) ?> &bull; <strong>Cidade:</strong> <?= sanitizar($cidade) ?>/<?= sanitizar($estado) ?> &bull; <strong>CEP:</strong> <?= sanitizar($cep) ?></div>
+                            </div>
+
+                            <!-- Inputs ocultos para envio no formulário sem precisar redigitar -->
+                            <input type="hidden" name="cep" value="<?= sanitizar($cep) ?>">
+                            <input type="hidden" name="logradouro" value="<?= sanitizar($logradouro) ?>">
+                            <input type="hidden" name="numero" value="<?= sanitizar($numero) ?>">
+                            <input type="hidden" name="complemento" value="<?= sanitizar($complemento) ?>">
+                            <input type="hidden" name="bairro" value="<?= sanitizar($bairro) ?>">
+                            <input type="hidden" name="cidade" value="<?= sanitizar($cidade) ?>">
+                            <input type="hidden" name="estado" value="<?= sanitizar($estado) ?>">
+
+                            <details style="margin-top: 12px; font-size: 0.85rem;">
+                                <summary style="cursor: pointer; color: var(--cor-rosa-queimado); font-weight: 600;">
+                                    <i class="fa-solid fa-pen-to-square"></i> Deseja enviar para outro endereço? Clique aqui para editar
+                                </summary>
+                                <div style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--cor-borda);">
+                                    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
+                                        <div class="form-group">
+                                            <label for="cep" class="form-label">CEP *</label>
+                                            <input type="text" name="cep" class="form-control" maxlength="9" value="<?= sanitizar($cep) ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cidade" class="form-label">Cidade *</label>
+                                            <input type="text" name="cidade" class="form-control" value="<?= sanitizar($cidade) ?>">
+                                        </div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 14px;">
+                                        <div class="form-group">
+                                            <label for="logradouro" class="form-label">Rua / Avenida *</label>
+                                            <input type="text" name="logradouro" class="form-control" value="<?= sanitizar($logradouro) ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="numero" class="form-label">Número *</label>
+                                            <input type="text" name="numero" class="form-control" value="<?= sanitizar($numero) ?>">
+                                        </div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                                        <div class="form-group">
+                                            <label for="bairro" class="form-label">Bairro *</label>
+                                            <input type="text" name="bairro" class="form-control" value="<?= sanitizar($bairro) ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="estado" class="form-label">Estado (UF) *</label>
+                                            <input type="text" name="estado" class="form-control" maxlength="2" value="<?= sanitizar($estado) ?>">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="complemento" class="form-label">Complemento</label>
+                                            <input type="text" name="complemento" class="form-control" value="<?= sanitizar($complemento) ?>">
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+                    <?php else: ?>
+                        <!-- Novo cliente: formulário de endereço aberto -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <h3 style="font-size: 1.25rem; color: var(--cor-rosa-queimado); margin: 0;">
+                                <i class="fa-solid fa-location-dot"></i> 2. Endereço de Entrega
+                            </h3>
+                            <span style="font-size: 0.8rem; color: var(--cor-marrom-claro);">
+                                Preencha onde deseja receber
+                            </span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
+                            <div class="form-group">
+                                <label for="cep" class="form-label">CEP (máx 9 caracteres) *</label>
+                                <input type="text" name="cep" id="cep" class="form-control" maxlength="9" value="<?= sanitizar($cep) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cidade" class="form-label">Cidade *</label>
+                                <input type="text" name="cidade" id="cidade" class="form-control" value="<?= sanitizar($cidade) ?>" required>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 14px;">
+                            <div class="form-group">
+                                <label for="logradouro" class="form-label">Rua / Avenida *</label>
+                                <input type="text" name="logradouro" id="logradouro" class="form-control" value="<?= sanitizar($logradouro) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="numero" class="form-label">Número *</label>
+                                <input type="text" name="numero" id="numero" class="form-control" value="<?= sanitizar($numero) ?>" required>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
+                            <div class="form-group">
+                                <label for="bairro" class="form-label">Bairro *</label>
+                                <input type="text" name="bairro" id="bairro" class="form-control" value="<?= sanitizar($bairro) ?>" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="estado" class="form-label">Estado *</label>
+                                <input type="text" name="estado" id="estado" class="form-control" value="<?= sanitizar($estado) ?>" required maxlength="2">
+                            </div>
+                            <div class="form-group">
+                                <label for="complemento" class="form-label">Complemento</label>
+                                <input type="text" name="complemento" id="complemento" class="form-control" value="<?= sanitizar($complemento) ?>" placeholder="Apto, Bloco...">
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- 3. Formas de Pagamento Seguras -->
                 <div style="margin-bottom: 24px;">
                     <h3 style="font-size: 1.25rem; color: var(--cor-rosa-queimado); margin-bottom: 16px;">
-                        <i class="fa-solid fa-credit-card"></i> 2. Forma de Pagamento
+                        <i class="fa-solid fa-credit-card"></i> 3. Forma de Pagamento
                     </h3>
 
                     <!-- Opção PIX com Chave e QR Code -->

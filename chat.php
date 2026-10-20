@@ -44,17 +44,22 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="fa-solid fa-heart"></i>
             </div>
             <div>
-                <h2 style="font-size: 1.3rem; margin: 0; color: var(--cor-marrom-suave);">Atendimento Amora Artesanal</h2>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <h2 style="font-size: 1.3rem; margin: 0; color: var(--cor-marrom-suave);">Atendimento Amora Artesanal</h2>
+                    <span style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 2px 8px; border-radius: 12px; font-size: 0.78rem;">
+                        #<?= sanitizar($usuario['codigo_cliente'] ?? ('CLI-' . str_pad($usuario['id'], 5, '0', STR_PAD_LEFT))) ?>
+                    </span>
+                </div>
                 <div style="font-size: 0.8rem; color: var(--cor-sucesso); display: flex; align-items: center; gap: 6px;">
                     <span style="width: 8px; height: 8px; background: #4e8d53; border-radius: 50%;"></span>
-                    Equipe online para encomendas e suporte
+                    Equipe online &bull; Cliente: <strong><?= sanitizar($usuario['nome']) ?></strong>
                 </div>
             </div>
         </div>
 
         <div>
-            <a href="https://wa.me/5569984256710?text=Olá! Vim pelo site da Amora Artesanal e gostaria de tirar uma dúvida." target="_blank" class="btn btn-secondary btn-sm" title="Abrir no WhatsApp">
-                <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.1rem;"></i> (69) 98425-6710
+            <a href="https://wa.me/5569984123456?text=Olá! Vim pelo chat da Amora Artesanal (Cliente <?= urlencode($usuario['codigo_cliente'] ?? '') ?>) e gostaria de falar com a equipe." target="_blank" class="btn btn-secondary btn-sm" title="Abrir no WhatsApp">
+                <i class="fa-brands fa-whatsapp" style="color: #25d366; font-size: 1.1rem;"></i> (69) 98412-3456
             </a>
         </div>
     </div>

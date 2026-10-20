@@ -122,56 +122,62 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
 
                     <div class="form-group">
-                        <label for="telefone" class="form-label">Telefone / WhatsApp *</label>
-                        <input type="text" name="telefone" id="telefone" class="form-control" placeholder="(69) 99999-9999" value="<?= sanitizar($dados['telefone']) ?>" required>
+                        <label for="telefone" class="form-label">Telefone / WhatsApp (máx 15 caracteres) *</label>
+                        <input type="text" name="telefone" id="telefone" class="form-control" placeholder="(69) 99999-9999" maxlength="15" value="<?= sanitizar($dados['telefone']) ?>" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.78rem;">Limite: até 15 caracteres ou 11 números com DDD</small>
                     </div>
                 </div>
             </div>
 
-            <!-- Endereço Completo -->
+            <!-- Endereço (Pode ser qualquer um) -->
             <div style="border-bottom: 1px solid var(--cor-borda); padding-bottom: 18px; margin-bottom: 20px;">
-                <h4 style="font-size: 1.1rem; color: var(--cor-rosa-queimado); margin-bottom: 14px;">
-                    <i class="fa-solid fa-house-chimney"></i> 2. Endereço Completo de Entrega
+                <h4 style="font-size: 1.1rem; color: var(--cor-rosa-queimado); margin-bottom: 6px;">
+                    <i class="fa-solid fa-house-chimney"></i> 2. Endereço de Entrega
                 </h4>
+                <p style="font-size: 0.84rem; color: var(--cor-marrom-claro); margin-bottom: 14px;">
+                    Informe qualquer endereço de sua preferência. Ele ficará salvo na sua conta para futuras entregas.
+                </p>
 
                 <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 14px;">
                     <div class="form-group">
-                        <label for="cep" class="form-label">CEP *</label>
-                        <input type="text" name="cep" id="cep" class="form-control" placeholder="76800-000" value="<?= sanitizar($dados['cep']) ?>" required>
+                        <label for="cep" class="form-label">CEP (máx 9 caracteres) *</label>
+                        <input type="text" name="cep" id="cep" class="form-control" placeholder="76800-000" maxlength="9" value="<?= sanitizar($dados['cep']) ?>" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.78rem;">Limite: até 9 caracteres (8 números)</small>
                     </div>
 
                     <div class="form-group">
                         <label for="cidade" class="form-label">Cidade *</label>
-                        <input type="text" name="cidade" id="cidade" class="form-control" placeholder="Porto Velho" value="<?= sanitizar($dados['cidade']) ?>" required>
+                        <input type="text" name="cidade" id="cidade" class="form-control" placeholder="Ex.: Porto Velho" value="<?= sanitizar($dados['cidade']) ?>" required>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 3fr 1fr; gap: 14px;">
                     <div class="form-group">
-                        <label for="logradouro" class="form-label">Rua / Avenida *</label>
-                        <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder="Ex.: Av. Calama" value="<?= sanitizar($dados['logradouro']) ?>" required>
+                        <label for="logradouro" class="form-label">Rua / Avenida / Qualquer Logradouro *</label>
+                        <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder="Qualquer rua, avenida, travessa ou condomínio" value="<?= sanitizar($dados['logradouro']) ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="numero" class="form-label">Número *</label>
-                        <input type="text" name="numero" id="numero" class="form-control" placeholder="123" value="<?= sanitizar($dados['numero']) ?>" required>
+                        <input type="text" name="numero" id="numero" class="form-control" placeholder="123 ou S/N" value="<?= sanitizar($dados['numero']) ?>" required>
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;">
                     <div class="form-group">
                         <label for="bairro" class="form-label">Bairro *</label>
-                        <input type="text" name="bairro" id="bairro" class="form-control" placeholder="Centro" value="<?= sanitizar($dados['bairro']) ?>" required>
+                        <input type="text" name="bairro" id="bairro" class="form-control" placeholder="Centro ou Bairro" value="<?= sanitizar($dados['bairro']) ?>" required>
                     </div>
 
                     <div class="form-group">
-                        <label for="estado" class="form-label">Estado (UF) *</label>
-                        <input type="text" name="estado" id="estado" class="form-control" placeholder="RO" maxlength="2" value="<?= sanitizar($dados['estado']) ?>" required>
+                        <label for="estado" class="form-label">Estado (UF - máx 2 letras) *</label>
+                        <input type="text" name="estado" id="estado" class="form-control" placeholder="RO" maxlength="2" pattern="[A-Za-z]{2}" title="Digite a sigla do estado em 2 letras (ex.: RO, SP, RJ)" style="text-transform: uppercase;" value="<?= sanitizar($dados['estado']) ?>" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.78rem;">Limite: 2 letras (UF)</small>
                     </div>
 
                     <div class="form-group">
                         <label for="complemento" class="form-label">Complemento</label>
-                        <input type="text" name="complemento" id="complemento" class="form-control" placeholder="Apto, Bloco..." value="<?= sanitizar($dados['complemento']) ?>">
+                        <input type="text" name="complemento" id="complemento" class="form-control" placeholder="Apto, Bloco, Casa..." value="<?= sanitizar($dados['complemento']) ?>">
                     </div>
                 </div>
             </div>
@@ -183,25 +189,30 @@ require_once __DIR__ . '/includes/header.php';
                 </h4>
 
                 <div class="form-group">
-                    <label for="email" class="form-label">Endereço de E-mail *</label>
-                    <input type="email" name="email" id="email" class="form-control" placeholder="seuemail@exemplo.com" value="<?= sanitizar($dados['email']) ?>" required>
+                    <label for="email" class="form-label">E-mail (obrigatoriamente @gmail.com) *</label>
+                    <input type="email" name="email" id="email" class="form-control" placeholder="seu.nome@gmail.com" pattern=".*@gmail\.com$" title="O e-mail deve terminar obrigatoriamente com @gmail.com" value="<?= sanitizar($dados['email']) ?>" required>
+                    <small style="color: var(--cor-rosa-queimado); font-size: 0.8rem; font-weight: 600;">
+                        <i class="fa-solid fa-envelope"></i> O e-mail deve terminar sempre com <strong>@gmail.com</strong>
+                    </small>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
                     <div class="form-group">
-                        <label for="senha" class="form-label">Senha (mínimo 6 dígitos) *</label>
-                        <input type="password" name="senha" id="senha" class="form-control" placeholder="••••••••" minlength="6" required>
+                        <label for="senha" class="form-label">Senha (qualquer senha, máx 32 caracteres) *</label>
+                        <input type="password" name="senha" id="senha" class="form-control" placeholder="Qualquer senha de sua escolha" maxlength="32" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.78rem;">Limite: até 32 caracteres</small>
                     </div>
 
                     <div class="form-group">
-                        <label for="confirmar_senha" class="form-label">Confirmar Senha *</label>
-                        <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control" placeholder="••••••••" minlength="6" required>
+                        <label for="confirmar_senha" class="form-label">Confirmar Senha (máx 32 caracteres) *</label>
+                        <input type="password" name="confirmar_senha" id="confirmar_senha" class="form-control" placeholder="Repita a senha" maxlength="32" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.78rem;">Deve ser igual à senha digitada</small>
                     </div>
                 </div>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 18px;">
-                <i class="fa-solid fa-user-plus"></i> Concluir Cadastro
+                <i class="fa-solid fa-user-plus"></i> Concluir Cadastro & Obter Código de Cliente
             </button>
         </form>
 

@@ -121,6 +121,38 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
+    <!-- Card de Identificação Única do Cliente e Dados Pessoais Salvos -->
+    <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--sombra-suave); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--cor-rosa-queimado), #df8d9c); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <h3 style="margin: 0; font-size: 1.2rem; color: var(--cor-marrom-suave);"><?= sanitizar($usuario['nome']) ?></h3>
+                    <span style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 2px 10px; border-radius: 12px; font-size: 0.82rem;">
+                        <i class="fa-solid fa-id-badge"></i> #<?= sanitizar($usuario['codigo_cliente'] ?? ('CLI-' . str_pad($usuario['id'], 5, '0', STR_PAD_LEFT))) ?>
+                    </span>
+                    <span style="background: #eef7ee; color: #1e5a26; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                        <i class="fa-solid fa-lock"></i> Dados Salvos na Conta
+                    </span>
+                </div>
+                <div style="font-size: 0.85rem; color: var(--cor-marrom-claro); margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;">
+                    <span><i class="fa-regular fa-envelope"></i> <?= sanitizar($usuario['email']) ?></span>
+                    <?php if (!empty($usuario['telefone'])): ?>
+                        <span><i class="fa-brands fa-whatsapp"></i> <?= sanitizar($usuario['telefone']) ?></span>
+                    <?php endif; ?>
+                    <?php if (!empty($usuario['cidade'])): ?>
+                        <span><i class="fa-solid fa-location-dot"></i> <?= sanitizar($usuario['cidade']) ?>/<?= sanitizar($usuario['estado']) ?></span>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
+        <div style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
+            <i class="fa-solid fa-shield-check" style="color: var(--cor-sucesso);"></i> Suas informações pessoais e endereço estão salvos nesta conta.
+        </div>
+    </div>
+
     <?php if (empty($pedidos)): ?>
         <div style="background: var(--cor-branco); border-radius: var(--raio-borda); border: 1px solid var(--cor-borda); padding: 70px 20px; text-align: center;">
             <div style="font-size: 3.5rem; color: var(--cor-rosa-medio); margin-bottom: 16px;">
@@ -181,61 +213,171 @@ require_once __DIR__ . '/includes/header.php';
                                 </span>
                             </div>
 
-                            <!-- Mapinha Visual em SVG do Trajeto em Tempo Real -->
-                            <div style="margin-bottom: 20px; border-radius: var(--raio-borda); overflow: hidden; border: 1px solid var(--cor-borda); background: #fdf6f0;">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 160" width="100%" height="auto" style="display: block;">
-                                    <!-- Fundo do mapa com relevo suave -->
-                                    <rect width="100%" height="100%" fill="#fef8f4"/>
-                                    <!-- Rios e Estradas Estilizadas -->
-                                    <path d="M0,80 Q150,110 350,70 T700,90" fill="none" stroke="#eed9ce" stroke-width="26" stroke-linecap="round"/>
-                                    <path d="M0,80 Q150,110 350,70 T700,90" fill="none" stroke="#fffaf5" stroke-width="14" stroke-dasharray="8,6" stroke-linecap="round"/>
+                            <!-- Mapa-Múndi Real e Telemetria Satelital Global em SVG -->
+                            <div style="margin-bottom: 22px; border-radius: var(--raio-borda); overflow: hidden; border: 1px solid #1e334a; box-shadow: 0 4px 14px rgba(0,0,0,0.15); background: #101c2b;">
+                                <!-- Painel Superior de Telemetria do Mapa -->
+                                <div style="background: #0b1420; padding: 10px 16px; border-bottom: 1px solid #1e334a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.78rem; color: #8faec8; font-family: monospace;">
+                                    <div>
+                                        <i class="fa-solid fa-satellite" style="color: #4da6ff;"></i>
+                                        <strong style="color: #e1edf7;">MONITORAMENTO GLOBAL LOGIAMORA</strong> &bull; Satélite GlobalSat-4
+                                    </div>
+                                    <div>
+                                        HUB ORIGEM: <span style="color: #ff8ca3;">Porto Velho/RO - Brasil (-08°45'S, -63°54'W)</span>
+                                    </div>
+                                    <div style="color: #4cd964;">
+                                        <i class="fa-solid fa-circle-dot"></i> TELEMETRIA GPS ONLINE
+                                    </div>
+                                </div>
 
-                                    <!-- Ponto A: Ateliê Amora (Porto Velho) -->
-                                    <circle cx="80" cy="80" r="18" fill="#5c3d2e"/>
-                                    <circle cx="80" cy="80" r="12" fill="#fff"/>
-                                    <circle cx="80" cy="80" r="6" fill="#c86d7e"/>
-                                    <text x="80" y="125" font-family="'Poppins', sans-serif" font-size="11" font-weight="bold" fill="#5c3d2e" text-anchor="middle">Ateliê Amora (Porto Velho)</text>
-                                    <text x="80" y="140" font-family="'Poppins', sans-serif" font-size="9" fill="#8a6a59" text-anchor="middle">Origem do Pedido</text>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 440" width="100%" height="auto" style="display: block; background: #101c2b;">
+                                    <defs>
+                                        <!-- Gradiente Oceânico -->
+                                        <radialGradient id="oceanGlow" cx="50%" cy="50%" r="65%">
+                                            <stop offset="0%" stop-color="#142437"/>
+                                            <stop offset="100%" stop-color="#0a121c"/>
+                                        </radialGradient>
+                                        <!-- Glow para a rota -->
+                                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                                            <feGaussianBlur stdDeviation="3" result="blur" />
+                                            <feMerge>
+                                                <feMergeNode in="blur" />
+                                                <feMergeNode in="SourceGraphic" />
+                                            </feMerge>
+                                        </filter>
+                                    </defs>
 
-                                    <!-- Ponto B: Destino do Cliente -->
-                                    <circle cx="620" cy="88" r="18" fill="#c86d7e"/>
-                                    <circle cx="620" cy="88" r="12" fill="#fff"/>
-                                    <circle cx="620" cy="88" r="6" fill="#5c3d2e"/>
-                                    <text x="620" y="125" font-family="'Poppins', sans-serif" font-size="11" font-weight="bold" fill="#c86d7e" text-anchor="middle">Seu Endereço</text>
-                                    <text x="620" y="140" font-family="'Poppins', sans-serif" font-size="9" fill="#8a6a59" text-anchor="middle">Entrega Prioritária</text>
+                                    <!-- Fundo Oceânico -->
+                                    <rect width="100%" height="100%" fill="url(#oceanGlow)"/>
 
-                                    <!-- Posição Dinâmica do Entregador no Mapa -->
+                                    <!-- Grade de Coordenadas Globais (Meridianos e Paralelos) -->
+                                    <g stroke="#1b3047" stroke-width="0.8" opacity="0.6">
+                                        <line x1="120" y1="0" x2="120" y2="440"/>
+                                        <line x1="240" y1="0" x2="240" y2="440"/>
+                                        <line x1="360" y1="0" x2="360" y2="440"/>
+                                        <line x1="480" y1="0" x2="480" y2="440" stroke="#2a4563" stroke-width="1.2"/> <!-- Meridiano de Greenwich -->
+                                        <line x1="600" y1="0" x2="600" y2="440"/>
+                                        <line x1="720" y1="0" x2="720" y2="440"/>
+                                        <line x1="840" y1="0" x2="840" y2="440"/>
+
+                                        <line x1="0" y1="80" x2="960" y2="80"/>
+                                        <line x1="0" y1="160" x2="960" y2="160" stroke="#253e5c" stroke-dasharray="4,4"/> <!-- Trópico de Câncer -->
+                                        <line x1="0" y1="240" x2="960" y2="240" stroke="#c86d7e" stroke-width="1.2" stroke-dasharray="6,4" opacity="0.8"/> <!-- Linha do Equador -->
+                                        <line x1="0" y1="320" x2="960" y2="320" stroke="#253e5c" stroke-dasharray="4,4"/> <!-- Trópico de Capricórnio -->
+                                        <line x1="0" y1="380" x2="960" y2="380"/>
+                                    </g>
+
+                                    <text x="950" y="236" fill="#c86d7e" font-size="8" font-family="monospace" text-anchor="end" opacity="0.8">0° EQUADOR</text>
+                                    <text x="485" y="15" fill="#4da6ff" font-size="8" font-family="monospace" opacity="0.7">0° GREENWICH</text>
+
+                                    <!-- Continentes do Mundo em Vetor Detalhado -->
+                                    <g fill="#21354b" stroke="#324d6b" stroke-width="1.2" stroke-linejoin="round">
+                                        <!-- América do Norte & Groenlândia -->
+                                        <path d="M 60,65 Q 110,40 180,45 Q 235,50 280,75 Q 310,110 330,85 Q 370,60 365,100 Q 320,135 275,160 Q 285,185 245,215 Q 195,245 165,225 Q 130,185 90,140 Q 60,100 60,65 Z"/>
+                                        <!-- Groenlândia -->
+                                        <path d="M 335,30 Q 380,20 405,55 Q 365,80 335,65 Z"/>
+
+                                        <!-- América do Sul (com destaque para o Brasil e Porto Velho) -->
+                                        <path d="M 260,230 Q 295,215 340,230 Q 400,265 385,320 Q 355,370 330,425 Q 315,420 305,370 Q 285,310 260,265 Z" fill="#263e58" stroke="#3e6187"/>
+
+                                        <!-- Europa & Ilhas Britânicas -->
+                                        <path d="M 455,165 Q 470,120 465,80 Q 500,60 515,100 Q 550,80 570,130 Q 530,155 490,170 Z"/>
+                                        <path d="M 440,100 Q 460,95 455,120 Z"/>
+
+                                        <!-- África & Madagascar -->
+                                        <path d="M 450,180 Q 520,175 570,205 Q 565,250 530,310 Q 520,380 485,380 Q 455,305 430,255 Q 445,205 450,180 Z"/>
+                                        <path d="M 575,310 Q 590,310 580,355 Z"/>
+
+                                        <!-- Ásia (Rússia, Oriente Médio, Índia, China, Sudeste Asiático, Japão) -->
+                                        <path d="M 570,80 Q 675,50 805,60 Q 865,95 825,145 Q 810,195 760,225 Q 730,265 690,240 Q 660,210 620,220 Q 570,190 560,130 Z"/>
+                                        <path d="M 645,200 Q 680,205 670,260 Z"/> <!-- Índia -->
+                                        <path d="M 830,130 Q 845,140 835,175 Z"/> <!-- Japão -->
+
+                                        <!-- Oceania / Austrália & Nova Zelândia -->
+                                        <path d="M 755,305 Q 835,300 855,345 Q 815,385 760,355 Z"/>
+                                        <path d="M 870,380 Q 885,390 875,415 Z"/> <!-- Nova Zelândia -->
+
+                                        <!-- Antártida -->
+                                        <path d="M 40,432 L 920,432 L 935,438 L 25,438 Z" fill="#1b2a3c" stroke="#253a52"/>
+                                    </g>
+
+                                    <!-- Corredores Internacionais de Carga Amora Artesanal (Linhas Globais) -->
+                                    <g stroke="rgba(200, 109, 126, 0.25)" stroke-width="1.2" stroke-dasharray="4,5" fill="none">
+                                        <!-- Rota Brasil -> América do Norte -->
+                                        <path d="M 310,275 Q 260,190 235,140"/>
+                                        <!-- Rota Brasil -> Europa -->
+                                        <path d="M 310,275 Q 400,190 470,140"/>
+                                        <!-- Rota Brasil -> Ásia -->
+                                        <path d="M 310,275 Q 580,120 760,150"/>
+                                    </g>
+
+                                    <!-- Ponto de Origem: Ateliê Amora (Porto Velho/RO - Brasil) -->
+                                    <circle cx="310" cy="275" r="14" fill="#c86d7e" opacity="0.3"/>
+                                    <circle cx="310" cy="275" r="7" fill="#c86d7e"/>
+                                    <circle cx="310" cy="275" r="3" fill="#ffffff"/>
+                                    <text x="310" y="260" font-family="'Poppins', sans-serif" font-size="10" font-weight="bold" fill="#ff99ab" text-anchor="middle" filter="url(#glow)">★ Ateliê Amora (Porto Velho/RO)</text>
+
+                                    <!-- Ponto de Destino: Endereço do Cliente -->
+                                    <?php 
+                                        $destX = 360; 
+                                        $destY = 330; 
+                                    ?>
+                                    <circle cx="<?= $destX ?>" cy="<?= $destY ?>" r="14" fill="#4cd964" opacity="0.3"/>
+                                    <circle cx="<?= $destX ?>" cy="<?= $destY ?>" r="6" fill="#4cd964"/>
+                                    <circle cx="<?= $destX ?>" cy="<?= $destY ?>" r="2.5" fill="#ffffff"/>
+                                    <text x="<?= $destX ?>" y="<?= $destY + 18 ?>" font-family="'Poppins', sans-serif" font-size="9" font-weight="bold" fill="#8ced9e" text-anchor="middle">📍 Seu Endereço de Entrega</text>
+
+                                    <!-- ROTA ATIVA DO PEDIDO DO CLIENTE -->
+                                    <path d="M 310,275 Q 330,295 <?= $destX ?>,<?= $destY ?>" fill="none" stroke="#ff7b90" stroke-width="3" stroke-linecap="round" filter="url(#glow)"/>
+                                    <path d="M 310,275 Q 330,295 <?= $destX ?>,<?= $destY ?>" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="4,4"/>
+
+                                    <!-- Posição do Veículo Conforme o Status Atual -->
                                     <?php 
                                         $posicaoX = match($status) {
-                                            'Pedido realizado' => 120,
-                                            'Em preparação'    => 240,
-                                            'Enviado'          => 450,
-                                            'Entregue'         => 610,
-                                            default            => 350
+                                            'Pedido realizado' => 310,
+                                            'Em preparação'    => 322,
+                                            'Enviado'          => 342,
+                                            'Entregue'         => $destX,
+                                            default            => 330
                                         };
                                         $posicaoY = match($status) {
-                                            'Pedido realizado' => 84,
-                                            'Em preparação'    => 92,
-                                            'Enviado'          => 74,
-                                            'Entregue'         => 88,
-                                            default            => 80
+                                            'Pedido realizado' => 275,
+                                            'Em preparação'    => 288,
+                                            'Enviado'          => 310,
+                                            'Entregue'         => $destY,
+                                            default            => 300
                                         };
                                     ?>
 
-                                    <!-- Radar de Pulso -->
-                                    <circle cx="<?= $posicaoX ?>" cy="<?= $posicaoY ?>" r="20" fill="#c86d7e" opacity="0.25"/>
-                                    <circle cx="<?= $posicaoX ?>" cy="<?= $posicaoY ?>" r="12" fill="#c86d7e" opacity="0.6"/>
+                                    <!-- Radar de Localização em Tempo Real -->
+                                    <circle cx="<?= $posicaoX ?>" cy="<?= $posicaoY ?>" r="18" fill="#ff7b90" opacity="0.25">
+                                        <animate attributeName="r" values="8;22;8" dur="2.5s" repeatCount="indefinite"/>
+                                        <animate attributeName="opacity" values="0.6;0.1;0.6" dur="2.5s" repeatCount="indefinite"/>
+                                    </circle>
 
-                                    <!-- Ícone do Caminhão / Entregador -->
-                                    <rect x="<?= $posicaoX - 16 ?>" y="<?= $posicaoY - 14 ?>" width="32" height="18" rx="4" fill="#5c3d2e"/>
-                                    <rect x="<?= $posicaoX + 4 ?>" y="<?= $posicaoY - 10 ?>" width="10" height="12" rx="2" fill="#fff"/>
-                                    <circle cx="<?= $posicaoX - 8 ?>" cy="<?= $posicaoY + 4 ?>" r="4" fill="#c86d7e"/>
-                                    <circle cx="<?= $posicaoX + 10 ?>" cy="<?= $posicaoY + 4 ?>" r="4" fill="#c86d7e"/>
-                                    
-                                    <text x="<?= $posicaoX ?>" y="<?= $posicaoY - 20 ?>" font-family="'Poppins', sans-serif" font-size="10" font-weight="bold" fill="#c86d7e" text-anchor="middle">
-                                        <?= ($status === 'Entregue') ? 'Destino Final' : 'Em Trânsito' ?>
+                                    <!-- Ícone do Transporte (Caminhão/Veículo de Entrega) -->
+                                    <g transform="translate(<?= $posicaoX - 14 ?>, <?= $posicaoY - 12 ?>)">
+                                        <rect x="0" y="2" width="20" height="12" rx="2" fill="#fff" stroke="#5c3d2e" stroke-width="1.5"/>
+                                        <rect x="18" y="5" width="8" height="9" rx="2" fill="#c86d7e"/>
+                                        <circle cx="6" cy="15" r="3" fill="#101c2b"/>
+                                        <circle cx="21" cy="15" r="3" fill="#101c2b"/>
+                                    </g>
+
+                                    <rect x="<?= $posicaoX - 45 ?>" y="<?= $posicaoY - 30 ?>" width="90" height="16" rx="4" fill="#0b1420" stroke="#ff7b90" stroke-width="1"/>
+                                    <text x="<?= $posicaoX ?>" y="<?= $posicaoY - 19 ?>" font-family="'Poppins', sans-serif" font-size="8.5" font-weight="bold" fill="#ffffff" text-anchor="middle">
+                                        <?= ($status === 'Entregue') ? '✔ ENTREGUE' : '🚛 EM TRÂNSITO' ?>
                                     </text>
                                 </svg>
+
+                                <!-- Rodapé de Informações Cartográficas -->
+                                <div style="background: #0b1420; padding: 10px 18px; border-top: 1px solid #1e334a; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; color: #a4c2db;">
+                                    <div>
+                                        <i class="fa-solid fa-route" style="color: #ff7b90;"></i>
+                                        <strong>Trajeto:</strong> Ateliê Amora (Porto Velho/RO) &rarr; <?= sanitizar($p['cidade_entrega'] ?? 'Destino do Comprador') ?>
+                                    </div>
+                                    <div>
+                                        <strong>Transportadora:</strong> <?= sanitizar($p['transportadora'] ?? 'LogiAmora Transportes / Sedex') ?> &bull; Código: <span style="font-family: monospace; color: #fff; background: #1b3047; padding: 2px 6px; border-radius: 4px;"><?= $codigoRastreio ?></span>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Linha do Tempo Passo a Passo das 5 Etapas -->

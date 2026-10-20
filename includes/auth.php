@@ -18,7 +18,61 @@ function usuarioLogado(): bool {
  * Retorna os dados do usuário autenticado.
  */
 function getUsuarioLogado(): ?array {
-    return $_SESSION['usuario'] ?? null;
+    if (isset($_SESSION['usuario']) && is_array($_SESSION['usuario'])) {
+        if (empty($_SESSION['usuario']['codigo_cliente']) && !empty($_SESSION['usuario']['id'])) {
+            $_SESSION['usuario']['codigo_cliente'] = sprintf('CLI-%05d', (int)$_SESSION['usuario']['id']);
+        }
+        return $_SESSION['usuario'];
+    }
+    return null;
+}
+
+/**
+ * Retorna o código único e padronizado do cliente (#CLI-0000X).
+ * Garante que nenhum cliente seja confundido com outro.
+ */
+function getCodigoCliente(int $id): string {
+    return sprintf('CLI-%05d', $id);
+}
+
+/**
+ * Salva e persiste informações pessoais e de endereço da conta do cliente.
+ * Atualiza no banco de dados e sincroniza com a sessão ativa.
+ */
+function salvarDadosPessoaisCliente(int $usuarioId, array $dados): bool {
+    $db = getDBConnection();
+    $stmt = $db->prepare("UPDATE usuarios SET 
+        telefone = COALESCE(NULLIF(?, ''), telefone),
+        cep = COALESCE(NULLIF(?, ''), cep),
+        logradouro = COALESCE(NULLIF(?, ''), logradouro),
+        numero = COALESCE(NULLIF(?, ''), numero),
+        complemento = COALESCE(?, complemento),
+        bairro = COALESCE(NULLIF(?, ''), bairro),
+        cidade = COALESCE(NULLIF(?, ''), cidade),
+        estado = COALESCE(NULLIF(?, ''), estado)
+        WHERE id = ?");
+
+    $sucesso = $stmt->execute([
+        $dados['telefone'] ?? '',
+        $dados['cep'] ?? '',
+        $dados['logradouro'] ?? '',
+        $dados['numero'] ?? '',
+        $dados['complemento'] ?? '',
+        $dados['bairro'] ?? '',
+        $dados['cidade'] ?? '',
+        $dados['estado'] ?? '',
+        $usuarioId
+    ]);
+
+    if ($sucesso && isset($_SESSION['usuario']) && (int)$_SESSION['usuario']['id'] === $usuarioId) {
+        foreach (['telefone', 'cep', 'logradouro', 'numero', 'complemento', 'bairro', 'cidade', 'estado'] as $campo) {
+            if (isset($dados[$campo]) && ($dados[$campo] !== '' || $campo === 'complemento')) {
+                $_SESSION['usuario'][$campo] = $dados[$campo];
+            }
+        }
+    }
+
+    return $sucesso;
 }
 
 /**
@@ -58,6 +112,7 @@ function exigirAdmin(): void {
 
 /**
  * Realiza o login do usuário validando com password_verify (RNF01, RF02).
+ * Carrega e salva na sessão todas as informações pessoais cadastradas da conta.
  */
 function loginUsuario(string $email, string $senha): array {
     $email = trim(filter_var($email, FILTER_SANITIZE_EMAIL));
@@ -78,6 +133,7 @@ function loginUsuario(string $email, string $senha): array {
 
         $_SESSION['usuario'] = [
             'id' => (int)$usuario['id'],
+            'codigo_cliente' => sprintf('CLI-%05d', (int)$usuario['id']),
             'nome' => $usuario['nome'],
             'email' => $usuario['email'],
             'tipo_usuario' => $usuario['tipo_usuario'],
@@ -103,8 +159,14 @@ function loginUsuario(string $email, string $senha): array {
 }
 
 /**
- * Cadastra um novo cliente com dados completos:
- * Nome completo, Data de Nascimento, Endereço completo, Telefone e Senha Bcrypt
+ * Cadastra um novo cliente com dados pessoais e endereço:
+ * - O e-mail DEVE OBRIGATORIAMENTE terminar com @gmail.com
+ * - Telefone com limite de números/caracteres (máx 15 caracteres / 11 dígitos)
+ * - CEP com limite de números/caracteres (máx 9 caracteres / 8 dígitos)
+ * - Estado com limite de letras (máx 2 caracteres, ex.: RO)
+ * - Senha com limite de caracteres (máx 32 caracteres, aceita qualquer senha escolhida)
+ * - Endereço aceita qualquer formato informado pelo cliente
+ * - Gera o Código Único do Cliente (#CLI-0000X) para que nenhum cliente seja confundido
  */
 function cadastrarCliente(
     string $nome,
@@ -131,31 +193,55 @@ function cadastrarCliente(
     $complemento = trim($complemento);
     $bairro = trim($bairro);
     $cidade = trim($cidade);
-    $estado = trim($estado);
+    $estado = strtoupper(trim($estado));
 
-    // Validações obrigatórias
+    // Validações obrigatórias básicas
     if (empty($nome) || empty($email) || empty($senha)) {
         return ['sucesso' => false, 'mensagem' => 'Nome completo, e-mail e senha são campos obrigatórios.'];
     }
 
-    if (empty($dataNascimento)) {
-        return ['sucesso' => false, 'mensagem' => 'Por favor, informe sua data de nascimento.'];
-    }
-
-    if (empty($cep) || empty($logradouro) || empty($numero) || empty($bairro) || empty($cidade) || empty($estado)) {
-        return ['sucesso' => false, 'mensagem' => 'Por favor, preencha todos os campos do seu endereço completo.'];
+    // Regra estrita de e-mail: deve obrigatoriamente terminar com @gmail.com
+    if (!str_ends_with(strtolower($email), '@gmail.com')) {
+        return ['sucesso' => false, 'mensagem' => 'O e-mail cadastrado deve terminar obrigatoriamente com @gmail.com (exemplo: seu.nome@gmail.com).'];
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return ['sucesso' => false, 'mensagem' => 'Informe um endereço de e-mail válido.'];
     }
 
-    if (strlen($senha) < 6) {
-        return ['sucesso' => false, 'mensagem' => 'A senha deve conter no mínimo 6 caracteres.'];
+    // Limite de senha: até 32 caracteres (qualquer senha válida)
+    if (strlen($senha) > 32) {
+        return ['sucesso' => false, 'mensagem' => 'A senha deve conter no máximo 32 caracteres.'];
     }
 
     if ($senha !== $confirmarSenha) {
-        return ['sucesso' => false, 'mensagem' => 'As senhas não coincidem.'];
+        return ['sucesso' => false, 'mensagem' => 'A confirmação de senha não confere com a senha digitada.'];
+    }
+
+    // Limite de telefone: máximo 15 caracteres / 11 dígitos
+    if (!empty($telefone)) {
+        $somenteDigitosTel = preg_replace('/\D/', '', $telefone);
+        if (strlen($somenteDigitosTel) > 11 || strlen($telefone) > 15) {
+            return ['sucesso' => false, 'mensagem' => 'O telefone deve conter no máximo 11 dígitos ou 15 caracteres (ex.: (69) 99999-9999).'];
+        }
+    }
+
+    // Limite de CEP: máximo 9 caracteres / 8 dígitos
+    if (!empty($cep)) {
+        $somenteDigitosCep = preg_replace('/\D/', '', $cep);
+        if (strlen($somenteDigitosCep) > 8 || strlen($cep) > 9) {
+            return ['sucesso' => false, 'mensagem' => 'O CEP deve conter no máximo 8 números ou 9 caracteres (ex.: 76820-000).'];
+        }
+    }
+
+    // Limite de Estado (UF): máximo 2 caracteres
+    if (!empty($estado) && strlen($estado) > 2) {
+        return ['sucesso' => false, 'mensagem' => 'O estado (UF) deve ter no máximo 2 letras (ex.: RO, SP, RJ).'];
+    }
+
+    // Endereço flexível: aceita qualquer preenchimento do cliente
+    if (empty($logradouro) && empty($cidade)) {
+        $logradouro = 'Endereço informado pelo cliente';
     }
 
     $db = getDBConnection();
@@ -179,11 +265,13 @@ function cadastrarCliente(
     ]);
 
     $novoId = (int)$db->lastInsertId();
+    $codigoCliente = sprintf('CLI-%05d', $novoId);
 
     return [
         'sucesso' => true,
-        'mensagem' => 'Cadastro realizado com sucesso! Seja bem-vindo(a) ao Ateliê Amora Artesanal.',
-        'usuario_id' => $novoId
+        'mensagem' => "Cadastro realizado com sucesso! Seu código exclusivo de cliente é #{$codigoCliente}.",
+        'usuario_id' => $novoId,
+        'codigo_cliente' => $codigoCliente
     ];
 }
 
