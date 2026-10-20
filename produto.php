@@ -1,6 +1,6 @@
 <?php
 /**
- * Detalhes do Produto e Personalização (UC03, RF03, RF05, RF06)
+ * Detalhes do Produto, Personalização e Avaliações de Clientes (UC03, RF03, RF05, RF06)
  */
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/functions.php';
@@ -20,6 +20,11 @@ if (!$produto) {
     header('Location: ' . BASE_URL . '/produtos.php');
     exit;
 }
+
+// Buscar avaliações deste produto
+$stmtAval = $db->prepare("SELECT * FROM avaliacoes WHERE produto_id = ? ORDER BY id DESC");
+$stmtAval->execute([$produtoId]);
+$avaliacoes = $stmtAval->fetchAll();
 
 // Processar inclusão no carrinho via POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -60,7 +65,8 @@ require_once __DIR__ . '/includes/header.php';
         <span><?= sanitizar($produto['nome']) ?></span>
     </div>
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; background: var(--cor-branco); padding: 36px; border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave);">
+    <!-- Card Principal do Produto -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; background: var(--cor-branco); padding: 36px; border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave); margin-bottom: 40px;">
         <!-- Imagem do Produto -->
         <div style="background: var(--cor-rosa-claro); border-radius: var(--raio-borda); display: flex; align-items: center; justify-content: center; padding: 30px; position: relative;">
             <span class="card-badge" style="top: 20px; left: 20px; font-size: 0.85rem; padding: 6px 14px;">
@@ -99,11 +105,11 @@ require_once __DIR__ . '/includes/header.php';
                                 <i class="fa-solid fa-wand-magic-sparkles" style="color: var(--cor-rosa-queimado);"></i> 
                                 <strong>Personalize este produto (Opcional):</strong>
                             </span>
-                            <span id="personalizacao-count" style="font-size: 0.78rem; color: var(--cor-marrom-claro);">0 / 250 caracteres</span>
+                            <span style="font-size: 0.78rem; color: var(--cor-marrom-claro);">Até 250 caracteres</span>
                         </label>
                         <textarea name="personalizacao" id="personalizacao" class="form-control" maxlength="250" rows="3" placeholder="Ex.: Nome para a etiqueta da vela ('Larissa'), cor favorita do laço, ou dedicatória especial para presente..."></textarea>
                         <small style="color: var(--cor-marrom-claro); display: block; margin-top: 6px; font-size: 0.8rem;">
-                            ✨ Nós personalizaremos seu item com todo o carinho antes do envio!
+                            ✨ Nós personalizaremos seu item artesanalmente antes do despacho!
                         </small>
                     </div>
 
@@ -124,17 +130,73 @@ require_once __DIR__ . '/includes/header.php';
             <?php else: ?>
                 <div class="alert alert-warning">
                     <i class="fa-solid fa-triangle-exclamation"></i>
-                    <span>Produto esgotado no momento. Fale conosco pelo formulário de contato para encomendar sob medida!</span>
+                    <span>Produto esgotado no momento. <a href="<?= BASE_URL ?>/contato.php"><strong>Fale conosco para encomendar sob medida!</strong></a></span>
                 </div>
             <?php endif; ?>
 
             <!-- Destaques Adicionais -->
-            <div style="margin-top: 30px; display: flex; gap: 20px; font-size: 0.85rem; color: var(--cor-marrom-claro);">
-                <div><i class="fa-solid fa-truck-fast" style="color: var(--cor-rosa-queimado);"></i> Envio seguro</div>
-                <div><i class="fa-solid fa-shield-halved" style="color: var(--cor-rosa-queimado);"></i> Compra 100% protegida</div>
+            <div style="margin-top: 30px; display: flex; gap: 20px; font-size: 0.85rem; color: var(--cor-marrom-claro); flex-wrap: wrap;">
+                <div><i class="fa-solid fa-truck-fast" style="color: var(--cor-rosa-queimado);"></i> Envio com Rastreamento em Tempo Real</div>
+                <div><i class="fa-solid fa-shield-halved" style="color: var(--cor-sucesso);"></i> Reembolso garantido em caso de atraso</div>
                 <div><i class="fa-solid fa-gift" style="color: var(--cor-rosa-queimado);"></i> Embalagem pronta para presente</div>
             </div>
         </div>
+    </div>
+
+    <!-- Avaliações dos Clientes Deste Produto -->
+    <div style="background: var(--cor-branco); padding: 36px; border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <h3 style="font-size: 1.5rem; color: var(--cor-marrom-suave); margin-bottom: 4px;">
+                    Avaliações de Quem Comprou
+                </h3>
+                <p style="color: var(--cor-marrom-claro); font-size: 0.9rem;">Opiniões reais e verificação de satisfação</p>
+            </div>
+            <div>
+                <span class="badge-status entregue" style="font-size: 0.85rem; padding: 6px 14px;">
+                    <i class="fa-solid fa-thumbs-up"></i> Clientes recomendam a Amora para amigos
+                </span>
+            </div>
+        </div>
+
+        <?php if (empty($avaliacoes)): ?>
+            <div style="text-align: center; padding: 40px 20px; background: #fffcf9; border-radius: var(--raio-borda); border: 1px dashed var(--cor-borda);">
+                <div style="font-size: 2rem; color: #f59e0b; margin-bottom: 8px;">★★★★★</div>
+                <h4 style="color: var(--cor-marrom-suave); margin-bottom: 4px;">Seja o primeiro a avaliar este produto!</h4>
+                <p style="font-size: 0.88rem; color: var(--cor-marrom-claro);">Compre agora e compartilhe sua experiência com outros apreciadores de aromas e artesanato.</p>
+            </div>
+        <?php else: ?>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+                <?php foreach ($avaliacoes as $av): ?>
+                    <div style="background: #fffbf9; padding: 20px; border-radius: var(--raio-borda-sm); border: 1px solid var(--cor-borda);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                            <div>
+                                <span style="color: #f59e0b; font-size: 1.1rem;">
+                                    <?= str_repeat('★', $av['estrelas']) ?><?= str_repeat('☆', 5 - $av['estrelas']) ?>
+                                </span>
+                                <strong style="margin-left: 8px; color: var(--cor-marrom-suave); font-size: 0.95rem;"><?= sanitizar($av['nome_cliente']) ?></strong>
+                                <span style="font-size: 0.75rem; color: var(--cor-sucesso); margin-left: 6px;">
+                                    <i class="fa-solid fa-circle-check"></i> Compra Verificada
+                                </span>
+                            </div>
+
+                            <?php if ($av['indicaria_amigo'] === 'sim'): ?>
+                                <span style="font-size: 0.75rem; background: var(--cor-rosa-claro); color: var(--cor-rosa-queimado); padding: 3px 10px; border-radius: 6px; font-weight: 600;">
+                                    <i class="fa-solid fa-heart"></i> Indicaria para um amigo
+                                </span>
+                            <?php endif; ?>
+                        </div>
+
+                        <p style="color: var(--cor-marrom-texto); font-size: 0.92rem; line-height: 1.6; margin: 0;">
+                            "<?= sanitizar($av['comentario']) ?>"
+                        </p>
+                        <div style="font-size: 0.72rem; color: var(--cor-marrom-claro); margin-top: 8px;">
+                            Avaliado em <?= date('d/m/Y', strtotime($av['data_avaliacao'])) ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
 

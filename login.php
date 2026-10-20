@@ -1,7 +1,7 @@
 <?php
 /**
  * Autenticação de Usuários (RF02, RNF01, RNF02, CA02)
- * Suporta Login de Clientes e Administradores
+ * Tela limpa e profissional para Clientes e Administrador
  */
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/includes/auth.php';
@@ -11,14 +11,19 @@ if (usuarioLogado()) {
     if (isAdmin()) {
         header('Location: ' . BASE_URL . '/admin/index.php');
     } else {
-        header('Location: ' . BASE_URL . '/index.php');
+        $redirect = $_GET['redirect'] ?? '';
+        if ($redirect === 'checkout') {
+            header('Location: ' . BASE_URL . '/checkout.php');
+        } else {
+            header('Location: ' . BASE_URL . '/index.php');
+        }
     }
     exit;
 }
 
 $erro = '';
 $email = '';
-$redirect = $_GET['redirect'] ?? '';
+$redirect = $_GET['redirect'] ?? ($_POST['redirect'] ?? '');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
@@ -55,12 +60,19 @@ $pageTitle = 'Entrar na Conta';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<div class="container">
+<div class="container" style="margin: 40px auto 60px;">
     <div class="auth-wrapper">
         <div class="auth-header">
             <h2>Acessar Conta</h2>
-            <p>Entre com seu e-mail e senha para continuar</p>
+            <p>Entre com seu e-mail e senha cadastrados para continuar</p>
         </div>
+
+        <?php if (!empty($redirect) && $redirect === 'checkout'): ?>
+            <div class="alert alert-warning" style="font-size: 0.88rem;">
+                <i class="fa-solid fa-lock"></i>
+                <span>Para finalizar seu pedido com segurança e entrega garantida, faça seu login ou cadastre-se abaixo.</span>
+            </div>
+        <?php endif; ?>
 
         <?php if (!empty($erro)): ?>
             <div class="alert alert-danger">
@@ -83,19 +95,13 @@ require_once __DIR__ . '/includes/header.php';
                 <input type="password" name="senha" id="senha" class="form-control" placeholder="••••••••" required>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 10px;">
+            <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 14px;">
                 <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
             </button>
         </form>
 
-        <div style="margin-top: 20px; padding: 12px; background: var(--cor-rosa-claro); border-radius: var(--raio-borda-sm); font-size: 0.82rem; color: var(--cor-marrom-suave);">
-            <strong>Contas de demonstração:</strong><br>
-            • <em>Administrador:</em> admin@amora.com | <em>Senha:</em> admin123<br>
-            • <em>Cliente:</em> cliente@exemplo.com | <em>Senha:</em> cliente123
-        </div>
-
-        <div class="auth-footer">
-            <p>Ainda não tem conta? <a href="<?= BASE_URL ?>/cadastro.php"><strong>Cadastre-se gratuitamente</strong></a></p>
+        <div class="auth-footer" style="margin-top: 28px; border-top: 1px solid var(--cor-borda); padding-top: 20px;">
+            <p>Ainda não possui conta? <a href="<?= BASE_URL ?>/cadastro.php<?= !empty($redirect) ? '?redirect=' . urlencode($redirect) : '' ?>"><strong>Cadastre-se com entrega completa</strong></a></p>
         </div>
     </div>
 </div>

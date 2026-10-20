@@ -26,10 +26,11 @@ $paginaAtual = basename($_SERVER['PHP_SELF'] ?? 'index.php');
 </head>
 <body>
 
-    <!-- Barra de Notificação Superior -->
+    <!-- Barra de Notificação Superior com Contato Oficial -->
     <div class="top-bar">
-        <div class="container">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
             <span>✨ Produtos feitos à mão com afeto e exclusividade | Encomendas personalizadas com carinho</span>
+            <span><i class="fa-brands fa-whatsapp"></i> Atendimento WhatsApp: <strong>(69) 98425-6710</strong></span>
         </div>
     </div>
 
@@ -51,10 +52,9 @@ $paginaAtual = basename($_SERVER['PHP_SELF'] ?? 'index.php');
             <ul class="nav-menu">
                 <li><a href="<?= BASE_URL ?>/index.php" class="nav-link <?= $paginaAtual === 'index.php' ? 'active' : '' ?>">Início</a></li>
                 <li><a href="<?= BASE_URL ?>/produtos.php" class="nav-link <?= $paginaAtual === 'produtos.php' ? 'active' : '' ?>">Produtos</a></li>
-                <li><a href="<?= BASE_URL ?>/contato.php" class="nav-link <?= $paginaAtual === 'contato.php' ? 'active' : '' ?>">Contato</a></li>
-                <?php if (usuarioLogado()): ?>
-                    <li><a href="<?= BASE_URL ?>/pedidos.php" class="nav-link <?= $paginaAtual === 'pedidos.php' ? 'active' : '' ?>">Meus Pedidos</a></li>
-                <?php endif; ?>
+                <li><a href="<?= BASE_URL ?>/contato.php" class="nav-link <?= $paginaAtual === 'contato.php' ? 'active' : '' ?>">Fale Conosco</a></li>
+                <li><a href="<?= BASE_URL ?>/pedidos.php" class="nav-link <?= $paginaAtual === 'pedidos.php' ? 'active' : '' ?>">Rastrear Pedido</a></li>
+                <li><a href="<?= BASE_URL ?>/chat.php" class="nav-link <?= $paginaAtual === 'chat.php' ? 'active' : '' ?>"><i class="fa-regular fa-comments"></i> Chat Ateliê</a></li>
                 <?php if (isAdmin()): ?>
                     <li><a href="<?= BASE_URL ?>/admin/index.php" class="nav-link" style="color: var(--cor-rosa-queimado); font-weight: 700;"><i class="fa-solid fa-gauge-high"></i> Painel Admin</a></li>
                 <?php endif; ?>

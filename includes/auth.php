@@ -1,7 +1,7 @@
 <?php
 /**
  * Módulo de Autenticação e Controle de Sessão
- * Atende aos requisitos RF01, RF02, RNF01 e RNF02
+ * Atende aos requisitos RF01, RF02, RNF01, RNF02 e Cadastro Completo
  */
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/database.php';
@@ -25,7 +25,7 @@ function getUsuarioLogado(): ?array {
  * Verifica se o usuário autenticado é administrador.
  */
 function isAdmin(): bool {
-    return usuarioLogado() && ($_SESSION['usuario']['tipo_usuario'] === 'admin');
+    return usuarioLogado() && (($_SESSION['usuario']['tipo_usuario'] ?? '') === 'admin');
 }
 
 /**
@@ -33,7 +33,7 @@ function isAdmin(): bool {
  */
 function exigirLogin(): void {
     if (!usuarioLogado()) {
-        setFlash('warning', 'Por favor, faça login para continuar.');
+        setFlash('warning', 'Para continuar e finalizar seu pedido, você precisa estar cadastrado e conectado.');
         header('Location: ' . BASE_URL . '/login.php');
         exit;
     }
@@ -66,7 +66,7 @@ function loginUsuario(string $email, string $senha): array {
     }
 
     $db = getDBConnection();
-    $stmt = $db->prepare("SELECT id, nome, email, senha_hash, tipo_usuario FROM usuarios WHERE email = ?");
+    $stmt = $db->prepare("SELECT * FROM usuarios WHERE email = ?");
     $stmt->execute([$email]);
     $usuario = $stmt->fetch();
 
@@ -80,7 +80,16 @@ function loginUsuario(string $email, string $senha): array {
             'id' => (int)$usuario['id'],
             'nome' => $usuario['nome'],
             'email' => $usuario['email'],
-            'tipo_usuario' => $usuario['tipo_usuario']
+            'tipo_usuario' => $usuario['tipo_usuario'],
+            'data_nascimento' => $usuario['data_nascimento'] ?? '',
+            'telefone' => $usuario['telefone'] ?? '',
+            'cep' => $usuario['cep'] ?? '',
+            'logradouro' => $usuario['logradouro'] ?? '',
+            'numero' => $usuario['numero'] ?? '',
+            'complemento' => $usuario['complemento'] ?? '',
+            'bairro' => $usuario['bairro'] ?? '',
+            'cidade' => $usuario['cidade'] ?? '',
+            'estado' => $usuario['estado'] ?? ''
         ];
 
         return [
@@ -94,14 +103,47 @@ function loginUsuario(string $email, string $senha): array {
 }
 
 /**
- * Cadastra um novo cliente com senha protegida por Bcrypt (RF01, RNF01, RNF02).
+ * Cadastra um novo cliente com dados completos:
+ * Nome completo, Data de Nascimento, Endereço completo, Telefone e Senha Bcrypt
  */
-function cadastrarCliente(string $nome, string $email, string $senha, string $confirmarSenha): array {
+function cadastrarCliente(
+    string $nome,
+    string $email,
+    string $senha,
+    string $confirmarSenha,
+    string $dataNascimento = '',
+    string $telefone = '',
+    string $cep = '',
+    string $logradouro = '',
+    string $numero = '',
+    string $complemento = '',
+    string $bairro = '',
+    string $cidade = '',
+    string $estado = ''
+): array {
     $nome = trim($nome);
     $email = trim(filter_var($email, FILTER_SANITIZE_EMAIL));
+    $dataNascimento = trim($dataNascimento);
+    $telefone = trim($telefone);
+    $cep = trim($cep);
+    $logradouro = trim($logradouro);
+    $numero = trim($numero);
+    $complemento = trim($complemento);
+    $bairro = trim($bairro);
+    $cidade = trim($cidade);
+    $estado = trim($estado);
 
+    // Validações obrigatórias
     if (empty($nome) || empty($email) || empty($senha)) {
-        return ['sucesso' => false, 'mensagem' => 'Todos os campos são obrigatórios.'];
+        return ['sucesso' => false, 'mensagem' => 'Nome completo, e-mail e senha são campos obrigatórios.'];
+    }
+
+    if (empty($dataNascimento)) {
+        return ['sucesso' => false, 'mensagem' => 'Por favor, informe sua data de nascimento.'];
+    }
+
+    if (empty($cep) || empty($logradouro) || empty($numero) || empty($bairro) || empty($cidade) || empty($estado)) {
+        return ['sucesso' => false, 'mensagem' => 'Por favor, preencha todos os campos do seu endereço completo.'];
     }
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -128,14 +170,19 @@ function cadastrarCliente(string $nome, string $email, string $senha, string $co
     // Gerar hash seguro Bcrypt (RNF01)
     $senhaHash = password_hash($senha, PASSWORD_BCRYPT);
 
-    $stmtInsert = $db->prepare("INSERT INTO usuarios (nome, email, senha_hash, tipo_usuario) VALUES (?, ?, ?, 'cliente')");
-    $stmtInsert->execute([$nome, $email, $senhaHash]);
+    $stmtInsert = $db->prepare("INSERT INTO usuarios 
+        (nome, email, senha_hash, tipo_usuario, data_nascimento, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado) 
+        VALUES (?, ?, ?, 'cliente', ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    
+    $stmtInsert->execute([
+        $nome, $email, $senhaHash, $dataNascimento, $telefone, $cep, $logradouro, $numero, $complemento, $bairro, $cidade, $estado
+    ]);
 
     $novoId = (int)$db->lastInsertId();
 
     return [
         'sucesso' => true,
-        'mensagem' => 'Cadastro realizado com sucesso! Você já pode entrar.',
+        'mensagem' => 'Cadastro realizado com sucesso! Seja bem-vindo(a) ao Ateliê Amora Artesanal.',
         'usuario_id' => $novoId
     ];
 }
@@ -146,6 +193,5 @@ function cadastrarCliente(string $nome, string $email, string $senha, string $co
 function fazerLogout(): void {
     $_SESSION['usuario'] = null;
     unset($_SESSION['usuario']);
-    // Opcional: manter o carrinho se desejado ou limpar
     session_destroy();
 }

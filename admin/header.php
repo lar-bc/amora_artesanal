@@ -41,7 +41,8 @@ $paginaAdmin = basename($_SERVER['PHP_SELF'] ?? 'index.php');
                 <li><a href="<?= BASE_URL ?>/admin/index.php" class="nav-link <?= $paginaAdmin === 'index.php' ? 'active' : '' ?>"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
                 <li><a href="<?= BASE_URL ?>/admin/produtos.php" class="nav-link <?= $paginaAdmin === 'produtos.php' || $paginaAdmin === 'produto_form.php' ? 'active' : '' ?>"><i class="fa-solid fa-boxes-stacked"></i> Produtos</a></li>
                 <li><a href="<?= BASE_URL ?>/admin/pedidos.php" class="nav-link <?= $paginaAdmin === 'pedidos.php' ? 'active' : '' ?>"><i class="fa-solid fa-bag-shopping"></i> Pedidos</a></li>
-                <li><a href="<?= BASE_URL ?>/admin/mensagens.php" class="nav-link <?= $paginaAdmin === 'mensagens.php' ? 'active' : '' ?>"><i class="fa-regular fa-envelope"></i> Mensagens</a></li>
+                <li><a href="<?= BASE_URL ?>/admin/chat.php" class="nav-link <?= $paginaAdmin === 'chat.php' ? 'active' : '' ?>"><i class="fa-regular fa-comments"></i> Chat Clientes</a></li>
+                <li><a href="<?= BASE_URL ?>/admin/mensagens.php" class="nav-link <?= $paginaAdmin === 'mensagens.php' ? 'active' : '' ?>"><i class="fa-regular fa-envelope"></i> Contatos</a></li>
             </ul>
 
             <div class="nav-actions">
