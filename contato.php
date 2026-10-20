@@ -20,7 +20,7 @@ if ($usuario) {
     $telefone = $usuario['telefone'] ?? '';
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
     if (!validarCsrfToken($token)) {
         $erro = 'Sessão expirada. Por favor, tente novamente.';
