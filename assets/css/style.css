@@ -976,3 +976,337 @@ textarea.form-control {
         grid-template-columns: 1fr;
     }
 }
+
+/* ========================================================
+   Mapa Interativo Estilo Google Maps - Amora Artesanal
+   ======================================================== */
+.mapa-interativo-wrapper {
+    background: #fff;
+    border-radius: var(--raio-borda-lg);
+    border: 2px solid var(--cor-borda);
+    box-shadow: var(--sombra-media);
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 24px;
+    transition: var(--transicao);
+}
+
+.mapa-interativo-wrapper:hover {
+    border-color: var(--cor-rosa-medio);
+}
+
+.mapa-top-bar {
+    background: linear-gradient(135deg, #fffaf5 0%, #fdeeed 100%);
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--cor-borda);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.mapa-status-gps {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--cor-marrom-suave);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 5px 12px;
+    border-radius: var(--raio-pilula);
+    border: 1px solid var(--cor-borda);
+}
+
+.gps-dot-pulse {
+    width: 9px;
+    height: 9px;
+    background: #4e8d53;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 0 0 rgba(78, 141, 83, 0.7);
+    animation: gpsPulse 2s infinite;
+}
+
+@keyframes gpsPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(78, 141, 83, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 8px rgba(78, 141, 83, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(78, 141, 83, 0);
+    }
+}
+
+.mapa-camadas-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px;
+    border-radius: var(--raio-pilula);
+    border: 1px solid var(--cor-borda);
+}
+
+.btn-camada-mapa {
+    border: none;
+    background: transparent;
+    padding: 5px 12px;
+    border-radius: var(--raio-pilula);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--cor-marrom-claro);
+    cursor: pointer;
+    transition: var(--transicao);
+    font-family: var(--fonte-corpo);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-camada-mapa:hover {
+    color: var(--cor-rosa-queimado);
+    background: #fdf5f5;
+}
+
+.btn-camada-mapa.active {
+    background: var(--cor-rosa-queimado);
+    color: #ffffff;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(200, 109, 126, 0.35);
+}
+
+.mapa-acoes-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-mapa-acao {
+    border: 1px solid var(--cor-borda);
+    background: #ffffff;
+    color: var(--cor-marrom-suave);
+    padding: 6px 12px;
+    border-radius: var(--raio-borda-sm);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transicao);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--fonte-corpo);
+}
+
+.btn-mapa-acao:hover {
+    background: var(--cor-rosa-claro);
+    color: var(--cor-rosa-queimado);
+    border-color: var(--cor-rosa-medio);
+}
+
+.mapa-leaflet-canvas {
+    width: 100%;
+    height: 480px;
+    z-index: 1;
+    background: #e8ecf1;
+}
+
+@media (max-width: 768px) {
+    .mapa-leaflet-canvas {
+        height: 380px;
+    }
+    .mapa-top-bar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+/* Marcadores Customizados do Mapa */
+.amora-map-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.amora-pin {
+    width: 38px;
+    height: 38px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    border: 2px solid #ffffff;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.amora-pin:hover {
+    transform: rotate(-45deg) scale(1.12);
+}
+
+.amora-pin i {
+    transform: rotate(45deg);
+    font-size: 16px;
+    color: #ffffff;
+}
+
+.amora-pin.origem {
+    background: linear-gradient(135deg, #c86d7e 0%, #8c2a41 100%);
+}
+
+.amora-pin.destino {
+    background: linear-gradient(135deg, #4e8d53 0%, #29572c 100%);
+}
+
+.amora-pin-label {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--cor-borda);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--cor-marrom-suave);
+    margin-top: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+}
+
+/* Marcador Veículo LogiAmora com Radar Pulsante */
+.amora-veiculo-marker {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.veiculo-card-icon {
+    width: 44px;
+    height: 44px;
+    background: #ffffff;
+    border: 2px solid var(--cor-rosa-queimado);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--cor-rosa-queimado);
+    font-size: 1.25rem;
+    box-shadow: 0 4px 14px rgba(200, 109, 126, 0.4);
+    z-index: 2;
+    position: relative;
+}
+
+.veiculo-radar-ring {
+    position: absolute;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--cor-rosa-queimado);
+    opacity: 0.8;
+    animation: radarExpand 2.2s infinite ease-out;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.veiculo-radar-ring.ring-2 {
+    animation-delay: 1.1s;
+}
+
+@keyframes radarExpand {
+    0% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2.8);
+        opacity: 0;
+    }
+}
+
+.veiculo-tag-status {
+    position: absolute;
+    top: -24px;
+    background: #2b1812;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    border: 1px solid var(--cor-rosa-queimado);
+    letter-spacing: 0.4px;
+}
+
+/* Popups Estilizados no Tema Amora */
+.leaflet-popup-content-wrapper {
+    background: #fffaf5 !important;
+    border-radius: 12px !important;
+    border: 2px solid var(--cor-rosa-medio) !important;
+    box-shadow: var(--sombra-media) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+}
+
+.leaflet-popup-content {
+    margin: 0 !important;
+    line-height: 1.4 !important;
+    font-family: var(--fonte-corpo) !important;
+}
+
+.leaflet-popup-tip {
+    background: #fffaf5 !important;
+    border: 2px solid var(--cor-rosa-medio) !important;
+}
+
+.amora-popup-box {
+    min-width: 240px;
+    max-width: 320px;
+}
+
+.amora-popup-header {
+    background: var(--cor-rosa-queimado);
+    color: #ffffff;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--fonte-titulo);
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.amora-popup-body {
+    padding: 12px 14px;
+    color: var(--cor-marrom-texto);
+    font-size: 0.82rem;
+}
+
+.amora-popup-body p {
+    margin-bottom: 6px;
+}
+
+.amora-popup-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.amora-popup-footer {
+    padding: 8px 14px 12px;
+    border-top: 1px solid var(--cor-borda);
+    background: #fff;
+    font-size: 0.75rem;
+    color: var(--cor-marrom-claro);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

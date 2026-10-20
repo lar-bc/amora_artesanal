@@ -23,6 +23,8 @@ $paginaAtual = basename($_SERVER['PHP_SELF'] ?? 'index.php');
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
     <!-- FontAwesome para ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS para Mapas Interativos Estilo Google Maps -->
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/leaflet.css">
 </head>
 <body>
 

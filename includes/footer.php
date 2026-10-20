@@ -62,5 +62,9 @@
             </div>
         </div>
     </footer>
+
+    <!-- Scripts de Interatividade e Mapas (Leaflet Estilo Google Maps) -->
+    <script src="<?= BASE_URL ?>/assets/js/leaflet.js"></script>
+    <script src="<?= BASE_URL ?>/assets/js/mapa-interativo.js"></script>
 </body>
 </html>

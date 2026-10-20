@@ -191,6 +191,85 @@ require_once __DIR__ . '/includes/header.php';
         </div>
     </div>
 
+    <!-- Mapa Interativo do Ateliê Amora Artesanal (Estilo Google Maps) -->
+    <div style="margin-bottom: 40px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h3 style="font-size: 1.35rem; color: var(--cor-marrom-suave); margin-bottom: 4px;">
+                    <i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Nosso Ateliê & Ponto de Retirada
+                </h3>
+                <p style="color: var(--cor-marrom-claro); font-size: 0.88rem; margin: 0;">
+                    Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-408)
+                </p>
+            </div>
+            <a href="https://maps.google.com/?q=-8.76194,-63.90389" target="_blank" class="btn btn-secondary" style="font-size: 0.82rem; padding: 6px 14px;">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Abrir no Google Maps Oficial
+            </a>
+        </div>
+
+        <div class="mapa-interativo-wrapper">
+            <div class="mapa-top-bar">
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <span class="mapa-status-gps">
+                        <span class="gps-dot-pulse"></span>
+                        <span>ATELIÊ ABERTO &bull; Atendimento Presencial e Retiradas</span>
+                    </span>
+                    <span style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
+                        Seg a Sex: 08h às 18h &bull; Sáb: 08h às 13h
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                    <div class="mapa-camadas-group">
+                        <button type="button" class="btn-camada-mapa active" data-camada="ruas">
+                            <i class="fa-solid fa-map"></i> Google Ruas
+                        </button>
+                        <button type="button" class="btn-camada-mapa" data-camada="satelite">
+                            <i class="fa-solid fa-satellite"></i> Satélite
+                        </button>
+                        <button type="button" class="btn-camada-mapa" data-camada="amora">
+                            <i class="fa-solid fa-palette"></i> Amora
+                        </button>
+                    </div>
+
+                    <div class="mapa-acoes-group">
+                        <button type="button" class="btn-mapa-acao btn-mapa-fullscreen" title="Tela cheia">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="mapa_loja_amora" class="mapa-leaflet-canvas" style="height: 380px;"></div>
+
+            <div style="background: #fff; padding: 10px 18px; border-top: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; color: var(--cor-marrom-suave);">
+                <div>
+                    <i class="fa-solid fa-store" style="color: var(--cor-rosa-queimado);"></i>
+                    <strong>Venha nos visitar:</strong> Estacionamento gratuito no local e espaço aconchegante para conhecer nossos aromas e criações botânicas.
+                </div>
+                <div>
+                    <strong>Telefone:</strong> (69) 3219-4500 &bull; <strong>WhatsApp:</strong> (69) 98412-3456
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
+                window.AmoraMapas.init('mapa_loja_amora', {
+                    origem: {
+                        lat: -8.76194,
+                        lng: -63.90389,
+                        nome: 'Ateliê Amora Artesanal',
+                        endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO'
+                    },
+                    tipo: 'loja'
+                });
+            }
+        });
+        </script>
+    </div>
+
     <!-- Seção de Perguntas Frequentes (FAQ de Grandes Sites) -->
     <div style="background: var(--cor-branco); padding: 40px; border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave);">
         <div style="text-align: center; margin-bottom: 32px;">
