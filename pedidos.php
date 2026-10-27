@@ -213,6 +213,14 @@ require_once __DIR__ . '/includes/header.php';
                     $destCodigo = !empty($usuario['codigo_cliente']) ? $usuario['codigo_cliente'] : ('CLI-' . str_pad($usuario['id'], 5, '0', STR_PAD_LEFT));
                     $destNome = !empty($usuario['nome']) ? $usuario['nome'] : 'Cliente Amora';
 
+                    // Se o pedido tiver cidade/estado específicos em seu endereço, usar para a rota
+                    if (!empty($p['endereco_entrega'])) {
+                        if (preg_match('/,\s*([A-Za-zÀ-ÿ\s]+)\/([A-Z]{2})/u', $p['endereco_entrega'], $matches)) {
+                            $destCidade = trim($matches[1]);
+                            $destEstado = trim($matches[2]);
+                        }
+                    }
+
                     $coordsDest = getCoordenadasEntrega($destCidade, $destEstado, $destBairro);
                     $destLat = $coordsDest[0];
                     $destLng = $coordsDest[1];
@@ -228,7 +236,7 @@ require_once __DIR__ . '/includes/header.php';
                     $enderecoFormatado = !empty($p['endereco_entrega']) ? sanitizar($p['endereco_entrega']) : ($cidadeFormatada . '/' . $estadoFormatado);
 
                     // Definir meio de transporte conforme a duração/distância da entrega:
-                    // Curta duração (Urbano em Porto Velho): Drone Express Autônomo LogiAmora
+                    // Curta duração (Urbano em Porto Velho): Drone Express Autônomo LogiAmora (EcoDrone SkyDelivery)
                     // Longa duração (Intermunicipal / Interestadual / Rodovias): Furgão Iveco Daily na Rodovia BR-364
                     $isCurtaDuracao = (mb_strtolower(trim($destCidade)) === 'porto velho' || empty($destCidade));
                     $tipoTransporte = $isCurtaDuracao ? 'drone' : 'rodoviario';
