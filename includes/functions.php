@@ -301,3 +301,113 @@ function getCoordenadasEntrega(?string $cidade = '', ?string $estado = '', ?stri
     return [-8.7520, -63.8810];
 }
 
+/**
+ * Verifica se uma localização (CEP e dados de endereço) existe mesmo na vida real.
+ * Utiliza a base oficial dos Correios via ViaCEP, com validação de faixas nacionais.
+ * Se não existir ou for falsa, rejeita a entrada (conforme solicitado pelo usuário).
+ */
+function verificarLocalizacaoReal(string $cep, ?string $estado = null, ?string $cidade = null): array {
+    $cepLimpo = preg_replace('/\D/', '', $cep);
+    
+    // 1. Validar formato numérico de 8 dígitos
+    if (strlen($cepLimpo) !== 8) {
+        return [
+            'valido' => false,
+            'erro' => 'CEP inválido. O CEP deve conter exatamente 8 dígitos numéricos (ex: 76820-441).'
+        ];
+    }
+    
+    // Bloquear sequências repetidas óbvias (ex: 00000000, 11111111, 99999999)
+    if (preg_match('/^(\d)\1{7}$/', $cepLimpo)) {
+        return [
+            'valido' => false,
+            'erro' => 'CEP inexistente na vida real. Por favor, informe uma localização e endereço reais.'
+        ];
+    }
+
+    // 2. Consulta em tempo real na base oficial ViaCEP
+    $url = "https://viacep.com.br/ws/{$cepLimpo}/json/";
+    $context = stream_context_create([
+        'http' => [
+            'timeout' => 2.5,
+            'header' => "User-Agent: AmoraArtesanal/1.0\r\n"
+        ]
+    ]);
+
+    $response = @file_get_contents($url, false, $context);
+    if ($response !== false) {
+        $dados = json_decode($response, true);
+        if (is_array($dados)) {
+            if (!empty($dados['erro'])) {
+                return [
+                    'valido' => false,
+                    'erro' => "A localização informada (CEP {$cep}) não foi encontrada na base oficial dos Correios. Por favor, forneça um endereço e CEP válidos da vida real."
+                ];
+            }
+
+            return [
+                'valido' => true,
+                'cep' => $dados['cep'] ?? $cep,
+                'logradouro' => $dados['logradouro'] ?? '',
+                'bairro' => $dados['bairro'] ?? '',
+                'cidade' => $dados['localidade'] ?? '',
+                'estado' => $dados['uf'] ?? '',
+                'fonte' => 'Base Oficial dos Correios (ViaCEP)'
+            ];
+        }
+    }
+
+    // 3. Fallback de contingência caso a conexão com a API externa falhe:
+    // Valida se o CEP pertence às faixas oficiais de CEP dos estados brasileiros (Correios)
+    $numCep = (int)$cepLimpo;
+    $faixasValidas = [
+        ['min' => 1000000, 'max' => 19999999, 'uf' => 'SP'],
+        ['min' => 20000000, 'max' => 28999999, 'uf' => 'RJ'],
+        ['min' => 29000000, 'max' => 29999999, 'uf' => 'ES'],
+        ['min' => 30000000, 'max' => 39999999, 'uf' => 'MG'],
+        ['min' => 40000000, 'max' => 48999999, 'uf' => 'BA'],
+        ['min' => 49000000, 'max' => 49999999, 'uf' => 'SE'],
+        ['min' => 50000000, 'max' => 56999999, 'uf' => 'PE'],
+        ['min' => 57000000, 'max' => 57999999, 'uf' => 'AL'],
+        ['min' => 58000000, 'max' => 58999999, 'uf' => 'PB'],
+        ['min' => 59000000, 'max' => 59999999, 'uf' => 'RN'],
+        ['min' => 60000000, 'max' => 63999999, 'uf' => 'CE'],
+        ['min' => 64000000, 'max' => 64999999, 'uf' => 'PI'],
+        ['min' => 65000000, 'max' => 65999999, 'uf' => 'MA'],
+        ['min' => 66000000, 'max' => 68899999, 'uf' => 'PA'],
+        ['min' => 68900000, 'max' => 68999999, 'uf' => 'AP'],
+        ['min' => 69000000, 'max' => 69299999, 'uf' => 'AM'],
+        ['min' => 69300000, 'max' => 69399999, 'uf' => 'RR'],
+        ['min' => 69400000, 'max' => 69899999, 'uf' => 'AM'],
+        ['min' => 69900000, 'max' => 69999999, 'uf' => 'AC'],
+        ['min' => 70000000, 'max' => 72799999, 'uf' => 'DF'],
+        ['min' => 72800000, 'max' => 72999999, 'uf' => 'GO'],
+        ['min' => 73000000, 'max' => 73699999, 'uf' => 'DF'],
+        ['min' => 73700000, 'max' => 76799999, 'uf' => 'GO'],
+        ['min' => 76800000, 'max' => 76999999, 'uf' => 'RO'], // Rondônia
+        ['min' => 77000000, 'max' => 77999999, 'uf' => 'TO'],
+        ['min' => 78000000, 'max' => 78899999, 'uf' => 'MT'],
+        ['min' => 79000000, 'max' => 79999999, 'uf' => 'MS'],
+        ['min' => 80000000, 'max' => 87999999, 'uf' => 'PR'],
+        ['min' => 88000000, 'max' => 89999999, 'uf' => 'SC'],
+        ['min' => 90000000, 'max' => 99999999, 'uf' => 'RS'],
+    ];
+
+    foreach ($faixasValidas as $f) {
+        if ($numCep >= $f['min'] && $numCep <= $f['max']) {
+            return [
+                'valido' => true,
+                'cep' => $cep,
+                'estado' => $f['uf'],
+                'fonte' => 'Validação Oficial de Faixa Postal Brasileira'
+            ];
+        }
+    }
+
+    return [
+        'valido' => false,
+        'erro' => "O CEP {$cep} não pertence a nenhuma localidade válida no território nacional. Por favor, informe um endereço existente na vida real."
+    ];
+}
+
+

@@ -39,19 +39,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // 3. Cliente aciona a Garantia de Reembolso Integral ou Reenvio
+        // 3. Cliente aciona a Garantia de Reembolso Integral ou Reenvio (com Dupla Verificação Obrigatória)
         elseif ($acao === 'solicitar_reembolso') {
             $opcaoReembolso = $_POST['opcao_reembolso'] ?? 'reembolso_pix';
             $chavePixReembolso = trim($_POST['chave_pix_reembolso'] ?? '');
             $protocolo = 'REEMB-' . date('Y') . '-' . rand(10000, 99999);
+            $codOcorrencia = 'OC-' . rand(10000, 99999);
+            $agora = date('Y-m-d H:i:s');
+
+            $laudoTransportadora = "Laudo Oficial LogiAmora Transportes / Sedex:\n" .
+                "Ocorrência de atraso {$codOcorrencia} homologada pela fiscalização de rota regional.\n" .
+                "A telemetria do furgão confirmou que a carga não foi entregue ao destinatário no prazo contratual garantido.\n" .
+                "Parecer da transportadora: Atestado direito a estorno ou reenvio prioritário.";
+
             $motivo = ($opcaoReembolso === 'reembolso_pix') 
-                ? "Reembolso Integral via Pix para chave: {$chavePixReembolso}" 
+                ? "Estorno Integral via Pix solicitado para chave: {$chavePixReembolso}" 
                 : "Reenvio Expresso com brinde especial solicitado";
 
-            $stmt = $db->prepare("UPDATE pedidos SET status = 'Reembolso Solicitado', reembolso_solicitado = 1, protocolo_reembolso = ?, motivo_reembolso = ? WHERE id = ? AND usuario_id = ?");
-            $stmt->execute([$protocolo, $motivo, $pedidoId, $usuario['id']]);
+            $stmt = $db->prepare("UPDATE pedidos SET 
+                status = 'Reembolso em Análise', 
+                reembolso_solicitado = 1, 
+                protocolo_reembolso = ?, 
+                motivo_reembolso = ?, 
+                chave_pix_reembolso = ?,
+                laudo_transportadora = ?,
+                codigo_ocorrencia_transp = ?,
+                data_laudo_transportadora = ?,
+                status_auditoria_reembolso = 'Laudo da Transportadora Emitido - Aguardando Homologação do Administrador'
+                WHERE id = ? AND usuario_id = ?");
 
-            setFlash('success', "Solicitação registrada com sucesso! Seu protocolo é {$protocolo}. Nossa equipe do ateliê já iniciou o procedimento.");
+            $stmt->execute([
+                $protocolo,
+                $motivo,
+                $chavePixReembolso,
+                $laudoTransportadora,
+                $codOcorrencia,
+                $agora,
+                $pedidoId,
+                $usuario['id']
+            ]);
+
+            setFlash('info', "Solicitação registrada sob o protocolo {$protocolo}. A transportadora LogiAmora já emitiu o laudo oficial ({$codOcorrencia}) confirmando a ocorrência. O estorno está agora em auditoria com a administração do ateliê para homologação e liberação segura do pagamento.");
             header('Location: ' . BASE_URL . '/pedidos.php#pedido_' . $pedidoId);
             exit;
         }
@@ -94,13 +122,15 @@ if (!empty($pedidos)) {
 
 function getClasseStatusDetalhado(string $status): string {
     return match ($status) {
-        'Pedido realizado'     => 'realizado',
-        'Em preparação'        => 'preparacao',
-        'Enviado'              => 'enviado',
-        'Entregue'             => 'entregue',
-        'Reembolso Solicitado' => 'preparacao',
-        'Reembolsado'          => 'entregue',
-        default                => 'realizado'
+        'Pedido realizado'                    => 'realizado',
+        'Em preparação'                       => 'preparacao',
+        'Enviado'                             => 'enviado',
+        'Entregue'                            => 'entregue',
+        'Reembolso Solicitado'                => 'preparacao',
+        'Reembolso em Análise'                => 'preparacao',
+        'Reembolsado (Estorno Pix Concluído)' => 'entregue',
+        'Reenvio Expresso Autorizado'         => 'enviado',
+        default                               => 'realizado'
     };
 }
 
@@ -174,17 +204,34 @@ require_once __DIR__ . '/includes/header.php';
                     $reembolsoAtivo = (int)($p['reembolso_solicitado'] ?? 0);
 
                     // Coordenadas geográficas para o mapa interativo estilo Google Maps
-                    $coordsDest = getCoordenadasEntrega(
-                        $p['cidade_entrega'] ?? ($usuarioLogado['cidade'] ?? 'Porto Velho'),
-                        $p['estado_entrega'] ?? ($usuarioLogado['estado'] ?? 'RO'),
-                        $p['bairro_entrega'] ?? ($usuarioLogado['bairro'] ?? '')
-                    );
+                    $destCidade = !empty($usuario['cidade']) ? $usuario['cidade'] : 'Porto Velho';
+                    $destEstado = !empty($usuario['estado']) ? $usuario['estado'] : 'RO';
+                    $destBairro = !empty($usuario['bairro']) ? $usuario['bairro'] : '';
+                    $destCep = !empty($usuario['cep']) ? $usuario['cep'] : '';
+                    $destTelefone = !empty($usuario['telefone']) ? $usuario['telefone'] : 'Não informado';
+                    $destEmail = !empty($usuario['email']) ? $usuario['email'] : '';
+                    $destCodigo = !empty($usuario['codigo_cliente']) ? $usuario['codigo_cliente'] : ('CLI-' . str_pad($usuario['id'], 5, '0', STR_PAD_LEFT));
+                    $destNome = !empty($usuario['nome']) ? $usuario['nome'] : 'Cliente Amora';
+
+                    $coordsDest = getCoordenadasEntrega($destCidade, $destEstado, $destBairro);
                     $destLat = $coordsDest[0];
                     $destLng = $coordsDest[1];
-                    $nomeClienteFormatado = sanitizar($usuarioLogado['nome'] ?? 'Cliente Amora');
-                    $enderecoFormatado = sanitizar($p['endereco_entrega'] ?? ($usuarioLogado['logradouro'] ?? 'Av. Calama, 456'));
-                    $cidadeFormatada = sanitizar($p['cidade_entrega'] ?? ($usuarioLogado['cidade'] ?? 'Porto Velho'));
-                    $estadoFormatado = sanitizar($p['estado_entrega'] ?? ($usuarioLogado['estado'] ?? 'RO'));
+
+                    $nomeClienteFormatado = sanitizar($destNome);
+                    $cidadeFormatada = sanitizar($destCidade);
+                    $estadoFormatado = sanitizar($destEstado);
+                    $cepFormatado = sanitizar($destCep);
+                    $telefoneFormatado = sanitizar($destTelefone);
+                    $emailFormatado = sanitizar($destEmail);
+                    $codigoClienteFormatado = sanitizar($destCodigo);
+
+                    $enderecoFormatado = !empty($p['endereco_entrega']) ? sanitizar($p['endereco_entrega']) : ($cidadeFormatada . '/' . $estadoFormatado);
+
+                    // Definir meio de transporte conforme a duração/distância da entrega:
+                    // Curta duração (Urbano em Porto Velho): Drone Express Autônomo LogiAmora
+                    // Longa duração (Intermunicipal / Interestadual / Rodovias): Furgão Iveco Daily na Rodovia BR-364
+                    $isCurtaDuracao = (mb_strtolower(trim($destCidade)) === 'porto velho' || empty($destCidade));
+                    $tipoTransporte = $isCurtaDuracao ? 'drone' : 'rodoviario';
                 ?>
                 <div id="pedido_<?= $p['id'] ?>" style="background: var(--cor-branco); border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave); overflow: hidden;">
                     <!-- Cabeçalho do Pedido -->
@@ -218,12 +265,46 @@ require_once __DIR__ . '/includes/header.php';
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
                                 <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin: 0;">
                                     <i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> 
-                                    Rastreamento em Tempo Real &bull; <?= sanitizar($p['transportadora'] ?? 'LogiAmora Transportes') ?>
+                                    Rastreamento em Tempo Real &bull; <?= sanitizar($p['transportadora'] ?? 'LogiAmora Transportes / Sedex') ?>
                                 </h3>
                                 <span style="font-size: 0.82rem; color: var(--cor-sucesso); font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
                                     <span style="width: 8px; height: 8px; background: #4e8d53; border-radius: 50%; display: inline-block;"></span>
                                     Sinal GPS da transportadora ativo
                                 </span>
+                            </div>
+
+                            <!-- Card de Conferência Rigorosa dos Dados do Destinatário e Modalidade de Transporte -->
+                            <div style="background: #ffffff; border: 1px solid var(--cor-borda); border-left: 5px solid <?= $isCurtaDuracao ? '#2e7d32' : '#0277bd' ?>; border-radius: var(--raio-borda); padding: 14px 18px; margin-bottom: 16px; font-size: 0.85rem; box-shadow: var(--sombra-suave);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+                                    <span style="font-weight: 700; color: var(--cor-marrom-suave); display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-address-card" style="color: var(--cor-rosa-queimado);"></i> 
+                                        Dados Pessoais do Destinatário &bull; Sincronizados com a Conta
+                                    </span>
+                                    <?php if ($isCurtaDuracao): ?>
+                                        <span style="background: #e8f5e9; color: #2e7d32; font-weight: 700; padding: 3px 12px; border-radius: 12px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-helicopter"></i> Curta Duração &bull; Drone Express Autônomo (45 km/h)
+                                        </span>
+                                    <?php else: ?>
+                                        <span style="background: #e1f5fe; color: #0277bd; font-weight: 700; padding: 3px 12px; border-radius: 12px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <i class="fa-solid fa-truck-fast"></i> Longa Duração &bull; Transporte Rodoviário BR-364 (75 km/h)
+                                        </span>
+                                    <?php endif; ?>
+                                </div>
+                                <div style="color: var(--cor-marrom-texto); display: flex; flex-direction: column; gap: 5px;">
+                                    <div>
+                                        <strong>Cliente:</strong> <?= $nomeClienteFormatado ?> &bull; 
+                                        <span style="font-family: monospace; background: #fdf2e9; padding: 2px 7px; border-radius: 4px; color: #b75e18; font-weight: bold;">#<?= $codigoClienteFormatado ?></span> &bull; 
+                                        <strong>Telefone:</strong> <?= $telefoneFormatado ?> &bull; 
+                                        <strong>E-mail:</strong> <?= $emailFormatado ?>
+                                    </div>
+                                    <div>
+                                        <strong>Endereço de Entrega:</strong> <?= $enderecoFormatado ?>
+                                    </div>
+                                    <div style="font-size: 0.8rem; color: var(--cor-marrom-claro); display: flex; align-items: center; gap: 6px;">
+                                        <i class="fa-solid fa-route" style="color: var(--cor-rosa-queimado);"></i> 
+                                        <span><strong>Trajeto Oficial:</strong> Saída do Ateliê Amora (IFRO Campus Porto Velho Calama &bull; Av. Calama, 4985) com deslocamento em tempo real pelas ruas e avenidas até o endereço cadastrado.</span>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- ========================================================
@@ -257,13 +338,19 @@ require_once __DIR__ . '/includes/header.php';
                                             </button>
                                         </div>
 
-                                        <!-- Botões de Ação Rápida -->
+                                        <!-- Botões de Ação Rápida e Animação de Rua -->
                                         <div class="mapa-acoes-group">
-                                            <button type="button" class="btn-mapa-acao btn-focar-rota" title="Enquadrar a rota inteira">
-                                                <i class="fa-solid fa-maximize"></i> Rota Completa
+                                            <button type="button" class="btn-mapa-acao btn-anim-toggle" title="Pausar ou Retomar Deslocamento nas Ruas">
+                                                <i class="fa-solid fa-pause"></i> <span class="anim-label">Pausar</span>
                                             </button>
-                                            <button type="button" class="btn-mapa-acao btn-seguir-veiculo" title="Aproximar do veículo de entrega">
-                                                <i class="fa-solid fa-truck-fast"></i> Ver Veículo
+                                            <button type="button" class="btn-mapa-acao btn-alternar-modo" title="Alternar entre Drone e Furgão Rodoviário">
+                                                <i class="fa-solid fa-shuffle"></i> Modo
+                                            </button>
+                                            <button type="button" class="btn-mapa-acao btn-seguir-veiculo" title="Aproximar do veículo na rua">
+                                                <i class="fa-solid fa-crosshairs"></i> Seguir
+                                            </button>
+                                            <button type="button" class="btn-mapa-acao btn-focar-rota" title="Enquadrar a rota inteira">
+                                                <i class="fa-solid fa-maximize"></i> Rota
                                             </button>
                                             <button type="button" class="btn-mapa-acao btn-mapa-fullscreen" title="Tela cheia">
                                                 <i class="fa-solid fa-expand"></i>
@@ -279,7 +366,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <div style="background: #fff; padding: 10px 18px; border-top: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; color: var(--cor-marrom-suave);">
                                     <div>
                                         <i class="fa-solid fa-hand-pointer" style="color: var(--cor-rosa-queimado);"></i>
-                                        <strong>Interatividade:</strong> Arraste livremente, use a roda do mouse para zoom ou clique nos marcadores para detalhes do pedido e da van.
+                                        <strong>Interatividade:</strong> O veículo se locomove pelas vias reais. Clique nos botões acima para pausar, alterar para Drone/Rodoviário ou ver em tela cheia.
                                     </div>
                                     <div>
                                         <strong>Transportadora:</strong> <?= sanitizar($p['transportadora'] ?? 'LogiAmora Transportes / Sedex') ?> &bull; Rastreio: <strong style="font-family: monospace; color: var(--cor-rosa-queimado);"><?= $codigoRastreio ?></strong>
@@ -292,21 +379,28 @@ require_once __DIR__ . '/includes/header.php';
                                 if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
                                     window.AmoraMapas.init('mapa_canvas_<?= $p['id'] ?>', {
                                         origem: {
-                                            lat: -8.76194,
-                                            lng: -63.90389,
-                                            nome: 'Ateliê Amora Artesanal',
-                                            endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO'
+                                            lat: -8.7441684,
+                                            lng: -63.8718575,
+                                            nome: 'Ateliê Amora Artesanal (IFRO Calama)',
+                                            endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-441)'
                                         },
                                         destino: {
                                             lat: <?= json_encode((float)$destLat) ?>,
                                             lng: <?= json_encode((float)$destLng) ?>,
                                             nome: <?= json_encode($nomeClienteFormatado) ?>,
-                                            endereco: <?= json_encode($enderecoFormatado . ' - ' . $cidadeFormatada . '/' . $estadoFormatado) ?>
+                                            codigoCliente: <?= json_encode($codigoClienteFormatado) ?>,
+                                            telefone: <?= json_encode($telefoneFormatado) ?>,
+                                            email: <?= json_encode($emailFormatado) ?>,
+                                            endereco: <?= json_encode($enderecoFormatado) ?>,
+                                            cidade: <?= json_encode($cidadeFormatada) ?>,
+                                            estado: <?= json_encode($estadoFormatado) ?>,
+                                            cep: <?= json_encode($cepFormatado) ?>
                                         },
                                         status: <?= json_encode($status) ?>,
                                         transportadora: <?= json_encode($p['transportadora'] ?? 'LogiAmora Transportes / Sedex') ?>,
                                         codigoRastreio: <?= json_encode($codigoRastreio) ?>,
                                         clienteNome: <?= json_encode($nomeClienteFormatado) ?>,
+                                        tipoTransporte: <?= json_encode($tipoTransporte) ?>,
                                         tipo: 'rastreamento'
                                     });
                                 }
@@ -586,13 +680,118 @@ require_once __DIR__ . '/includes/header.php';
                                 <?php endif; ?>
                             </div>
                         <?php elseif ($reembolsoAtivo): ?>
-                            <!-- Alerta de Reembolso Já Registrado -->
-                            <div class="alert alert-info" style="margin-bottom: 24px;">
-                                <i class="fa-solid fa-shield-halved"></i>
-                                <div>
-                                    <strong>Protocolo de Reembolso Ativo: <?= sanitizar($p['protocolo_reembolso'] ?? '') ?></strong><br>
-                                    <span style="font-size: 0.85rem;">Status: <?= sanitizar($p['motivo_reembolso'] ?? 'Solicitação em processamento prioritário pelo setor financeiro.') ?></span>
+                            <!-- Painel Completo de Auditoria de Reembolso e Extorno (Dupla Verificação: Transportadora + Admin) -->
+                            <div style="background: #fffcf9; border: 2px solid <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? '#4e8d53' : 'var(--cor-rosa-medio)' ?>; border-radius: var(--raio-borda); padding: 22px; margin-bottom: 24px; box-shadow: var(--sombra-suave);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                                    <h4 style="margin: 0; font-size: 1.15rem; color: var(--cor-marrom-suave);">
+                                        <i class="fa-solid fa-shield-halved" style="color: var(--cor-rosa-queimado);"></i> 
+                                        Auditoria de Reembolso &bull; Protocolo: <span style="font-family: monospace; color: var(--cor-rosa-queimado); font-weight: bold;"><?= sanitizar($p['protocolo_reembolso'] ?? '') ?></span>
+                                    </h4>
+                                    <span class="badge-status <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? 'entregue' : 'preparacao' ?>" style="font-size: 0.8rem;">
+                                        <?= sanitizar($status) ?>
+                                    </span>
                                 </div>
+
+                                <!-- Linha do Tempo da Dupla Verificação -->
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 18px;">
+                                    <!-- Etapa 1 -->
+                                    <div style="background: #fff; border: 1px solid #4e8d53; border-radius: 8px; padding: 12px;">
+                                        <div style="color: #208743; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-circle-check"></i> 1. Solicitação do Cliente
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                            Registrada no sistema<br>
+                                            Chave: <code style="color: var(--cor-rosa-queimado);"><?= sanitizar($p['chave_pix_reembolso'] ?? 'Chave cadastrada') ?></code>
+                                        </div>
+                                    </div>
+
+                                    <!-- Etapa 2 -->
+                                    <div style="background: #fff; border: 1px solid #4e8d53; border-radius: 8px; padding: 12px;">
+                                        <div style="color: #208743; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                            <i class="fa-solid fa-circle-check"></i> 2. Laudo da Transportadora
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                            LogiAmora / Sedex<br>
+                                            Ocorrência: <strong><?= sanitizar($p['codigo_ocorrencia_transp'] ?? 'OC-84920') ?></strong> (Atraso atestado)
+                                        </div>
+                                    </div>
+
+                                    <!-- Etapa 3 -->
+                                    <div style="background: #fff; border: 1px solid <?= !empty($p['data_aprovacao_admin']) ? '#4e8d53' : 'var(--cor-rosa-medio)' ?>; border-radius: 8px; padding: 12px;">
+                                        <div style="color: <?= !empty($p['data_aprovacao_admin']) ? '#208743' : 'var(--cor-rosa-queimado)' ?>; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                            <i class="fa-solid <?= !empty($p['data_aprovacao_admin']) ? 'fa-circle-check' : 'fa-hourglass-half' ?>"></i> 3. Auditoria da Administração
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                            <?= !empty($p['data_aprovacao_admin']) ? 'Homologado pela Larissa (Gerência)' : 'Em análise financeira pelo ateliê' ?>
+                                        </div>
+                                    </div>
+
+                                    <!-- Etapa 4 -->
+                                    <div style="background: #fff; border: 1px solid <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? '#4e8d53' : 'var(--cor-borda)' ?>; border-radius: 8px; padding: 12px;">
+                                        <div style="color: <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? '#208743' : '#888' ?>; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                            <i class="fa-solid <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? 'fa-money-bill-transfer' : 'fa-clock' ?>"></i> 4. Estorno Pix do Dinheiro
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                            <?= ($status === 'Reembolsado (Estorno Pix Concluído)') ? 'Valor 100% devolvido' : 'Liberado após homologação' ?>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Detalhes do Parecer da Transportadora -->
+                                <?php if (!empty($p['laudo_transportadora'])): ?>
+                                    <div style="background: #f4f8fc; border: 1px solid #c2daf0; border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.82rem; color: #2e4a62; line-height: 1.5;">
+                                        <strong style="color: #1e5a8a;"><i class="fa-solid fa-truck"></i> Parecer Oficial da Transportadora LogiAmora:</strong><br>
+                                        <?= nl2br(sanitizar($p['laudo_transportadora'])) ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <!-- Comprovante Oficial de Estorno Pix se já aprovado -->
+                                <?php if ($status === 'Reembolsado (Estorno Pix Concluído)' && !empty($p['comprovante_pix_estorno'])): ?>
+                                    <div style="background: #e7f8ee; border: 2px solid #208743; border-radius: 10px; padding: 18px; box-shadow: 0 4px 12px rgba(32, 135, 67, 0.1);">
+                                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+                                            <h5 style="margin: 0; color: #1e5a26; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+                                                <i class="fa-solid fa-circle-check" style="color: #208743; font-size: 1.3rem;"></i>
+                                                Comprovante Oficial de Estorno Pix Concluído
+                                            </h5>
+                                            <span style="background: #208743; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: var(--raio-pilula);">
+                                                LIQUIDADO
+                                            </span>
+                                        </div>
+
+                                        <p style="font-size: 0.88rem; color: #1e5a26; line-height: 1.6; margin-bottom: 12px;">
+                                            Sentimos muito pelo atraso registrado pela transportadora! O estorno integral de <strong><?= formatarMoeda((float)$p['valor_total']) ?></strong> foi creditado na sua conta via Pix.
+                                        </p>
+
+                                        <div style="background: #fff; padding: 12px 16px; border-radius: 8px; border: 1px solid #a3d9b1; font-size: 0.82rem; color: #1e5a26; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                                            <div>
+                                                <strong>ID da Transação Pix:</strong><br>
+                                                <code style="font-family: monospace; font-weight: bold; color: #208743;"><?= sanitizar($p['comprovante_pix_estorno']) ?></code>
+                                            </div>
+                                            <div>
+                                                <strong>Chave Pix Creditada:</strong><br>
+                                                <span><?= sanitizar($p['chave_pix_reembolso'] ?? '') ?></span>
+                                            </div>
+                                            <div>
+                                                <strong>Data da Devolução:</strong><br>
+                                                <span><?= !empty($p['data_aprovacao_admin']) ? date('d/m/Y \à\s H:i', strtotime($p['data_aprovacao_admin'])) : date('d/m/Y') ?></span>
+                                            </div>
+                                            <div>
+                                                <strong>Parecer da Administração:</strong><br>
+                                                <span>"<?= sanitizar($p['parecer_admin'] ?? 'Estorno homologado com sucesso.') ?>"</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php else: ?>
+                                    <div style="background: #fff; border: 1px dashed var(--cor-rosa-queimado); border-radius: 8px; padding: 14px 18px; font-size: 0.85rem; color: var(--cor-marrom-suave); display: flex; align-items: center; gap: 12px;">
+                                        <i class="fa-solid fa-lock" style="font-size: 1.5rem; color: var(--cor-rosa-queimado);"></i>
+                                        <div>
+                                            <strong>Auditoria em Andamento para sua Segurança:</strong><br>
+                                            <span style="font-size: 0.8rem; color: var(--cor-marrom-claro);">
+                                                O laudo da transportadora LogiAmora já foi anexado. A administradora do ateliê (Larissa) está concluindo a conferência e o estorno Pix será creditado diretamente na sua chave informada.
+                                            </span>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         <?php endif; ?>
 

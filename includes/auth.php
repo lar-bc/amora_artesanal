@@ -230,7 +230,27 @@ function cadastrarCliente(
     if (!empty($cep)) {
         $somenteDigitosCep = preg_replace('/\D/', '', $cep);
         if (strlen($somenteDigitosCep) > 8 || strlen($cep) > 9) {
-            return ['sucesso' => false, 'mensagem' => 'O CEP deve conter no máximo 8 números ou 9 caracteres (ex.: 76820-000).'];
+            return ['sucesso' => false, 'mensagem' => 'O CEP deve conter no máximo 8 números ou 9 caracteres (ex.: 76820-441).'];
+        }
+
+        // Verificação de Existência Real da Localização / CEP (Correios / ViaCEP)
+        $checagemLocalizacao = verificarLocalizacaoReal($cep, $estado, $cidade);
+        if (!$checagemLocalizacao['valido']) {
+            return [
+                'sucesso' => false,
+                'mensagem' => $checagemLocalizacao['erro'] ?? 'A localização informada não existe na vida real. Por favor, informe um endereço válido.'
+            ];
+        }
+
+        // Preencher dados oficiais se vieram vazios
+        if (empty($cidade) && !empty($checagemLocalizacao['cidade'])) {
+            $cidade = $checagemLocalizacao['cidade'];
+        }
+        if (empty($estado) && !empty($checagemLocalizacao['estado'])) {
+            $estado = $checagemLocalizacao['estado'];
+        }
+        if (empty($bairro) && !empty($checagemLocalizacao['bairro'])) {
+            $bairro = $checagemLocalizacao['bairro'];
         }
     }
 

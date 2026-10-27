@@ -41,3 +41,14 @@ define('DB_PASS', '');
 
 // Arquivo de fallback para SQLite (permite rodar perfeitamente sem MySQL externo ativo)
 define('SQLITE_FILE', ROOT_PATH . '/database/amora_artesanal.sqlite');
+
+// Localização Física Oficial do Ateliê Amora Artesanal (Confirmada na vida real - IFRO Calama)
+define('ATELIE_ENDERECO', 'Av. Calama, 4985');
+define('ATELIE_COMPLEMENTO', 'IFRO Campus Porto Velho Calama');
+define('ATELIE_BAIRRO', 'Flodoaldo Pontes Pinto');
+define('ATELIE_CIDADE', 'Porto Velho');
+define('ATELIE_ESTADO', 'RO');
+define('ATELIE_CEP', '76820-441');
+define('ATELIE_LAT', -8.7441684);
+define('ATELIE_LNG', -63.8718575);
+

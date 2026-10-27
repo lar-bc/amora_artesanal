@@ -87,7 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($logradouro) || empty($numero) || empty($bairro) || empty($cidade) || empty($cep)) {
             $erro = 'Por favor, preencha todos os campos obrigatórios do endereço de entrega.';
-        } elseif (empty($erro)) {
+        } else {
+            // Validação de Existência Real da Localização / CEP (Correios / ViaCEP)
+            $checagemLocalizacao = verificarLocalizacaoReal($cep, $estado, $cidade);
+            if (!$checagemLocalizacao['valido']) {
+                $erro = $checagemLocalizacao['erro'] ?? 'A localização informada não existe na vida real. Por favor, forneça um endereço válido.';
+            }
+        }
+        
+        if (empty($erro)) {
             $enderecoFormatado = sprintf(
                 "%s, nº %s%s - %s, %s/%s - CEP: %s",
                 $logradouro,

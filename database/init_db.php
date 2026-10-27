@@ -129,7 +129,15 @@ function inicializarBanco(): bool {
                 'confirmacao_entrega_cliente' => 'TEXT DEFAULT NULL',
                 'reembolso_solicitado' => 'INTEGER DEFAULT 0',
                 'protocolo_reembolso' => 'TEXT DEFAULT NULL',
-                'motivo_reembolso' => 'TEXT DEFAULT NULL'
+                'motivo_reembolso' => 'TEXT DEFAULT NULL',
+                'chave_pix_reembolso' => 'TEXT DEFAULT NULL',
+                'laudo_transportadora' => 'TEXT DEFAULT NULL',
+                'codigo_ocorrencia_transp' => 'TEXT DEFAULT NULL',
+                'data_laudo_transportadora' => 'TEXT DEFAULT NULL',
+                'status_auditoria_reembolso' => 'TEXT DEFAULT NULL',
+                'parecer_admin' => 'TEXT DEFAULT NULL',
+                'data_aprovacao_admin' => 'TEXT DEFAULT NULL',
+                'comprovante_pix_estorno' => 'TEXT DEFAULT NULL'
             ],
             'mensagens_contato' => [
                 'telefone' => 'TEXT DEFAULT NULL'

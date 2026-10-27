@@ -1243,6 +1243,30 @@ textarea.form-control {
     letter-spacing: 0.4px;
 }
 
+/* Animações e Estilos Específicos para Drone e Furgão Rodoviário */
+.amora-veiculo-marker.drone .drone-propeller {
+    display: inline-block;
+    animation: héliceGiro 0.3s linear infinite;
+}
+
+@keyframes héliceGiro {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.08); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+.amora-veiculo-marker.drone .veiculo-tag-status {
+    background: #1b381e;
+    border-color: #4caf50;
+    color: #c8e6c9;
+}
+
+.amora-veiculo-marker.rodoviario .veiculo-tag-status {
+    background: #0f2838;
+    border-color: #0288d1;
+    color: #b3e5fc;
+}
+
 /* Popups Estilizados no Tema Amora */
 .leaflet-popup-content-wrapper {
     background: #fffaf5 !important;

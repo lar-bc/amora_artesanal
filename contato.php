@@ -258,10 +258,10 @@ require_once __DIR__ . '/includes/header.php';
             if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
                 window.AmoraMapas.init('mapa_loja_amora', {
                     origem: {
-                        lat: -8.76194,
-                        lng: -63.90389,
-                        nome: 'Ateliê Amora Artesanal',
-                        endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO'
+                        lat: -8.7441684,
+                        lng: -63.8718575,
+                        nome: 'Ateliê Amora Artesanal (IFRO Calama)',
+                        endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-441)'
                     },
                     tipo: 'loja'
                 });
