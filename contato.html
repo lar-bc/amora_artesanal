@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fale Conosco | Ateliê Amora Artesanal</title>
+    <meta name="description" content="Entre em contato com o Ateliê Amora Artesanal, solicite orçamentos para eventos e encomendas personalizadas.">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/leaflet.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span>✨ Central de Atendimento &bull; Estamos sempre à sua disposição</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link"><i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Rastreamento & Mapa</a></li>
+                <li><a href="contato.html" class="nav-link active">Fale Conosco</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="pedidos.html" class="btn btn-secondary btn-sm" title="Acompanhar envio e trajeto do pedido no mapa">
+                    <i class="fa-solid fa-truck-fast"></i> Rastrear
+                </a>
+                <a href="carrinho.html" class="cart-btn" title="Sacola de Compras">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 30px auto 60px;">
+        <div class="section-title">
+            <h2>Fale Conosco</h2>
+            <p>Dúvidas, orçamentos para lembrancinhas de casamento, aniversários ou encomendas sob medida</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; align-items: start;">
+            <!-- Formulário de Contato -->
+            <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda-lg); padding: 32px; box-shadow: var(--sombra-suave);">
+                <h3 style="font-size: 1.3rem; color: var(--cor-marrom-suave); margin-bottom: 8px;">
+                    <i class="fa-regular fa-envelope" style="color: var(--cor-rosa-queimado);"></i> Envie sua Mensagem
+                </h3>
+                <p style="color: var(--cor-marrom-claro); font-size: 0.88rem; margin-bottom: 20px;">
+                    Respondemos em até 2 horas em dias úteis.
+                </p>
+
+                <div id="alerta-contato" style="display: none; margin-bottom: 16px;"></div>
+
+                <form id="form-contato" onsubmit="enviarMensagemContato(event)">
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label for="nome" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 6px;">Seu Nome Completo *</label>
+                        <input type="text" id="nome" class="form-control" placeholder="Ex: Larissa Silva" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label for="email" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 6px;">Seu E-mail (@gmail.com) *</label>
+                        <input type="email" id="email" class="form-control" placeholder="seu.nome@gmail.com" required>
+                        <small style="color: var(--cor-marrom-claro); font-size: 0.75rem;">Deve terminar com @gmail.com</small>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label for="telefone" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 6px;">Telefone / WhatsApp (máx. 11 dígitos)</label>
+                        <input type="tel" id="telefone" class="form-control" maxlength="15" placeholder="(69) 98412-3456">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="mensagem" style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 6px;">Sua Mensagem ou Pedido de Encomenda *</label>
+                        <textarea id="mensagem" class="form-control" rows="4" placeholder="Conte-nos o que você deseja (ex: 20 velas para lembrancinha de batizado, aroma especial, amigurumi com cores específicas)..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+                        <i class="fa-regular fa-paper-plane"></i> Enviar Mensagem
+                    </button>
+                </form>
+            </div>
+
+            <!-- Informações Oficiais e Mapa do Ateliê -->
+            <div>
+                <!-- Card de Canais Oficiais de Atendimento -->
+                <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda-lg); padding: 28px; box-shadow: var(--sombra-suave); margin-bottom: 24px;">
+                    <h3 style="font-size: 1.2rem; color: var(--cor-marrom-suave); margin-bottom: 16px;">
+                        <i class="fa-solid fa-headset" style="color: var(--cor-rosa-queimado);"></i> Central de Ajuda & Atendimento
+                    </h3>
+
+                    <div style="display: flex; flex-direction: column; gap: 16px;">
+                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #fdeeed; color: var(--cor-rosa-queimado); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <strong style="display: block; font-size: 0.9rem; color: var(--cor-marrom-suave);">Central de Ajuda (SAC 24h)</strong>
+                                <span style="font-size: 0.95rem; font-weight: 700; color: var(--cor-rosa-queimado);">0800 892 4567</span>
+                                <p style="font-size: 0.78rem; color: var(--cor-marrom-claro); margin: 2px 0 0;">Ligação gratuita para todo o Brasil</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #e7f8ee; color: #208743; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div>
+                                <strong style="display: block; font-size: 0.9rem; color: var(--cor-marrom-suave);">WhatsApp Direto do Ateliê</strong>
+                                <span style="font-size: 0.95rem; font-weight: 700; color: #208743;">(69) 98412-3456</span>
+                                <p style="font-size: 0.78rem; color: var(--cor-marrom-claro); margin: 2px 0 0;">Atendimento rápido com a artesã</p>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 14px; align-items: flex-start;">
+                            <div style="width: 42px; height: 42px; border-radius: 50%; background: #eef2fa; color: #3563b8; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <strong style="display: block; font-size: 0.9rem; color: var(--cor-marrom-suave);">Endereço Físico do Ateliê (Confirmado)</strong>
+                                <span style="font-size: 0.88rem; color: var(--cor-marrom-texto);">
+                                    Av. Calama, 4985 &bull; IFRO Campus Porto Velho Calama<br>
+                                    Bairro Flodoaldo Pontes Pinto, Porto Velho - RO &bull; CEP: 76820-441
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mapa do Ateliê -->
+                <div class="mapa-interativo-wrapper">
+                    <div class="mapa-top-bar">
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--cor-marrom-suave);">
+                            <i class="fa-solid fa-store" style="color: var(--cor-rosa-queimado);"></i> Localização Real do Ateliê Amora
+                        </div>
+                        <div class="mapa-camadas-group">
+                            <button type="button" class="btn-camada-mapa active" data-camada="ruas"><i class="fa-solid fa-map"></i> Google Ruas</button>
+                            <button type="button" class="btn-camada-mapa" data-camada="satelite"><i class="fa-solid fa-satellite"></i> Satélite</button>
+                            <button type="button" class="btn-camada-mapa" data-camada="amora"><i class="fa-solid fa-palette"></i> Amora</button>
+                        </div>
+                    </div>
+                    <div id="mapa_loja_contato" class="mapa-leaflet-canvas" style="height: 260px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados. Feito com afeto e carinho.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/leaflet.js"></script>
+    <script src="assets/js/mapa-interativo.js"></script>
+    <script src="assets/js/produtos-data.js"></script>
+    <script src="assets/js/amora-store.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
+                window.AmoraMapas.init('mapa_loja_contato', {
+                    origem: {
+                        lat: -8.7441684,
+                        lng: -63.8718575,
+                        nome: 'Ateliê Amora Artesanal (IFRO Calama)',
+                        endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-441)'
+                    },
+                    tipo: 'loja'
+                });
+            }
+        });
+
+        function enviarMensagemContato(e) {
+            e.preventDefault();
+            var email = document.getElementById('email').value.trim();
+            var alerta = document.getElementById('alerta-contato');
+
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O e-mail de contato deve terminar obrigatoriamente com <strong>@gmail.com</strong>.';
+                return;
+            }
+
+            alerta.style.display = 'block';
+            alerta.className = 'alert alert-success';
+            alerta.innerHTML = '<i class="fa-solid fa-circle-check"></i> <strong>Mensagem enviada com sucesso!</strong> Nossa artesã entrará em contato em breve.';
+            document.getElementById('form-contato').reset();
+        }
+    </script>
+</body>
+</html>

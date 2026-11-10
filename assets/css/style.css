@@ -1334,3 +1334,53 @@ textarea.form-control {
     justify-content: space-between;
     align-items: center;
 }
+
+/* Modal de Produto Amora */
+.amora-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(43, 24, 18, 0.65);
+    backdrop-filter: blur(4px);
+    z-index: 99990;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.amora-modal-box {
+    background: #ffffff;
+    border-radius: 16px;
+    max-width: 680px;
+    width: 100%;
+    padding: 28px;
+    position: relative;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.3);
+    border: 2px solid var(--cor-rosa-medio);
+    animation: modalFadeIn 0.25s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.amora-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: var(--cor-marrom-claro);
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.amora-modal-close:hover {
+    color: var(--cor-rosa-queimado);
+}

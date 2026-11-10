@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amora Artesanal | Vitrine Virtual de Presentes & Aromas</title>
+    <meta name="description" content="Presentes artesanais, velas de cera vegetal, sabonetes botânicos e amigurumis feitos à mão com afeto e exclusividade.">
+    <!-- Estilos Oficiais do Ateliê Amora -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- FontAwesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS para Mapas -->
+    <link rel="stylesheet" href="assets/css/leaflet.css">
+</head>
+<body>
+
+    <!-- Barra de Notificação Superior com Central de Ajuda Oficial -->
+    <div class="top-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span>✨ Produtos feitos à mão com afeto e exclusividade | Encomendas sob medida com carinho</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC Central de Ajuda: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <!-- Logo -->
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <!-- Menu de Navegação -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link"><i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Rastreamento & Mapa</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+
+            <!-- Ações do Cabeçalho -->
+            <div class="nav-actions">
+                <a href="pedidos.html" class="btn btn-secondary btn-sm" title="Acompanhar envio e trajeto do pedido no mapa">
+                    <i class="fa-solid fa-truck-fast"></i> Rastrear
+                </a>
+                <a href="carrinho.html" class="cart-btn" title="Sacola de Compras">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Banner Principal / Hero -->
+        <section class="hero-section">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-sparkles"></i> Criações Exclusivas Feitas à Mão
+                    </div>
+                    <h2>Aconchego, aromas e <span>afeto</span> em cada detalhe.</h2>
+                    <p>Descubra nossa linha de velas aromáticas com cera vegetal, sabonetes botânicos e amigurumis personalizados. Presentes perfeitos para celebrar momentos inesquecíveis.</p>
+                    <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                        <a href="produtos.html" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-basket-shopping"></i> Explorar Vitrine
+                        </a>
+                        <a href="pedidos.html" class="btn btn-secondary btn-lg">
+                            <i class="fa-solid fa-route"></i> Rastreamento no Mapa
+                        </a>
+                        <a href="https://wa.me/5569984123456" target="_blank" class="btn btn-outline btn-lg" style="background: #fff;">
+                            <i class="fa-brands fa-whatsapp"></i> Falar no WhatsApp
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="hero-image-wrapper">
+                        <img src="assets/img/hero_artesanal.svg" alt="Amora Artesanal Ilustração" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegação Rápida por Categorias -->
+        <section style="margin: 40px 0 20px;">
+            <div class="section-title">
+                <h2>Nossas Coleções Artesanais</h2>
+                <p>Selecione uma categoria para descobrir criações manuais com fragrâncias e texturas únicas</p>
+            </div>
+
+            <div class="categories-pills" id="category-pills">
+                <button type="button" class="pill-item active" onclick="filtrarCategoria('todas', this)">
+                    <i class="fa-solid fa-border-all"></i> Todas as Peças
+                </button>
+                <button type="button" class="pill-item" onclick="filtrarCategoria(1, this)">
+                    <i class="fa-solid fa-fire-flame-curved"></i> Velas Aromáticas
+                </button>
+                <button type="button" class="pill-item" onclick="filtrarCategoria(2, this)">
+                    <i class="fa-solid fa-soap"></i> Sabonetes Artesanais
+                </button>
+                <button type="button" class="pill-item" onclick="filtrarCategoria(3, this)">
+                    <i class="fa-solid fa-heart"></i> Amigurumis
+                </button>
+                <button type="button" class="pill-item" onclick="filtrarCategoria(4, this)">
+                    <i class="fa-solid fa-gift"></i> Kits Presente
+                </button>
+            </div>
+        </section>
+
+        <!-- Vitrine de Produtos em Destaque -->
+        <section>
+            <div class="products-grid" id="products-container">
+                <!-- Renderizado via JavaScript dinamicamente a partir dos dados do banco -->
+            </div>
+        </section>
+
+        <!-- Card de Destaque: Rastreamento em Tempo Real com Drones e Furgões -->
+        <section style="margin: 60px 0;">
+            <div style="background: linear-gradient(135deg, #fffaf7 0%, #fbedee 100%); border: 2px solid var(--cor-rosa-medio); border-radius: var(--raio-borda-lg); padding: 36px 32px; box-shadow: var(--sombra-suave); display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; align-items: center;">
+                <div>
+                    <span class="card-badge" style="background: var(--cor-rosa-queimado); color: #fff; margin-bottom: 12px; display: inline-block;">
+                        <i class="fa-solid fa-satellite-dish"></i> LogiAmora GlobalSat &bull; Google Maps
+                    </span>
+                    <h3 style="font-size: 1.6rem; color: var(--cor-marrom-suave); margin-bottom: 12px;">
+                        Rastreamento em Tempo Real pelas Ruas
+                    </h3>
+                    <p style="color: var(--cor-marrom-texto); font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+                        Acompanhe o deslocamento exato da sua encomenda direto no mapa interativo com telemetria GPS. 
+                        Para entregas de <strong>curta duração</strong> em Porto Velho, utilizamos <strong>🚁 Drones Express Autônomos</strong>. 
+                        Para rotas intermunicipais de <strong>longa duração</strong>, o transporte segue em <strong>🚛 Furgões na BR-364</strong>.
+                    </p>
+                    <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                        <a href="pedidos.html" class="btn btn-primary btn-lg">
+                            <i class="fa-solid fa-map-location-dot"></i> Abrir Mapa de Rastreamento
+                        </a>
+                        <a href="contato.html" class="btn btn-secondary btn-lg">
+                            <i class="fa-solid fa-store"></i> Ver Localização do Ateliê
+                        </a>
+                    </div>
+                </div>
+                <div style="background: #ffffff; border-radius: var(--raio-borda); padding: 22px; border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave);">
+                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--cor-marrom-suave); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="fa-solid fa-location-dot" style="color: #4e8d53;"></i> Ponto de Partida Oficial</span>
+                        <span style="color: #4e8d53;"><i class="fa-solid fa-circle-check"></i> Localização Real</span>
+                    </div>
+                    <p style="margin: 0 0 8px; font-size: 0.88rem; color: var(--cor-marrom-texto);">
+                        <strong>Ateliê Amora Artesanal (IFRO Calama)</strong><br>
+                        Av. Calama, 4985 &bull; Bairro Flodoaldo Pontes Pinto<br>
+                        Porto Velho - RO &bull; CEP 76820-441
+                    </p>
+                    <div style="font-size: 0.8rem; color: var(--cor-marrom-claro); border-top: 1px solid var(--cor-borda); padding-top: 8px;">
+                        <i class="fa-solid fa-shield-halved" style="color: #4e8d53;"></i> Garantia de Reembolso Integral com Laudo da Transportadora e Auditoria do Administrador.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avaliações Reais de Clientes -->
+        <section style="margin: 50px 0;">
+            <div class="section-title">
+                <h2>O que dizem os nossos clientes</h2>
+                <p>Histórias reais de carinho, perfumes inesquecíveis e entregas perfeitas</p>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                <div style="background: #ffffff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px; box-shadow: var(--sombra-suave);">
+                    <div style="color: #f1a94e; font-size: 0.95rem; margin-bottom: 8px;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size: 0.88rem; color: var(--cor-marrom-texto); line-height: 1.5; margin-bottom: 12px;">
+                        "A vela de cerejeira é simplesmente maravilhosa! Chegou super bem embalada e o mapa mostrando o drone trazendo a entrega em Porto Velho foi incrível!"
+                    </p>
+                    <strong style="font-size: 0.85rem; color: var(--cor-marrom-suave);">Larissa Benício</strong> &bull; <span style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Porto Velho/RO</span>
+                </div>
+
+                <div style="background: #ffffff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px; box-shadow: var(--sombra-suave);">
+                    <div style="color: #f1a94e; font-size: 0.95rem; margin-bottom: 8px;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size: 0.88rem; color: var(--cor-marrom-texto); line-height: 1.5; margin-bottom: 12px;">
+                        "Os sabonetes de argila rosa e café deixam a pele super macia e perfumada. O ateliê do IFRO Calama capricha em cada detalhe!"
+                    </p>
+                    <strong style="font-size: 0.85rem; color: var(--cor-marrom-suave);">Mariana S.</strong> &bull; <span style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Cliente Verificada</span>
+                </div>
+
+                <div style="background: #ffffff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px; box-shadow: var(--sombra-suave);">
+                    <div style="color: #f1a94e; font-size: 0.95rem; margin-bottom: 8px;">
+                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                    </div>
+                    <p style="font-size: 0.88rem; color: var(--cor-marrom-texto); line-height: 1.5; margin-bottom: 12px;">
+                        "Encomendei o polvinho de amigurumi para presente de maternidade. Veio com tag personalizada e acabamento impecável."
+                    </p>
+                    <strong style="font-size: 0.85rem; color: var(--cor-marrom-suave);">Carla M.</strong> &bull; <span style="font-size: 0.75rem; color: var(--cor-marrom-claro);">Cliente Amora</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Rodapé Principal -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Coluna 1 -->
+                <div class="footer-col">
+                    <h4>Amora Artesanal</h4>
+                    <p>Sua vitrine virtual de presentes exclusivos e criações manuais com aroma, carinho e delicadeza para marcar momentos especiais.</p>
+                    <p style="font-size: 0.85rem; color: var(--cor-rosa-queimado);">
+                        <i class="fa-solid fa-heart"></i> Feito com amor por Larissa Benício da Cruz
+                    </p>
+                </div>
+
+                <!-- Coluna 2 -->
+                <div class="footer-col">
+                    <h4>Coleções</h4>
+                    <ul class="footer-links">
+                        <li><a href="produtos.html?categoria=1">Velas Aromáticas</a></li>
+                        <li><a href="produtos.html?categoria=2">Sabonetes Artesanais</a></li>
+                        <li><a href="produtos.html?categoria=3">Amigurumis</a></li>
+                        <li><a href="produtos.html?categoria=4">Kits Presente</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3 -->
+                <div class="footer-col">
+                    <h4>Atendimento</h4>
+                    <ul class="footer-links">
+                        <li><a href="contato.html">Fale Conosco</a></li>
+                        <li><a href="pedidos.html">Rastrear Pedido no Mapa</a></li>
+                        <li><a href="carrinho.html">Meu Carrinho</a></li>
+                        <li><a href="https://github.com/lar-bc/amora_artesanal" target="_blank">Código no GitHub</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 4 -->
+                <div class="footer-col">
+                    <h4>Localização Física</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5;">
+                        <strong>IFRO - Campus Porto Velho Calama</strong><br>
+                        Av. Calama, 4985 &bull; Flodoaldo Pontes Pinto<br>
+                        Porto Velho - RO &bull; CEP 76820-441
+                    </p>
+                    <div style="margin-top: 10px;">
+                        <span class="badge-status entregue" style="font-size: 0.75rem;">Site Online no GitHub Pages</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rodapé Inferior -->
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados. Feito com afeto e carinho.</p>
+                <div class="payment-methods">
+                    <span><i class="fa-brands fa-pix"></i> Pix Instantâneo</span>
+                    <span><i class="fa-regular fa-credit-card"></i> Cartões de Crédito</span>
+                    <span><i class="fa-solid fa-barcode"></i> Boleto</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts de Dados e Lógica do Carrinho -->
+    <script src="assets/js/produtos-data.js"></script>
+    <script src="assets/js/amora-store.js"></script>
+    <script>
+        function renderProdutos(produtos) {
+            var container = document.getElementById('products-container');
+            if (!container) return;
+
+            if (!produtos || produtos.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--cor-marrom-claro);">' +
+                    '<i class="fa-solid fa-box-open" style="font-size: 2.5rem; color: var(--cor-rosa-medio); margin-bottom: 12px; display: block;"></i>' +
+                    'Nenhum produto encontrado nesta categoria.</div>';
+                return;
+            }
+
+            var html = '';
+            produtos.forEach(function(p) {
+                html += '<div class="product-card">' +
+                    '<div class="card-img-wrap">' +
+                        '<span class="card-badge">' + p.nome_categoria + '</span>' +
+                        '<img src="' + p.imagem_url + '" alt="' + p.nome + '" loading="lazy">' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<span class="card-category">' + p.nome_categoria + '</span>' +
+                        '<h3 class="card-title">' + p.nome + '</h3>' +
+                        '<p class="card-desc">' + p.descricao + '</p>' +
+                        '<div class="card-footer-action">' +
+                            '<div>' +
+                                '<div class="product-price">' + window.AmoraStore.formatarMoeda(p.preco) + '</div>' +
+                                '<span class="stock-tag ' + (p.estoque <= 5 ? 'low' : '') + '">' +
+                                    '<i class="fa-solid fa-box-archive"></i> ' + p.estoque + ' em estoque' +
+                                '</span>' +
+                            '</div>' +
+                            '<div style="display: flex; gap: 8px;">' +
+                                '<button type="button" class="btn btn-secondary btn-sm" onclick="window.AmoraStore.openProductModal(' + p.id + ')" title="Ver Detalhes">' +
+                                    '<i class="fa-solid fa-eye"></i>' +
+                                '</button>' +
+                                '<button type="button" class="btn btn-primary btn-sm" onclick="window.AmoraStore.addItem(' + p.id + ', 1)">' +
+                                    '<i class="fa-solid fa-basket-shopping"></i> Comprar' +
+                                '</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            });
+            container.innerHTML = html;
+        }
+
+        function filtrarCategoria(catId, btn) {
+            var pills = document.querySelectorAll('#category-pills .pill-item');
+            pills.forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+
+            if (!window.AMORA_DADOS || !window.AMORA_DADOS.produtos) return;
+
+            if (catId === 'todas') {
+                renderProdutos(window.AMORA_DADOS.produtos);
+            } else {
+                var filtrados = window.AMORA_DADOS.produtos.filter(function(p) {
+                    return p.categoria_id === parseInt(catId, 10);
+                });
+                renderProdutos(filtrados);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.AMORA_DADOS && window.AMORA_DADOS.produtos) {
+                renderProdutos(window.AMORA_DADOS.produtos);
+            }
+        });
+    </script>
+</body>
+</html>

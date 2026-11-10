@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastreamento em Tempo Real & Mapa | Amora Artesanal</title>
+    <meta name="description" content="Acompanhe a sua encomenda artesanal com mapa interativo estilo Google Maps, telemetria satelital, Drones e Furgões Rodoviários.">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="assets/css/leaflet.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span>✨ LogiAmora GlobalSat &bull; Monitoramento de Entregas em Tempo Real</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link active"><i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Rastreamento & Mapa</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="carrinho.html" class="cart-btn" title="Sacola de Compras">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 30px auto 60px;">
+        <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+            <div>
+                <h1 style="font-size: 2rem; margin-bottom: 4px;">Meus Pedidos & Rastreamento em Tempo Real</h1>
+                <p style="color: var(--cor-marrom-claro);">Acompanhe o trajeto da sua encomenda no mapa interativo com telemetria GPS e auditoria completa</p>
+            </div>
+            <div>
+                <a href="contato.html" class="btn btn-secondary">
+                    <i class="fa-regular fa-comments"></i> Falar com Ateliê
+                </a>
+            </div>
+        </div>
+
+        <!-- Card de Identificação Única do Cliente e Dados Pessoais Salvos -->
+        <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--sombra-suave); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--cor-rosa-queimado), #df8d9c); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
+                    <i class="fa-solid fa-user-check"></i>
+                </div>
+                <div>
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <h3 style="margin: 0; font-size: 1.2rem; color: var(--cor-marrom-suave);">Larissa Benício</h3>
+                        <span style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 2px 10px; border-radius: 12px; font-size: 0.82rem;">
+                            <i class="fa-solid fa-id-badge"></i> #CLI-00002
+                        </span>
+                        <span style="background: #eef7ee; color: #1e5a26; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
+                            <i class="fa-solid fa-lock"></i> Dados Salvos na Conta
+                        </span>
+                    </div>
+                    <div style="font-size: 0.85rem; color: var(--cor-marrom-claro); margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;">
+                        <span><i class="fa-regular fa-envelope"></i> larissa.benicio@gmail.com</span>
+                        <span><i class="fa-brands fa-whatsapp"></i> (69) 98412-3456</span>
+                        <span><i class="fa-solid fa-location-dot"></i> Porto Velho/RO</span>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
+                <i class="fa-solid fa-shield-check" style="color: var(--cor-sucesso);"></i> Suas informações pessoais e endereço estão salvos nesta conta.
+            </div>
+        </div>
+
+        <!-- Card do Pedido com o Mapa Interativo -->
+        <div style="background: var(--cor-branco); border-radius: var(--raio-borda-lg); border: 1px solid var(--cor-borda); box-shadow: var(--sombra-suave); overflow: hidden; margin-bottom: 32px;">
+            <!-- Cabeçalho do Pedido -->
+            <div style="background: var(--cor-rosa-claro); padding: 20px 26px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; border-bottom: 1px solid var(--cor-borda);">
+                <div>
+                    <span style="font-weight: 700; font-size: 1.2rem; color: var(--cor-marrom-suave);">
+                        Pedido #00004
+                    </span>
+                    <span style="color: var(--cor-marrom-claro); font-size: 0.88rem; margin-left: 12px;">
+                        <i class="fa-regular fa-calendar"></i> Entrega em Rota Prioritária
+                    </span>
+                    <span style="margin-left: 12px; font-size: 0.85rem; background: #fff; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--cor-borda); color: var(--cor-rosa-queimado); font-family: monospace;">
+                        Rastreio: <strong>AM96938701BR</strong>
+                    </span>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 16px;">
+                    <span class="badge-status enviado">
+                        <i class="fa-solid fa-truck-fast"></i> Enviado
+                    </span>
+                    <span style="font-weight: 700; color: var(--cor-rosa-queimado); font-size: 1.3rem;">
+                        R$ 138,50
+                    </span>
+                </div>
+            </div>
+
+            <div style="padding: 26px;">
+                <!-- Seção de Rastreamento em Tempo Real -->
+                <div style="background: #fffcf9; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 22px; margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                        <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin: 0;">
+                            <i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> 
+                            Rastreamento em Tempo Real &bull; LogiAmora Transportes / Sedex
+                        </h3>
+                        <span style="font-size: 0.82rem; color: var(--cor-sucesso); font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                            <span style="width: 8px; height: 8px; background: #4e8d53; border-radius: 50%; display: inline-block;"></span>
+                            Sinal GPS da transportadora ativo
+                        </span>
+                    </div>
+
+                    <!-- Card de Conferência Rigorosa dos Dados do Destinatário e Modalidade de Transporte -->
+                    <div style="background: #ffffff; border: 1px solid var(--cor-borda); border-left: 5px solid #2e7d32; border-radius: var(--raio-borda); padding: 14px 18px; margin-bottom: 16px; font-size: 0.85rem; box-shadow: var(--sombra-suave);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 8px;">
+                            <span style="font-weight: 700; color: var(--cor-marrom-suave); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-address-card" style="color: var(--cor-rosa-queimado);"></i> 
+                                Dados Pessoais do Destinatário &bull; Sincronizados com a Conta
+                            </span>
+                            <span id="badge-tipo-transporte" style="background: #e8f5e9; color: #2e7d32; font-weight: 700; padding: 3px 12px; border-radius: 12px; font-size: 0.78rem; display: inline-flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-helicopter"></i> Curta Duração &bull; Drone Express Autônomo (45 km/h)
+                            </span>
+                        </div>
+                        <div style="color: var(--cor-marrom-texto); display: flex; flex-direction: column; gap: 5px;">
+                            <div>
+                                <strong>Cliente:</strong> Larissa Benício &bull; 
+                                <span style="font-family: monospace; background: #fdf2e9; padding: 2px 7px; border-radius: 4px; color: #b75e18; font-weight: bold;">#CLI-00002</span> &bull; 
+                                <strong>Telefone:</strong> (69) 98412-3456 &bull; 
+                                <strong>E-mail:</strong> larissa.benicio@gmail.com
+                            </div>
+                            <div>
+                                <strong>Endereço de Entrega Verificado:</strong> Av. Tiradentes, nº 3000 (Apto 204) - Bairro Embratel, Porto Velho/RO - CEP: 76820-120
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--cor-marrom-claro); display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-route" style="color: var(--cor-rosa-queimado);"></i> 
+                                <span><strong>Trajeto Oficial:</strong> Saída do Ateliê Amora (IFRO Campus Porto Velho Calama &bull; Av. Calama, 4985) com deslocamento em tempo real pelas vias até o endereço cadastrado.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ========================================================
+                         MAPA INTERATIVO ESTILO GOOGLE MAPS - AMORA ARTESANAL
+                         ======================================================== -->
+                    <div class="mapa-interativo-wrapper">
+                        <!-- Barra Superior de Controles do Mapa -->
+                        <div class="mapa-top-bar">
+                            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                                <span class="mapa-status-gps">
+                                    <span class="gps-dot-pulse"></span>
+                                    <span>GPS ATIVO &bull; LogiAmora GlobalSat</span>
+                                </span>
+                                <span style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
+                                    <i class="fa-solid fa-route" style="color: var(--cor-rosa-queimado);"></i> 
+                                    IFRO Calama &rarr; Bairro Embratel (Porto Velho/RO)
+                                </span>
+                            </div>
+
+                            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                <!-- Comutador de Camadas Estilo Google Maps -->
+                                <div class="mapa-camadas-group">
+                                    <button type="button" class="btn-camada-mapa active" data-camada="ruas" title="Ver vias, avenidas e bairros no Google Maps">
+                                        <i class="fa-solid fa-map"></i> Google Ruas
+                                    </button>
+                                    <button type="button" class="btn-camada-mapa" data-camada="satelite" title="Ver fotos reais de satélite">
+                                        <i class="fa-solid fa-satellite"></i> Satélite
+                                    </button>
+                                    <button type="button" class="btn-camada-mapa" data-camada="amora" title="Visual elegante no tema do ateliê">
+                                        <i class="fa-solid fa-palette"></i> Amora
+                                    </button>
+                                </div>
+
+                                <!-- Botões de Ação Rápida e Animação de Rua -->
+                                <div class="mapa-acoes-group">
+                                    <button type="button" class="btn-mapa-acao btn-anim-toggle" title="Pausar ou Retomar Deslocamento nas Ruas">
+                                        <i class="fa-solid fa-pause"></i> <span class="anim-label">Pausar</span>
+                                    </button>
+                                    <button type="button" class="btn-mapa-acao btn-alternar-modo" title="Alternar entre Drone e Furgão Rodoviário">
+                                        <i class="fa-solid fa-shuffle"></i> Modo
+                                    </button>
+                                    <button type="button" class="btn-mapa-acao btn-seguir-veiculo" title="Aproximar do veículo na rua">
+                                        <i class="fa-solid fa-crosshairs"></i> Seguir
+                                    </button>
+                                    <button type="button" class="btn-mapa-acao btn-focar-rota" title="Enquadrar a rota inteira">
+                                        <i class="fa-solid fa-maximize"></i> Rota
+                                    </button>
+                                    <button type="button" class="btn-mapa-acao btn-mapa-fullscreen" title="Tela cheia">
+                                        <i class="fa-solid fa-expand"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Canvas do Mapa Leaflet -->
+                        <div id="mapa_canvas_tracking" class="mapa-leaflet-canvas"></div>
+
+                        <!-- Rodapé Informativo do Mapa -->
+                        <div style="background: #fff; padding: 10px 18px; border-top: 1px solid var(--cor-borda); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; font-size: 0.8rem; color: var(--cor-marrom-suave);">
+                            <div>
+                                <i class="fa-solid fa-hand-pointer" style="color: var(--cor-rosa-queimado);"></i>
+                                <strong>Interatividade:</strong> O veículo se locomove pelas vias reais. Clique nos botões acima para pausar, alternar para Drone ou Furgão e explorar o trajeto.
+                            </div>
+                            <div>
+                                <strong>Transportadora:</strong> LogiAmora Transportes / Sedex &bull; Rastreio: <strong style="font-family: monospace; color: var(--cor-rosa-queimado);">AM96938701BR</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Linha do Tempo das 5 Etapas -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-top: 18px;">
+                        <div style="text-align: center; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--cor-sucesso);">
+                            <div style="color: var(--cor-sucesso); font-size: 1.1rem; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i></div>
+                            <div style="font-weight: 600; font-size: 0.82rem;">1. Pedido Realizado</div>
+                            <div style="font-size: 0.72rem; color: var(--cor-marrom-claro);">Pagamento aprovado</div>
+                        </div>
+
+                        <div style="text-align: center; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--cor-sucesso);">
+                            <div style="color: var(--cor-sucesso); font-size: 1.1rem; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i></div>
+                            <div style="font-weight: 600; font-size: 0.82rem;">2. Em Preparação</div>
+                            <div style="font-size: 0.72rem; color: var(--cor-marrom-claro);">Ateliê IFRO Calama</div>
+                        </div>
+
+                        <div style="text-align: center; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--cor-rosa-queimado); box-shadow: 0 0 0 2px rgba(200, 109, 126, 0.2);">
+                            <div style="color: var(--cor-rosa-queimado); font-size: 1.1rem; margin-bottom: 4px;"><i class="fa-solid fa-truck-fast"></i></div>
+                            <div style="font-weight: 700; font-size: 0.82rem; color: var(--cor-rosa-queimado);">3. Em Trânsito</div>
+                            <div style="font-size: 0.72rem; color: var(--cor-rosa-queimado); font-weight: 600;">Deslocando na rua</div>
+                        </div>
+
+                        <div style="text-align: center; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--cor-borda);">
+                            <div style="color: #ccc; font-size: 1.1rem; margin-bottom: 4px;"><i class="fa-solid fa-clock"></i></div>
+                            <div style="font-weight: 600; font-size: 0.82rem;">4. Rota Final</div>
+                            <div style="font-size: 0.72rem; color: var(--cor-marrom-claro);">Chegada iminente</div>
+                        </div>
+
+                        <div style="text-align: center; padding: 10px; background: #fff; border-radius: 8px; border: 1px solid var(--cor-borda);">
+                            <div style="color: #ccc; font-size: 1.1rem; margin-bottom: 4px;"><i class="fa-solid fa-circle-check"></i></div>
+                            <div style="font-weight: 600; font-size: 0.82rem;">5. Entregue</div>
+                            <div style="font-size: 0.72rem; color: var(--cor-marrom-claro);">No prazo garantido</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Painel de Auditoria de Reembolso e Extorno Seguro (Dupla Verificação: Transportadora + Administração) -->
+                <div style="background: #fffcf9; border: 2px solid var(--cor-rosa-medio); border-radius: var(--raio-borda); padding: 22px; margin-bottom: 24px; box-shadow: var(--sombra-suave);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+                        <h4 style="margin: 0; font-size: 1.15rem; color: var(--cor-marrom-suave);">
+                            <i class="fa-solid fa-shield-halved" style="color: var(--cor-rosa-queimado);"></i> 
+                            Garantia de Entrega & Auditoria de Reembolso &bull; Protocolo: <span style="font-family: monospace; color: var(--cor-rosa-queimado); font-weight: bold;">REEMB-2026-84920</span>
+                        </h4>
+                        <span class="badge-status preparacao" style="font-size: 0.8rem;">
+                            Dupla Verificação Ativa
+                        </span>
+                    </div>
+
+                    <!-- Linha do Tempo da Dupla Verificação -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 18px;">
+                        <div style="background: #fff; border: 1px solid #4e8d53; border-radius: 8px; padding: 12px;">
+                            <div style="color: #208743; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                <i class="fa-solid fa-circle-check"></i> 1. Solicitação do Cliente
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                Registrada no sistema<br>
+                                Chave Pix: <code style="color: var(--cor-rosa-queimado);">larissa.benicio@gmail.com</code>
+                            </div>
+                        </div>
+
+                        <div style="background: #fff; border: 1px solid #4e8d53; border-radius: 8px; padding: 12px;">
+                            <div style="color: #208743; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                <i class="fa-solid fa-circle-check"></i> 2. Laudo da Transportadora
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                LogiAmora / Sedex<br>
+                                Ocorrência: <strong>OC-84920</strong> (Telemetria checada)
+                            </div>
+                        </div>
+
+                        <div style="background: #fff; border: 1px solid var(--cor-rosa-queimado); border-radius: 8px; padding: 12px;">
+                            <div style="color: var(--cor-rosa-queimado); font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                <i class="fa-solid fa-hourglass-half"></i> 3. Auditoria da Administração
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                Gerência Amora Artesanal<br>
+                                Análise financeira em andamento
+                            </div>
+                        </div>
+
+                        <div style="background: #fff; border: 1px solid var(--cor-borda); border-radius: 8px; padding: 12px;">
+                            <div style="color: var(--cor-marrom-claro); font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">
+                                <i class="fa-solid fa-building-columns"></i> 4. Estorno Pix Liquidado
+                            </div>
+                            <div style="font-size: 0.78rem; color: var(--cor-marrom-claro);">
+                                Comprovante E2E bancário gerado após aprovação final
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="background: #fff; padding: 14px 18px; border-radius: 8px; border: 1px solid var(--cor-borda); font-size: 0.84rem; color: var(--cor-marrom-texto); line-height: 1.6;">
+                        <i class="fa-solid fa-circle-info" style="color: var(--cor-rosa-queimado);"></i>
+                        <strong>Segurança Total Amora Artesanal:</strong> Antes de qualquer devolução financeira, nosso sistema realiza a conferência direta com a transportadora e a homologação com a administração para assegurar a integridade da entrega e a satisfação do cliente.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Amora Artesanal</h4>
+                    <p>Sua vitrine virtual de presentes exclusivos e criações manuais com aroma, carinho e delicadeza para marcar momentos especiais.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Coleções</h4>
+                    <ul class="footer-links">
+                        <li><a href="produtos.html?categoria=1">Velas Aromáticas</a></li>
+                        <li><a href="produtos.html?categoria=2">Sabonetes Artesanais</a></li>
+                        <li><a href="produtos.html?categoria=3">Amigurumis</a></li>
+                        <li><a href="produtos.html?categoria=4">Kits Presente</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Atendimento</h4>
+                    <ul class="footer-links">
+                        <li><a href="contato.html">Fale Conosco</a></li>
+                        <li><a href="pedidos.html">Rastrear Pedido</a></li>
+                        <li><a href="carrinho.html">Meu Carrinho</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Localização</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5;">
+                        <strong>IFRO - Campus Porto Velho Calama</strong><br>
+                        Av. Calama, 4985 &bull; Porto Velho/RO &bull; CEP 76820-441
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Leaflet JS & Scripts de Mapa -->
+    <script src="assets/js/leaflet.js"></script>
+    <script src="assets/js/mapa-interativo.js"></script>
+    <script src="assets/js/produtos-data.js"></script>
+    <script src="assets/js/amora-store.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
+                window.AmoraMapas.init('mapa_canvas_tracking', {
+                    origem: {
+                        lat: -8.7441684,
+                        lng: -63.8718575,
+                        nome: 'Ateliê Amora Artesanal (IFRO Calama)',
+                        endereco: 'Av. Calama, 4985 - Bairro Flodoaldo Pontes Pinto, Porto Velho - RO (CEP: 76820-441)'
+                    },
+                    destino: {
+                        lat: -8.7460,
+                        lng: -63.8820,
+                        nome: 'Larissa Benício',
+                        codigoCliente: 'CLI-00002',
+                        telefone: '(69) 98412-3456',
+                        email: 'larissa.benicio@gmail.com',
+                        endereco: 'Av. Tiradentes, nº 3000 (Apto 204) - Bairro Embratel, Porto Velho/RO',
+                        cidade: 'Porto Velho',
+                        estado: 'RO',
+                        cep: '76820-120'
+                    },
+                    status: 'Enviado',
+                    transportadora: 'LogiAmora Transportes / Sedex',
+                    codigoRastreio: 'AM96938701BR',
+                    clienteNome: 'Larissa Benício',
+                    tipoTransporte: 'drone', // 'drone' para curta duração em Porto Velho
+                    tipo: 'rastreamento'
+                });
+            }
+        });
+    </script>
+</body>
+</html>

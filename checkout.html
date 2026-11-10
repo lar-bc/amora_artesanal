@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finalizar Compra Segura | Amora Artesanal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Barra Superior -->
+    <div class="top-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span><i class="fa-solid fa-lock"></i> Ambiente 100% Seguro com Criptografia SSL &bull; Ateliê Amora Artesanal</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link"><i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Rastreamento & Mapa</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="carrinho.html" class="cart-btn" title="Sacola de Compras">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 30px auto 60px;">
+        <div class="section-title">
+            <h2>Finalizar Pedido</h2>
+            <p>Confirme os dados de entrega com verificação de endereço real e escolha a forma de pagamento</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 32px; align-items: start;">
+            <!-- Formulário de Endereço e Pagamento -->
+            <div>
+                <form id="form-checkout" onsubmit="processarCheckout(event)">
+                    <!-- Seção 1: Dados do Cliente -->
+                    <div style="background: #fff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 24px; box-shadow: var(--sombra-suave); margin-bottom: 24px;">
+                        <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin-bottom: 16px;">
+                            <i class="fa-regular fa-user" style="color: var(--cor-rosa-queimado);"></i> 1. Identificação do Cliente
+                        </h3>
+
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Nome Completo *</label>
+                                <input type="text" id="cli-nome" class="form-control" value="Larissa Benício" required>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">E-mail (@gmail.com) *</label>
+                                <input type="email" id="cli-email" class="form-control" value="larissa.benicio@gmail.com" required>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Telefone / WhatsApp *</label>
+                                <input type="tel" id="cli-tel" class="form-control" value="(69) 98412-3456" maxlength="15" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção 2: Endereço de Entrega com Verificação Real -->
+                    <div style="background: #fff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 24px; box-shadow: var(--sombra-suave); margin-bottom: 24px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+                            <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin: 0;">
+                                <i class="fa-solid fa-location-dot" style="color: var(--cor-rosa-queimado);"></i> 2. Endereço de Entrega
+                            </h3>
+                            <span style="font-size: 0.78rem; color: var(--cor-sucesso); font-weight: 600;">
+                                <i class="fa-solid fa-shield-check"></i> Verificação de Localização Real Ativa
+                            </span>
+                        </div>
+
+                        <div id="alerta-cep" style="display: none; margin-bottom: 14px;"></div>
+
+                        <div style="display: grid; grid-template-columns: 140px 1fr; gap: 14px; margin-bottom: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">CEP *</label>
+                                <input type="text" id="end-cep" class="form-control" value="76820-120" maxlength="9" onblur="consultarCepReal(this.value)" required>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Logradouro / Rua / Avenida *</label>
+                                <input type="text" id="end-rua" class="form-control" value="Av. Tiradentes" required>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 120px 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Número *</label>
+                                <input type="text" id="end-num" class="form-control" value="3000" required>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Complemento</label>
+                                <input type="text" id="end-comp" class="form-control" value="Apto 204">
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Bairro *</label>
+                                <input type="text" id="end-bairro" class="form-control" value="Embratel" required>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 2fr 100px; gap: 14px;">
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Cidade *</label>
+                                <input type="text" id="end-cidade" class="form-control" value="Porto Velho" required>
+                            </div>
+                            <div>
+                                <label style="display: block; font-size: 0.85rem; font-weight: 600; color: var(--cor-marrom-texto); margin-bottom: 4px;">Estado *</label>
+                                <input type="text" id="end-estado" class="form-control" value="RO" maxlength="2" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Seção 3: Forma de Pagamento -->
+                    <div style="background: #fff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 24px; box-shadow: var(--sombra-suave); margin-bottom: 24px;">
+                        <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin-bottom: 16px;">
+                            <i class="fa-solid fa-credit-card" style="color: var(--cor-rosa-queimado);"></i> 3. Forma de Pagamento
+                        </h3>
+
+                        <div style="display: flex; gap: 16px; flex-direction: column;">
+                            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; cursor: pointer; background: #fffcf9; padding: 12px; border-radius: 8px; border: 1px solid var(--cor-rosa-medio);">
+                                <input type="radio" name="pagamento" value="pix" checked style="accent-color: var(--cor-rosa-queimado);">
+                                <span><i class="fa-brands fa-pix" style="color: #32bcad;"></i> <strong>Pix Instantâneo</strong> (Aprovação imediata com chave ou QR Code)</span>
+                            </label>
+
+                            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; cursor: pointer; background: #fffcf9; padding: 12px; border-radius: 8px; border: 1px solid var(--cor-borda);">
+                                <input type="radio" name="pagamento" value="cartao" style="accent-color: var(--cor-rosa-queimado);">
+                                <span><i class="fa-regular fa-credit-card"></i> <strong>Cartão de Crédito</strong> (em até 6x sem juros)</span>
+                            </label>
+
+                            <label style="display: flex; align-items: center; gap: 10px; font-size: 0.95rem; cursor: pointer; background: #fffcf9; padding: 12px; border-radius: 8px; border: 1px solid var(--cor-borda);">
+                                <input type="radio" name="pagamento" value="boleto" style="accent-color: var(--cor-rosa-queimado);">
+                                <span><i class="fa-solid fa-barcode"></i> <strong>Boleto Bancário</strong></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; font-size: 1.1rem; padding: 16px;">
+                        <i class="fa-solid fa-check"></i> Confirmar Pedido e Abrir Rastreamento no Mapa
+                    </button>
+                </form>
+            </div>
+
+            <!-- Resumo Lateral -->
+            <div style="background: #fff; border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 24px; box-shadow: var(--sombra-suave);">
+                <h3 style="font-size: 1.15rem; color: var(--cor-marrom-suave); margin-bottom: 14px; border-bottom: 1px solid var(--cor-borda); padding-bottom: 10px;">
+                    Itens da Encomenda
+                </h3>
+
+                <div id="checkout-itens-list" style="margin-bottom: 16px;">
+                    <!-- Preenchido via JS -->
+                </div>
+
+                <div style="border-top: 1px dashed var(--cor-borda); padding-top: 14px; margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-weight: 700; color: var(--cor-marrom-suave);">Valor Total:</span>
+                    <strong id="chk-total" style="font-size: 1.4rem; color: var(--cor-rosa-queimado);">R$ 0,00</strong>
+                </div>
+
+                <div style="background: #eef8ee; border-radius: 8px; padding: 12px; margin-top: 16px; font-size: 0.8rem; color: #1e5a26;">
+                    <i class="fa-solid fa-route"></i> <strong>Envio Expresso Ativado:</strong> Deslocamento animado na rua com Drone em Porto Velho ou Furgão na BR-364.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/produtos-data.js"></script>
+    <script src="assets/js/amora-store.js"></script>
+    <script>
+        function consultarCepReal(cep) {
+            var limpo = cep.replace(/\D/g, '');
+            var alerta = document.getElementById('alerta-cep');
+
+            if (limpo.length !== 8 || limpo === '00000000' || limpo === '12345678') {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <strong>A localização informada não existe na vida real.</strong> Por favor, forneça um CEP e endereço válidos dos Correios.';
+                return;
+            }
+
+            // Consultar ViaCEP online
+            fetch('https://viacep.com.br/ws/' + limpo + '/json/')
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.erro) {
+                        alerta.style.display = 'block';
+                        alerta.className = 'alert alert-danger';
+                        alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O CEP informado não foi encontrado na base oficial dos Correios. Por favor, revise os dados.';
+                    } else {
+                        alerta.style.display = 'block';
+                        alerta.className = 'alert alert-success';
+                        alerta.innerHTML = '<i class="fa-solid fa-circle-check"></i> Localização real confirmada: <strong>' + data.logradouro + ' - ' + data.bairro + ', ' + data.localidade + '/' + data.uf + '</strong>.';
+                        if (data.logradouro) document.getElementById('end-rua').value = data.logradouro;
+                        if (data.bairro) document.getElementById('end-bairro').value = data.bairro;
+                        if (data.localidade) document.getElementById('end-cidade').value = data.localidade;
+                        if (data.uf) document.getElementById('end-estado').value = data.uf;
+                    }
+                })
+                .catch(function(err) {
+                    alerta.style.display = 'none';
+                });
+        }
+
+        function renderCheckoutItens() {
+            var cart = window.AmoraStore.getCart();
+            var container = document.getElementById('checkout-itens-list');
+            if (!container) return;
+
+            if (cart.length === 0) {
+                // Adicionar padrão caso vazio
+                window.AmoraStore.addItem(1, 1, 'Tag personalizada: Para alguém especial');
+                cart = window.AmoraStore.getCart();
+            }
+
+            var html = '';
+            cart.forEach(function(item) {
+                html += '<div style="display:flex;justify-content:space-between;gap:8px;font-size:0.85rem;margin-bottom:8px;color:var(--cor-marrom-texto);">' +
+                    '<span>' + item.quantidade + 'x ' + item.nome + '</span>' +
+                    '<strong>' + window.AmoraStore.formatarMoeda(item.preco * item.quantidade) + '</strong>' +
+                '</div>';
+            });
+
+            container.innerHTML = html;
+            var total = window.AmoraStore.getCartTotal();
+            document.getElementById('chk-total').textContent = window.AmoraStore.formatarMoeda(total);
+        }
+
+        function processarCheckout(e) {
+            e.preventDefault();
+            var email = document.getElementById('cli-email').value.trim();
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                alert('O e-mail cadastrado deve terminar obrigatoriamente com @gmail.com!');
+                return;
+            }
+
+            var cep = document.getElementById('end-cep').value.replace(/\D/g, '');
+            if (cep === '00000000' || cep === '12345678') {
+                alert('A localização informada não existe na vida real. Por favor, forneça um endereço válido.');
+                return;
+            }
+
+            // Redirecionar para pedidos.html para acompanhar no mapa!
+            alert('🎉 Pedido realizado com sucesso! Redirecionando para o rastreamento em tempo real no mapa...');
+            window.location.href = 'pedidos.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCheckoutItens();
+        });
+    </script>
+</body>
+</html>

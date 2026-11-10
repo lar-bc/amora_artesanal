@@ -9,6 +9,22 @@
 
 ---
 
+## 🌐 ACESSE O SITE ONLINE AGORA (SÓ CLICAR NO LINK)
+
+Você pode abrir o site funcionando diretamente pelo seu navegador no computador ou celular, **sem precisar instalar nada**:
+
+### 👉 **[https://lar-bc.github.io/amora_artesanal](https://lar-bc.github.io/amora_artesanal)**
+
+> [!TIP]
+> **Como ativar o link no GitHub Pages (caso ainda não esteja ativo no seu repositório):**
+> 1. No seu repositório no GitHub, clique na aba **Settings** (Configurações).
+> 2. No menu lateral esquerdo, clique em **Pages**.
+> 3. Em **Build and deployment > Source**, selecione: **Deploy from a branch**.
+> 4. Em **Branch**, selecione `main` e a pasta `/(root)`, depois clique em **Save**.
+> 5. Pronto! Em 30 segundos o link **https://lar-bc.github.io/amora_artesanal** estará online para qualquer pessoa abrir!
+
+---
+
 ## 📖 Sobre o Projeto
 
 O **Amora Artesanal** é uma plataforma completa de e-commerce e vitrine virtual voltada para a comercialização e personalização de presentes e produtos artesanais feitos à mão, como:

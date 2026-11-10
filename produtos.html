@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Completo de Produtos | Amora Artesanal</title>
+    <meta name="description" content="Explore todas as nossas peças artesanais: velas com cera de coco, sabonetes botânicos e amigurumis fofos.">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Barra de Notificação Superior -->
+    <div class="top-bar">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <span>✨ Produtos feitos à mão com afeto e exclusividade | Encomendas sob medida com carinho</span>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <span><i class="fa-solid fa-headset"></i> SAC: <strong>0800 892 4567</strong></span>
+                <span><i class="fa-brands fa-whatsapp"></i> WhatsApp: <strong>(69) 98412-3456</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho Principal -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link active">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link"><i class="fa-solid fa-map-location-dot" style="color: var(--cor-rosa-queimado);"></i> Rastreamento & Mapa</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <a href="pedidos.html" class="btn btn-secondary btn-sm" title="Acompanhar envio e trajeto do pedido no mapa">
+                    <i class="fa-solid fa-truck-fast"></i> Rastrear
+                </a>
+                <a href="carrinho.html" class="cart-btn" title="Sacola de Compras">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 30px auto 60px;">
+        <div class="section-title">
+            <h2>Nossa Vitrine de Criações</h2>
+            <p>Selecione as fragrâncias e peças especiais produzidas artesanalmente pelo Ateliê Amora</p>
+        </div>
+
+        <!-- Barra de Filtros e Busca Rápida -->
+        <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 18px 24px; margin-bottom: 28px; box-shadow: var(--sombra-suave); display: flex; gap: 16px; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <!-- Campo de Busca -->
+            <div style="flex: 1; min-width: 240px; position: relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--cor-marrom-claro);"></i>
+                <input type="text" id="input-busca" class="form-control" placeholder="Buscar por aroma, sabonete ou amigurumi..." style="padding-left: 40px;" oninput="aplicarFiltros()">
+            </div>
+
+            <!-- Ordenação -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <label for="select-ordem" style="font-size: 0.85rem; color: var(--cor-marrom-texto); font-weight: 600; white-space: nowrap;">Ordenar:</label>
+                <select id="select-ordem" class="form-control" style="width: auto; font-size: 0.85rem;" onchange="aplicarFiltros()">
+                    <option value="padrao">Destaques</option>
+                    <option value="preco-asc">Menor Preço</option>
+                    <option value="preco-desc">Maior Preço</option>
+                    <option value="nome">Nome (A-Z)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filtros por Categoria -->
+        <div class="categories-pills" id="category-pills" style="margin-bottom: 28px;">
+            <button type="button" class="pill-item active" onclick="selecionarCategoria('todas', this)">
+                <i class="fa-solid fa-border-all"></i> Todas as Peças
+            </button>
+            <button type="button" class="pill-item" onclick="selecionarCategoria(1, this)">
+                <i class="fa-solid fa-fire-flame-curved"></i> Velas Aromáticas
+            </button>
+            <button type="button" class="pill-item" onclick="selecionarCategoria(2, this)">
+                <i class="fa-solid fa-soap"></i> Sabonetes Artesanais
+            </button>
+            <button type="button" class="pill-item" onclick="selecionarCategoria(3, this)">
+                <i class="fa-solid fa-heart"></i> Amigurumis
+            </button>
+            <button type="button" class="pill-item" onclick="selecionarCategoria(4, this)">
+                <i class="fa-solid fa-gift"></i> Kits Presente
+            </button>
+        </div>
+
+        <!-- Grade de Produtos -->
+        <div class="products-grid" id="produtos-grid">
+            <!-- Renderizado via JS -->
+        </div>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Amora Artesanal</h4>
+                    <p>Sua vitrine virtual de presentes exclusivos e criações manuais com aroma, carinho e delicadeza para marcar momentos especiais.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Coleções</h4>
+                    <ul class="footer-links">
+                        <li><a href="produtos.html">Velas Aromáticas</a></li>
+                        <li><a href="produtos.html">Sabonetes Artesanais</a></li>
+                        <li><a href="produtos.html">Amigurumis</a></li>
+                        <li><a href="produtos.html">Kits Presente</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Atendimento</h4>
+                    <ul class="footer-links">
+                        <li><a href="contato.html">Fale Conosco</a></li>
+                        <li><a href="pedidos.html">Rastrear Pedido no Mapa</a></li>
+                        <li><a href="carrinho.html">Meu Carrinho</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Localização</h4>
+                    <p style="font-size: 0.85rem; line-height: 1.5;">
+                        <strong>IFRO - Campus Porto Velho Calama</strong><br>
+                        Av. Calama, 4985 &bull; Porto Velho/RO
+                    </p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/produtos-data.js"></script>
+    <script src="assets/js/amora-store.js"></script>
+    <script>
+        var categoriaAtiva = 'todas';
+
+        function selecionarCategoria(catId, btn) {
+            categoriaAtiva = catId;
+            var pills = document.querySelectorAll('#category-pills .pill-item');
+            pills.forEach(function(p) { p.classList.remove('active'); });
+            if (btn) btn.classList.add('active');
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            if (!window.AMORA_DADOS || !window.AMORA_DADOS.produtos) return;
+            var produtos = window.AMORA_DADOS.produtos.slice();
+
+            // 1. Filtro de Categoria
+            if (categoriaAtiva !== 'todas') {
+                produtos = produtos.filter(function(p) {
+                    return p.categoria_id === parseInt(categoriaAtiva, 10);
+                });
+            }
+
+            // 2. Filtro de Busca
+            var termo = (document.getElementById('input-busca').value || '').toLowerCase().trim();
+            if (termo) {
+                produtos = produtos.filter(function(p) {
+                    return p.nome.toLowerCase().includes(termo) ||
+                           p.descricao.toLowerCase().includes(termo) ||
+                           p.nome_categoria.toLowerCase().includes(termo);
+                });
+            }
+
+            // 3. Ordenação
+            var ordem = document.getElementById('select-ordem').value;
+            if (ordem === 'preco-asc') {
+                produtos.sort(function(a, b) { return a.preco - b.preco; });
+            } else if (ordem === 'preco-desc') {
+                produtos.sort(function(a, b) { return b.preco - a.preco; });
+            } else if (ordem === 'nome') {
+                produtos.sort(function(a, b) { return a.nome.localeCompare(b.nome); });
+            }
+
+            renderGrid(produtos);
+        }
+
+        function renderGrid(produtos) {
+            var grid = document.getElementById('produtos-grid');
+            if (!grid) return;
+
+            if (produtos.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: #fff; border-radius: var(--raio-borda); border: 1px solid var(--cor-borda);">' +
+                    '<i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; color: var(--cor-rosa-medio); margin-bottom: 14px; display: block;"></i>' +
+                    '<h4 style="margin-bottom: 6px;">Nenhuma peça encontrada</h4>' +
+                    '<p style="color: var(--cor-marrom-claro);">Tente buscar por outro termo ou selecione outra categoria.</p>' +
+                    '</div>';
+                return;
+            }
+
+            var html = '';
+            produtos.forEach(function(p) {
+                html += '<div class="product-card">' +
+                    '<div class="card-img-wrap">' +
+                        '<span class="card-badge">' + p.nome_categoria + '</span>' +
+                        '<img src="' + p.imagem_url + '" alt="' + p.nome + '" loading="lazy">' +
+                    '</div>' +
+                    '<div class="card-body">' +
+                        '<span class="card-category">' + p.nome_categoria + '</span>' +
+                        '<h3 class="card-title">' + p.nome + '</h3>' +
+                        '<p class="card-desc">' + p.descricao + '</p>' +
+                        '<div class="card-footer-action">' +
+                            '<div>' +
+                                '<div class="product-price">' + window.AmoraStore.formatarMoeda(p.preco) + '</div>' +
+                                '<span class="stock-tag ' + (p.estoque <= 5 ? 'low' : '') + '">' +
+                                    '<i class="fa-solid fa-box-archive"></i> ' + p.estoque + ' em estoque' +
+                                '</span>' +
+                            '</div>' +
+                            '<div style="display: flex; gap: 8px;">' +
+                                '<button type="button" class="btn btn-secondary btn-sm" onclick="window.AmoraStore.openProductModal(' + p.id + ')" title="Ver Detalhes">' +
+                                    '<i class="fa-solid fa-eye"></i>' +
+                                '</button>' +
+                                '<button type="button" class="btn btn-primary btn-sm" onclick="window.AmoraStore.addItem(' + p.id + ', 1)">' +
+                                    '<i class="fa-solid fa-basket-shopping"></i> Comprar' +
+                                '</button>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+            });
+            grid.innerHTML = html;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Verificar parâmetro na URL (?categoria=X)
+            var urlParams = new URLSearchParams(window.location.search);
+            var catUrl = urlParams.get('categoria');
+            if (catUrl) {
+                var btn = document.querySelector('#category-pills button[onclick*="' + catUrl + '"]');
+                if (btn) {
+                    selecionarCategoria(catUrl, btn);
+                    return;
+                }
+            }
+            aplicarFiltros();
+        });
+    </script>
+</body>
+</html>
