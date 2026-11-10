@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar na Conta | Amora Artesanal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link">Rastreamento</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 40px auto 70px;">
+        <div class="auth-wrapper">
+            <div class="auth-header">
+                <h2>Acesse sua Conta</h2>
+                <p>Acompanhe seus pedidos, rastreamento no mapa e personalizações</p>
+            </div>
+
+            <div id="alerta-login" style="display: none; margin-bottom: 16px;"></div>
+
+            <form id="form-login" onsubmit="fazerLogin(event)">
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="login-email" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Seu E-mail (@gmail.com) *</label>
+                    <input type="email" id="login-email" class="form-control" value="larissa.benicio@gmail.com" placeholder="seu.nome@gmail.com" required>
+                    <small style="color: var(--cor-marrom-claro); font-size: 0.75rem;">O e-mail deve terminar com @gmail.com</small>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="login-senha" style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px;">Sua Senha *</label>
+                    <input type="password" id="login-senha" class="form-control" value="123456" maxlength="32" placeholder="Digite sua senha" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 16px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> Entrar na Loja
+                </button>
+            </form>
+
+            <div class="auth-footer" style="text-align: center; border-top: 1px solid var(--cor-borda); padding-top: 18px; margin-top: 18px;">
+                <p style="font-size: 0.88rem; color: var(--cor-marrom-claro);">
+                    Ainda não tem conta? <a href="cadastro.html" style="color: var(--cor-rosa-queimado); font-weight: 700;">Criar uma conta gratuita</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/amora-store.js"></script>
+    <script>
+        function fazerLogin(e) {
+            e.preventDefault();
+            var email = document.getElementById('login-email').value.trim();
+            var alerta = document.getElementById('alerta-login');
+
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O e-mail de acesso deve terminar obrigatoriamente com <strong>@gmail.com</strong>.';
+                return;
+            }
+
+            // Grava usuário logado
+            var user = {
+                id: 2,
+                codigoCliente: 'CLI-00002',
+                nome: 'Larissa Benício',
+                email: email,
+                telefone: '(69) 98412-3456',
+                endereco: 'Av. Tiradentes, nº 3000 (Apto 204)',
+                bairro: 'Embratel',
+                cidade: 'Porto Velho',
+                estado: 'RO',
+                cep: '76820-120'
+            };
+
+            window.AmoraStore.setUser(user);
+            window.AmoraStore.showToast('Login efetuado com sucesso!', 'Bem-vindo(a) de volta, ' + user.nome);
+            setTimeout(function() { window.location.href = 'pedidos.html'; }, 500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta de Cliente | Amora Artesanal</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header class="main-header">
+        <div class="container nav-wrapper">
+            <a href="index.html" class="logo-area">
+                <div class="logo-icon"><i class="fa-solid fa-heart"></i></div>
+                <div class="logo-text">
+                    <h1>Amora Artesanal</h1>
+                    <span>Presentes e Produtos Feitos à Mão</span>
+                </div>
+            </a>
+
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Início</a></li>
+                <li><a href="produtos.html" class="nav-link">Produtos</a></li>
+                <li><a href="pedidos.html" class="nav-link">Rastreamento</a></li>
+                <li><a href="contato.html" class="nav-link">Fale Conosco</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="container" style="margin: 40px auto 70px;">
+        <div class="auth-wrapper" style="max-width: 680px;">
+            <div class="auth-header">
+                <h2>Criar Conta de Cliente</h2>
+                <p>Cadastre-se para acompanhar entregas por Drone ou Furgão no mapa interativo</p>
+            </div>
+
+            <div id="alerta-cad" style="display: none; margin-bottom: 16px;"></div>
+
+            <form id="form-cad" onsubmit="fazerCadastro(event)">
+                <!-- 1. Dados Pessoais -->
+                <div style="border-bottom: 1px solid var(--cor-borda); padding-bottom: 18px; margin-bottom: 20px;">
+                    <h4 style="font-size: 1.1rem; color: var(--cor-rosa-queimado); margin-bottom: 14px;">
+                        <i class="fa-regular fa-id-card"></i> 1. Dados Pessoais
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Nome Completo *</label>
+                            <input type="text" id="cad-nome" class="form-control" placeholder="Seu nome completo" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">E-mail (@gmail.com) *</label>
+                            <input type="email" id="cad-email" class="form-control" placeholder="exemplo@gmail.com" required>
+                            <small style="color: var(--cor-marrom-claro); font-size: 0.75rem;">Obrigatório terminar com @gmail.com</small>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Telefone / WhatsApp (máx. 11 números) *</label>
+                            <input type="tel" id="cad-tel" class="form-control" maxlength="15" placeholder="(69) 98412-3456" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Senha de Acesso (máx. 32 caracteres) *</label>
+                            <input type="password" id="cad-senha" class="form-control" maxlength="32" placeholder="Qualquer senha até 32 caracteres" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Endereço de Entrega com Verificação Real -->
+                <div style="margin-bottom: 24px;">
+                    <h4 style="font-size: 1.1rem; color: var(--cor-rosa-queimado); margin-bottom: 14px;">
+                        <i class="fa-solid fa-map-pin"></i> 2. Endereço Residencial (Localização Real)
+                    </h4>
+                    <div style="display: grid; grid-template-columns: 140px 1fr; gap: 14px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">CEP (máx. 8 dígitos) *</label>
+                            <input type="text" id="cad-cep" class="form-control" maxlength="9" placeholder="76820-120" onblur="verificarCepCad(this.value)" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Rua / Avenida *</label>
+                            <input type="text" id="cad-rua" class="form-control" placeholder="Ex: Av. Tiradentes" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 120px 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Número *</label>
+                            <input type="text" id="cad-num" class="form-control" placeholder="Ex: 3000" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Complemento</label>
+                            <input type="text" id="cad-comp" class="form-control" placeholder="Apto, Bloco">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Bairro *</label>
+                            <input type="text" id="cad-bairro" class="form-control" placeholder="Ex: Embratel" required>
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 2fr 100px; gap: 14px;">
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Cidade *</label>
+                            <input type="text" id="cad-cidade" class="form-control" placeholder="Ex: Porto Velho" required>
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px;">Estado (máx. 2 letras) *</label>
+                            <input type="text" id="cad-estado" class="form-control" maxlength="2" placeholder="RO" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; font-size: 1.05rem; padding: 14px;">
+                    <i class="fa-solid fa-user-check"></i> Cadastrar e Salvar Informações na Conta
+                </button>
+            </form>
+
+            <div class="auth-footer" style="text-align: center; border-top: 1px solid var(--cor-borda); padding-top: 18px; margin-top: 18px;">
+                <p style="font-size: 0.88rem; color: var(--cor-marrom-claro);">
+                    Já possui conta? <a href="login.html" style="color: var(--cor-rosa-queimado); font-weight: 700;">Fazer login</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Amora Artesanal. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="assets/js/amora-store.js"></script>
+    <script>
+        function verificarCepCad(cep) {
+            var limpo = cep.replace(/\D/g, '');
+            var alerta = document.getElementById('alerta-cad');
+            if (limpo === '00000000' || limpo === '12345678') {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> <strong>A localização informada não existe na vida real.</strong> Por favor, forneça um CEP válido dos Correios.';
+                return;
+            }
+            if (limpo.length === 8) {
+                fetch('https://viacep.com.br/ws/' + limpo + '/json/')
+                    .then(function(res) { return res.json(); })
+                    .then(function(data) {
+                        if (!data.erro) {
+                            if (data.logradouro) document.getElementById('cad-rua').value = data.logradouro;
+                            if (data.bairro) document.getElementById('cad-bairro').value = data.bairro;
+                            if (data.localidade) document.getElementById('cad-cidade').value = data.localidade;
+                            if (data.uf) document.getElementById('cad-estado').value = data.uf;
+                            alerta.style.display = 'none';
+                        }
+                    })
+                    .catch(function(e) {});
+            }
+        }
+
+        function fazerCadastro(e) {
+            e.preventDefault();
+            var email = document.getElementById('cad-email').value.trim();
+            var alerta = document.getElementById('alerta-cad');
+
+            if (!email.toLowerCase().endsWith('@gmail.com')) {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O e-mail de cadastro deve terminar obrigatoriamente com <strong>@gmail.com</strong>.';
+                return;
+            }
+
+            var tel = document.getElementById('cad-tel').value.replace(/\D/g, '');
+            if (tel.length > 11) {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O telefone não pode ter mais de 11 números.';
+                return;
+            }
+
+            var cep = document.getElementById('cad-cep').value.replace(/\D/g, '');
+            if (cep.length > 8 || cep === '00000000' || cep === '12345678') {
+                alerta.style.display = 'block';
+                alerta.className = 'alert alert-danger';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O CEP informado não existe na vida real. Informe um endereço verdadeiro.';
+                return;
+            }
+
+            var idUnico = Math.floor(Math.random() * 90000) + 10000;
+            var user = {
+                id: idUnico,
+                codigoCliente: 'CLI-' + idUnico,
+                nome: document.getElementById('cad-nome').value.trim(),
+                email: email,
+                telefone: document.getElementById('cad-tel').value.trim(),
+                endereco: document.getElementById('cad-rua').value.trim() + ', nº ' + document.getElementById('cad-num').value.trim(),
+                complemento: document.getElementById('cad-comp').value.trim(),
+                bairro: document.getElementById('cad-bairro').value.trim(),
+                cidade: document.getElementById('cad-cidade').value.trim(),
+                estado: document.getElementById('cad-estado').value.trim().toUpperCase(),
+                cep: document.getElementById('cad-cep').value.trim()
+            };
+
+            window.AmoraStore.setUser(user);
+            window.AmoraStore.showToast('Conta criada com sucesso!', 'Seu código exclusivo é #' + user.codigoCliente);
+            setTimeout(function() { window.location.href = 'pedidos.html'; }, 600);
+        }
+    </script>
+</body>
+</html>
