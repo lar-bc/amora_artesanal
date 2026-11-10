@@ -204,21 +204,11 @@
         // Gerenciamento de Usuário e Sessão Local (Sem precisar de servidor)
         getUser: function() {
             try {
-                var user = localStorage.getItem('amora_usuario_logado');
-                if (user) return JSON.parse(user);
-                // Usuário padrão de demonstração para ninguém precisar instalar nada
-                return {
-                    id: 2,
-                    codigoCliente: 'CLI-00002',
-                    nome: 'Larissa Benício',
-                    email: 'larissa.benicio@gmail.com',
-                    telefone: '(69) 98412-3456',
-                    endereco: 'Av. Tiradentes, nº 3000 (Apto 204)',
-                    bairro: 'Embratel',
-                    cidade: 'Porto Velho',
-                    estado: 'RO',
-                    cep: '76820-120'
-                };
+                var userStr = localStorage.getItem('amora_usuario_logado');
+                if (!userStr || userStr === 'null' || userStr === 'undefined') {
+                    return null;
+                }
+                return JSON.parse(userStr);
             } catch (e) {
                 return null;
             }
@@ -226,18 +216,24 @@
 
         setUser: function(user) {
             try {
-                localStorage.setItem('amora_usuario_logado', JSON.stringify(user));
+                if (user) {
+                    localStorage.setItem('amora_usuario_logado', JSON.stringify(user));
+                } else {
+                    localStorage.removeItem('amora_usuario_logado');
+                }
                 this.updateUserHeader();
             } catch (e) {
-                console.error(e);
+                console.error('Erro ao salvar usuário:', e);
             }
         },
 
         logout: function() {
             localStorage.removeItem('amora_usuario_logado');
             this.updateUserHeader();
-            this.showToast('Sessão encerrada', 'Você saiu da sua conta.');
-            setTimeout(function() { window.location.href = 'index.html'; }, 600);
+            this.showToast('Sessão finalizada', 'Você saiu da sua conta.');
+            setTimeout(function() {
+                window.location.href = 'login.html';
+            }, 300);
         },
 
         updateUserHeader: function() {
@@ -246,18 +242,38 @@
 
             areas.forEach(function(area) {
                 if (user) {
-                    var primeiroNome = user.nome.split(' ')[0];
+                    var primeiroNome = (user.nome || 'Usuário').split(' ')[0];
+                    var badgeRole = '';
+                    if (user.tipo_usuario === 'admin') {
+                        badgeRole = ' <span style="background:#5c3d2e;color:#fff;font-size:0.7rem;padding:2px 6px;border-radius:6px;font-weight:600;">Admin</span>';
+                    } else if (user.tipo_usuario === 'logistica') {
+                        badgeRole = ' <span style="background:#2b6cb0;color:#fff;font-size:0.7rem;padding:2px 6px;border-radius:6px;font-weight:600;">Logística</span>';
+                    } else if (user.tipo_usuario === 'auditor') {
+                        badgeRole = ' <span style="background:#805ad5;color:#fff;font-size:0.7rem;padding:2px 6px;border-radius:6px;font-weight:600;">Auditor</span>';
+                    }
+
                     area.innerHTML = 
                         '<div style="display:flex;align-items:center;gap:10px;font-size:0.85rem;color:var(--cor-marrom-suave);">' +
-                            '<span><i class="fa-regular fa-circle-user" style="color:var(--cor-rosa-queimado);"></i> Olá, <strong>' + primeiroNome + '</strong></span>' +
-                            '<a href="pedidos.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-truck-fast"></i> Rastrear</a>' +
-                            '<button type="button" class="btn btn-outline btn-sm" onclick="window.AmoraStore.logout()" style="padding:4px 8px;font-size:0.75rem;" title="Sair"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>' +
+                            '<a href="pedidos.html" style="display:flex;align-items:center;gap:6px;color:var(--cor-marrom-texto);text-decoration:none;" title="Ver Meus Pedidos">' +
+                                '<i class="fa-solid fa-circle-user" style="color:var(--cor-rosa-queimado);font-size:1.1rem;"></i>' +
+                                '<span>Olá, <strong>' + primeiroNome + '</strong>' + badgeRole + '</span>' +
+                            '</a>' +
+                            '<a href="pedidos.html" class="btn btn-secondary btn-sm" style="padding:5px 10px;font-size:0.78rem;" title="Rastrear Encomenda">' +
+                                '<i class="fa-solid fa-truck-fast"></i> Pedidos' +
+                            '</a>' +
+                            '<button type="button" class="btn btn-outline btn-sm" onclick="window.AmoraStore.logout()" style="padding:5px 12px;font-size:0.78rem;color:#b91c1c;border-color:#fca5a5;background:#fef2f2;font-weight:700;display:inline-flex;align-items:center;gap:5px;cursor:pointer;" title="Sair desta conta">' +
+                                '<i class="fa-solid fa-right-from-bracket"></i> Sair' +
+                            '</button>' +
                         '</div>';
                 } else {
                     area.innerHTML = 
                         '<div style="display:flex;align-items:center;gap:8px;">' +
-                            '<a href="login.html" class="btn btn-secondary btn-sm"><i class="fa-solid fa-right-to-bracket"></i> Entrar</a>' +
-                            '<a href="cadastro.html" class="btn btn-outline btn-sm"><i class="fa-solid fa-user-plus"></i> Cadastrar</a>' +
+                            '<a href="login.html" class="btn btn-secondary btn-sm" style="padding:6px 14px;font-size:0.82rem;display:inline-flex;align-items:center;gap:5px;">' +
+                                '<i class="fa-solid fa-right-to-bracket"></i> Entrar' +
+                            '</a>' +
+                            '<a href="cadastro.html" class="btn btn-outline btn-sm" style="padding:6px 14px;font-size:0.82rem;display:inline-flex;align-items:center;gap:5px;">' +
+                                '<i class="fa-solid fa-user-plus"></i> Cadastrar' +
+                            '</a>' +
                         '</div>';
                 }
             });

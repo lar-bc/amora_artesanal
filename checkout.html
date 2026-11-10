@@ -252,11 +252,22 @@
             document.getElementById('chk-total').textContent = window.AmoraStore.formatarMoeda(total);
         }
 
+        function preencherDadosCliente() {
+            var user = window.AmoraStore.getUser();
+            if (user) {
+                if (document.getElementById('cli-nome')) document.getElementById('cli-nome').value = user.nome || '';
+                if (document.getElementById('cli-email')) document.getElementById('cli-email').value = user.email || '';
+                if (document.getElementById('cli-tel')) document.getElementById('cli-tel').value = user.telefone || '(69) 98412-3456';
+                if (document.getElementById('end-cep') && user.cep) document.getElementById('end-cep').value = user.cep;
+            }
+        }
+
         function processarCheckout(e) {
             e.preventDefault();
             var email = document.getElementById('cli-email').value.trim();
-            if (!email.toLowerCase().endsWith('@gmail.com')) {
-                alert('O e-mail cadastrado deve terminar obrigatoriamente com @gmail.com!');
+            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!re.test(email)) {
+                alert('Por favor, informe um endereço de e-mail válido!');
                 return;
             }
 
@@ -273,6 +284,7 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             renderCheckoutItens();
+            preencherDadosCliente();
         });
     </script>
 </body>

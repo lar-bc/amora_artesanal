@@ -156,13 +156,11 @@
 
         function fazerCadastro(e) {
             e.preventDefault();
-            var email = document.getElementById('cad-email').value.trim();
-            var alerta = document.getElementById('alerta-cad');
-
-            if (!email.toLowerCase().endsWith('@gmail.com')) {
+            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!re.test(email)) {
                 alerta.style.display = 'block';
                 alerta.className = 'alert alert-danger';
-                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> O e-mail de cadastro deve terminar obrigatoriamente com <strong>@gmail.com</strong>.';
+                alerta.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Por favor, informe um e-mail válido.';
                 return;
             }
 

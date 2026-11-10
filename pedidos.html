@@ -65,31 +65,30 @@
             </div>
         </div>
 
-        <!-- Card de Identificação Única do Cliente e Dados Pessoais Salvos -->
-        <div style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--sombra-suave); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+        <!-- Card de Identificação Única do Cliente e Dados Pessoais Salvos (Dinâmico) -->
+        <div id="card-usuario-pedidos" style="background: var(--cor-branco); border: 1px solid var(--cor-borda); border-radius: var(--raio-borda); padding: 20px 24px; margin-bottom: 28px; box-shadow: var(--sombra-suave); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 16px;">
                 <div style="width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg, var(--cor-rosa-queimado), #df8d9c); display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem;">
                     <i class="fa-solid fa-user-check"></i>
                 </div>
                 <div>
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <h3 style="margin: 0; font-size: 1.2rem; color: var(--cor-marrom-suave);">Larissa Benício</h3>
-                        <span style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 2px 10px; border-radius: 12px; font-size: 0.82rem;">
+                        <h3 id="usr-nome-card" style="margin: 0; font-size: 1.2rem; color: var(--cor-marrom-suave);">Carregando usuário...</h3>
+                        <span id="usr-badge-card" style="background: var(--cor-rosa-claro); border: 1px solid var(--cor-rosa-queimado); color: var(--cor-rosa-queimado); font-weight: 700; padding: 2px 10px; border-radius: 12px; font-size: 0.82rem;">
                             <i class="fa-solid fa-id-badge"></i> #CLI-00002
                         </span>
                         <span style="background: #eef7ee; color: #1e5a26; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 600;">
                             <i class="fa-solid fa-lock"></i> Dados Salvos na Conta
                         </span>
                     </div>
-                    <div style="font-size: 0.85rem; color: var(--cor-marrom-claro); margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;">
-                        <span><i class="fa-regular fa-envelope"></i> larissa.benicio@gmail.com</span>
-                        <span><i class="fa-brands fa-whatsapp"></i> (69) 98412-3456</span>
-                        <span><i class="fa-solid fa-location-dot"></i> Porto Velho/RO</span>
+                    <div id="usr-detalhes-card" style="font-size: 0.85rem; color: var(--cor-marrom-claro); margin-top: 4px; display: flex; gap: 16px; flex-wrap: wrap;">
+                        <span><i class="fa-regular fa-envelope"></i> Carregando...</span>
                     </div>
                 </div>
             </div>
-            <div style="font-size: 0.82rem; color: var(--cor-marrom-claro);">
-                <i class="fa-solid fa-shield-check" style="color: var(--cor-sucesso);"></i> Suas informações pessoais e endereço estão salvos nesta conta.
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <a href="login.html" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-users"></i> Trocar de Conta</a>
+                <button type="button" class="btn btn-danger btn-sm" onclick="window.AmoraStore.logout()" style="background:#dc2626;color:#fff;border:none;padding:6px 14px;border-radius:8px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
             </div>
         </div>
 
@@ -371,7 +370,55 @@
     <script src="assets/js/amora-store.js"></script>
 
     <script>
+        function atualizarDadosUsuarioNaTela() {
+            var user = window.AmoraStore.getUser();
+            var nomeElem = document.getElementById('usr-nome-card');
+            var badgeElem = document.getElementById('usr-badge-card');
+            var detalhesElem = document.getElementById('usr-detalhes-card');
+
+            if (!nomeElem) return;
+
+            if (user) {
+                nomeElem.textContent = user.nome;
+                var cod = user.codigoCliente || '#CLI-0000' + user.id;
+                badgeElem.innerHTML = '<i class="fa-solid fa-id-badge"></i> ' + cod;
+
+                var papelHtml = '';
+                if (user.tipo_usuario === 'admin') {
+                    papelHtml = ' <span style="background:#5c3d2e;color:#fff;font-size:0.75rem;padding:2px 8px;border-radius:10px;font-weight:700;">👑 Admin Geral</span>';
+                } else if (user.tipo_usuario === 'logistica') {
+                    papelHtml = ' <span style="background:#1e40af;color:#fff;font-size:0.75rem;padding:2px 8px;border-radius:10px;font-weight:700;">🚚 Logística Sedex</span>';
+                } else if (user.tipo_usuario === 'auditor') {
+                    papelHtml = ' <span style="background:#6b21a8;color:#fff;font-size:0.75rem;padding:2px 8px;border-radius:10px;font-weight:700;">⚖️ Auditor Pix</span>';
+                }
+
+                badgeElem.outerHTML = '<span id="usr-badge-card" style="background:var(--cor-rosa-claro);border:1px solid var(--cor-rosa-queimado);color:var(--cor-rosa-queimado);font-weight:700;padding:2px 10px;border-radius:12px;font-size:0.82rem;"><i class="fa-solid fa-id-badge"></i> ' + cod + '</span>' + papelHtml;
+
+                detalhesElem.innerHTML = 
+                    '<span><i class="fa-regular fa-envelope"></i> ' + user.email + '</span>' +
+                    '<span><i class="fa-brands fa-whatsapp"></i> ' + (user.telefone || '(69) 98412-3456') + '</span>' +
+                    '<span><i class="fa-solid fa-location-dot"></i> ' + (user.cidade || 'Porto Velho') + '/' + (user.estado || 'RO') + '</span>';
+            } else {
+                nomeElem.textContent = 'Visitante (Não Conectado)';
+                badgeElem.style.display = 'none';
+                detalhesElem.innerHTML = '<span><i class="fa-solid fa-info-circle"></i> Entre em uma conta para acompanhar encomendas associadas ao seu e-mail.</span>';
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            atualizarDadosUsuarioNaTela();
+
+            var user = window.AmoraStore.getUser() || {
+                nome: 'Larissa Benício',
+                codigoCliente: 'CLI-00002',
+                telefone: '(69) 98412-3456',
+                email: 'larissa.benicio@gmail.com',
+                endereco: 'Av. Tiradentes, nº 3000 (Apto 204) - Bairro Embratel, Porto Velho/RO',
+                cidade: 'Porto Velho',
+                estado: 'RO',
+                cep: '76820-120'
+            };
+
             if (window.AmoraMapas && typeof window.AmoraMapas.init === 'function') {
                 window.AmoraMapas.init('mapa_canvas_tracking', {
                     origem: {
@@ -383,19 +430,19 @@
                     destino: {
                         lat: -8.7460,
                         lng: -63.8820,
-                        nome: 'Larissa Benício',
-                        codigoCliente: 'CLI-00002',
-                        telefone: '(69) 98412-3456',
-                        email: 'larissa.benicio@gmail.com',
-                        endereco: 'Av. Tiradentes, nº 3000 (Apto 204) - Bairro Embratel, Porto Velho/RO',
-                        cidade: 'Porto Velho',
-                        estado: 'RO',
-                        cep: '76820-120'
+                        nome: user.nome,
+                        codigoCliente: user.codigoCliente || '#CLI-0000' + user.id,
+                        telefone: user.telefone || '(69) 98412-3456',
+                        email: user.email,
+                        endereco: user.endereco || 'Av. Tiradentes, nº 3000 - Porto Velho/RO',
+                        cidade: user.cidade || 'Porto Velho',
+                        estado: user.estado || 'RO',
+                        cep: user.cep || '76820-120'
                     },
                     status: 'Enviado',
                     transportadora: 'LogiAmora Transportes / Sedex',
                     codigoRastreio: 'AM96938701BR',
-                    clienteNome: 'Larissa Benício',
+                    clienteNome: user.nome,
                     tipoTransporte: 'drone', // 'drone' para curta duração em Porto Velho
                     tipo: 'rastreamento'
                 });
