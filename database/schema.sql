@@ -147,8 +147,12 @@ CREATE TABLE IF NOT EXISTS rastreamento_logistica (
 
 -- ========================================================
 -- DADOS INICIAIS (SEED DATA)
--- Senha padrão para todos os usuários de teste: senha123
--- Hash Bcrypt: $2y$10$NJjk6UuAbe4qlzPHgSr2Vu2A94L67Vuvh9ataRyDLQDLxou2VW.uC
+-- Senhas individuais exclusivas com hash Bcrypt por perfil de usuário:
+-- 1. admin@amora.com               -> Senha: AmoraAdmin@2026
+-- 2. larissa.benicio@gmail.com     -> Senha: Larissa@Amora2026
+-- 3. mariana.vasconcelos@amora.com.br -> Senha: Mariana#Vasc26
+-- 4. logistica@amora.com           -> Senha: LogiSedex#2026
+-- 5. auditoria@amora.com           -> Senha: AuditPix#2026
 -- ========================================================
 
 -- Categorias
@@ -159,13 +163,14 @@ INSERT INTO categorias (id, nome_categoria) VALUES
 (4, 'Kits Presente')
 ON DUPLICATE KEY UPDATE nome_categoria=VALUES(nome_categoria);
 
--- Usuários de Teste Pré-configurados
+-- Usuários de Teste Pré-configurados com Senhas Individuais
 INSERT INTO usuarios (id, nome, email, senha_hash, tipo_usuario, data_nascimento, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado) VALUES
-(1, 'Larissa Benício (Administradora)', 'admin@amora.com', '$2y$10$NJjk6UuAbe4qlzPHgSr2Vu2A94L67Vuvh9ataRyDLQDLxou2VW.uC', 'admin', '2004-09-29', '(69) 98425-6710', '76820-120', 'Av. Tiradentes', '3000', 'Ateliê Central', 'Embratel', 'Porto Velho', 'RO'),
-(2, 'Mariana Vasconcelos (Cliente)', 'mariana.vasconcelos@amora.com.br', '$2y$10$NJjk6UuAbe4qlzPHgSr2Vu2A94L67Vuvh9ataRyDLQDLxou2VW.uC', 'cliente', '1998-05-14', '(69) 99345-1234', '76820-441', 'Av. Calama (IFRO Calama)', '4985', 'Bloco de Informática', 'Flodoaldo Pontes Pinto', 'Porto Velho', 'RO'),
-(3, 'Moacir Supervisor (Logística)', 'logistica@amora.com', '$2y$10$NJjk6UuAbe4qlzPHgSr2Vu2A94L67Vuvh9ataRyDLQDLxou2VW.uC', 'logistica', '1990-11-20', '(69) 98111-2233', '76801-000', 'Rua José Bonifácio', '450', 'Hangar Drones', 'Olaria', 'Porto Velho', 'RO'),
-(4, 'Renan Innot (Auditor Financeiro)', 'auditoria@amora.com', '$2y$10$NJjk6UuAbe4qlzPHgSr2Vu2A94L67Vuvh9ataRyDLQDLxou2VW.uC', 'auditor', '1992-08-03', '(69) 98444-5566', '76803-888', 'Av. Presidente Dutra', '120', 'Sala 402', 'Centro', 'Porto Velho', 'RO')
-ON DUPLICATE KEY UPDATE nome=VALUES(nome);
+(1, 'Larissa Benício (Administradora)', 'admin@amora.com', '$2y$10$gr1WZJSbWMRtD0zHk0Jcce/7CJl7QNHEamfx1ggyJLclbJ/57b2gK', 'admin', '2004-09-29', '(69) 98425-6710', '76820-120', 'Av. Tiradentes', '3000', 'Ateliê Central', 'Embratel', 'Porto Velho', 'RO'),
+(2, 'Larissa Benício (Cliente)', 'larissa.benicio@gmail.com', '$2y$10$Da3f5d8RvoYjIq3Gx905p.TNPXYSAnVxx2AaT0fGhRBCukzJDwF1e', 'cliente', '2004-09-29', '(69) 98412-3456', '76820-120', 'Av. Tiradentes', '3000', 'Apto 204', 'Embratel', 'Porto Velho', 'RO'),
+(3, 'Mariana Vasconcelos (Cliente)', 'mariana.vasconcelos@amora.com.br', '$2y$10$w7rEcn6VsJwOdWK2meXXwO5yHVhDlnB4xjk6c..uGiCukCjF287bW', 'cliente', '1998-05-14', '(69) 99345-1234', '76820-441', 'Av. Calama (IFRO Calama)', '4985', 'Bloco de Informática', 'Flodoaldo Pontes Pinto', 'Porto Velho', 'RO'),
+(4, 'Moacir Supervisor (Logística)', 'logistica@amora.com', '$2y$10$HtibFT1zwad/ePJv7EnCiepj5uxOwhqqdZnBsYVhZNXOXy5CuwqYG', 'logistica', '1990-11-20', '(69) 98111-2233', '76801-000', 'Rua José Bonifácio', '450', 'Hangar Drones', 'Olaria', 'Porto Velho', 'RO'),
+(5, 'Renan Innot (Auditor Financeiro)', 'auditoria@amora.com', '$2y$10$lz1fQPpx/HHT6lhI.CalrOtQykTx7RFtAO0UciqBkLXN8IWK.zR9G', 'auditor', '1992-08-03', '(69) 98444-5566', '76803-888', 'Av. Presidente Dutra', '120', 'Sala 402', 'Centro', 'Porto Velho', 'RO')
+ON DUPLICATE KEY UPDATE nome=VALUES(nome), senha_hash=VALUES(senha_hash);
 
 -- Produtos Artesanais
 INSERT INTO produtos (id, categoria_id, nome, descricao, preco, estoque, imagem_url) VALUES

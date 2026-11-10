@@ -164,12 +164,26 @@ function inicializarBanco(): bool {
                 (4, 'Kits Presente');");
         }
 
-        // Popular ou atualizar usuários padrão
-        $countUsers = $db->query("SELECT COUNT(*) FROM usuarios")->fetchColumn();
-        if ($countUsers == 0) {
-            $stmt = $db->prepare("INSERT INTO usuarios (id, nome, email, senha_hash, tipo_usuario, data_nascimento, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([1, 'Administradora Amora', 'admin@amora.com', '$2y$10$5I6ySAqTLl4i9M/lh0QPMO3T/4xxfaah/qGz9wgn9Irp2.luVxNYm', 'admin', '1995-04-12', '(69) 98425-6710', '76820-120', 'Av. Tiradentes', '3000', 'Ateliê', 'Embratel', 'Porto Velho', 'RO']);
-            $stmt->execute([2, 'Larissa Benício', 'cliente@exemplo.com', '$2y$10$bn6OtSPtaZZz4HqMi6Zgz.wnetbIj/H6HJgrLOH6bjiPwxFmeIWiO', 'cliente', '2004-09-29', '(69) 99345-1234', '76801-000', 'Rua José Bonifácio', '450', 'Apto 102', 'Olaria', 'Porto Velho', 'RO']);
+        // Popular ou atualizar usuários padrão com senhas individuais exclusivas
+        $usuariosIniciais = [
+            [1, 'Larissa Benício (Administradora)', 'admin@amora.com', '$2y$10$gr1WZJSbWMRtD0zHk0Jcce/7CJl7QNHEamfx1ggyJLclbJ/57b2gK', 'admin', '2004-09-29', '(69) 98425-6710', '76820-120', 'Av. Tiradentes', '3000', 'Ateliê Central', 'Embratel', 'Porto Velho', 'RO'],
+            [2, 'Larissa Benício (Cliente)', 'larissa.benicio@gmail.com', '$2y$10$Da3f5d8RvoYjIq3Gx905p.TNPXYSAnVxx2AaT0fGhRBCukzJDwF1e', 'cliente', '2004-09-29', '(69) 98412-3456', '76820-120', 'Av. Tiradentes', '3000', 'Apto 204', 'Embratel', 'Porto Velho', 'RO'],
+            [3, 'Mariana Vasconcelos (Cliente)', 'mariana.vasconcelos@amora.com.br', '$2y$10$w7rEcn6VsJwOdWK2meXXwO5yHVhDlnB4xjk6c..uGiCukCjF287bW', 'cliente', '1998-05-14', '(69) 99345-1234', '76820-441', 'Av. Calama (IFRO Calama)', '4985', 'Bloco de Informática', 'Flodoaldo Pontes Pinto', 'Porto Velho', 'RO'],
+            [4, 'Moacir Supervisor (Logística)', 'logistica@amora.com', '$2y$10$HtibFT1zwad/ePJv7EnCiepj5uxOwhqqdZnBsYVhZNXOXy5CuwqYG', 'logistica', '1990-11-20', '(69) 98111-2233', '76801-000', 'Rua José Bonifácio', '450', 'Hangar Drones', 'Olaria', 'Porto Velho', 'RO'],
+            [5, 'Renan Innot (Auditor Financeiro)', 'auditoria@amora.com', '$2y$10$lz1fQPpx/HHT6lhI.CalrOtQykTx7RFtAO0UciqBkLXN8IWK.zR9G', 'auditor', '1992-08-03', '(69) 98444-5566', '76803-888', 'Av. Presidente Dutra', '120', 'Sala 402', 'Centro', 'Porto Velho', 'RO']
+        ];
+
+        foreach ($usuariosIniciais as $u) {
+            $stmtUserCheck = $db->prepare("SELECT id FROM usuarios WHERE id = ? OR email = ?");
+            $stmtUserCheck->execute([$u[0], $u[2]]);
+            $existente = $stmtUserCheck->fetch();
+            if ($existente) {
+                $stmtUserUp = $db->prepare("UPDATE usuarios SET nome = ?, email = ?, senha_hash = ?, tipo_usuario = ?, telefone = ?, cep = ?, logradouro = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ? WHERE id = ?");
+                $stmtUserUp->execute([$u[1], $u[2], $u[3], $u[4], $u[6], $u[7], $u[8], $u[9], $u[10], $u[11], $u[12], $u[13], $existente['id']]);
+            } else {
+                $stmtUserIns = $db->prepare("INSERT INTO usuarios (id, nome, email, senha_hash, tipo_usuario, data_nascimento, telefone, cep, logradouro, numero, complemento, bairro, cidade, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmtUserIns->execute($u);
+            }
         }
 
         // Atualizar produtos com Preços Reais de Mercado

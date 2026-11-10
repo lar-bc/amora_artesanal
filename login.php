@@ -80,18 +80,6 @@ require_once __DIR__ . '/includes/header.php';
                 <span><?= sanitizar($erro) ?></span>
             </div>
         <?php endif; ?>
-        <div style="background: #fdf6f2; border: 1px dashed var(--cor-rosa-queimado); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-                <i class="fa-solid fa-bolt" style="color: #d97706;"></i>
-                <strong style="color: var(--cor-marrom-suave); font-size: 0.9rem;">Preencher com 1 Clique (Contas de Teste):</strong>
-            </div>
-            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                <button type="button" class="btn btn-outline btn-sm" onclick="preencherLogin('admin@amora.com', 'senha123')" style="font-size: 0.78rem;">👑 Admin (admin@amora.com)</button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="preencherLogin('mariana.vasconcelos@amora.com.br', 'senha123')" style="font-size: 0.78rem;">🌿 Cliente (mariana...)</button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="preencherLogin('logistica@amora.com', 'senha123')" style="font-size: 0.78rem;">🚚 Logística (logistica...)</button>
-                <button type="button" class="btn btn-outline btn-sm" onclick="preencherLogin('auditoria@amora.com', 'senha123')" style="font-size: 0.78rem;">⚖️ Auditor (auditoria...)</button>
-            </div>
-        </div>
 
         <form action="<?= BASE_URL ?>/login.php" method="POST">
             <input type="hidden" name="csrf_token" value="<?= getCsrfToken() ?>">
@@ -111,13 +99,6 @@ require_once __DIR__ . '/includes/header.php';
                 <i class="fa-solid fa-arrow-right-to-bracket"></i> Entrar
             </button>
         </form>
-
-        <script>
-            function preencherLogin(email, senha) {
-                document.getElementById('email').value = email;
-                document.getElementById('senha').value = senha;
-            }
-        </script>
 
         <div class="auth-footer" style="margin-top: 28px; border-top: 1px solid var(--cor-borda); padding-top: 20px;">
             <p>Ainda não possui conta? <a href="<?= BASE_URL ?>/cadastro.php<?= !empty($redirect) ? '?redirect=' . urlencode($redirect) : '' ?>"><strong>Cadastre-se com entrega completa</strong></a></p>

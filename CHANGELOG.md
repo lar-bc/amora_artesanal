@@ -4,6 +4,18 @@ Todas as alterações e evoluções do sistema **Amora Artesanal** foram documen
 
 ---
 
+## [v1.4.1] - 2026-11-10 (Hardening de Segurança e Senhas Individuais)
+### Alterado
+- **Remoção de Preenchimento Automático na Autenticação:** Eliminação de qualquer valor pré-preenchido de e-mail e senha nos formulários de login (`login.html` e `login.php`). Os campos agora iniciam completamente vazios, exigindo entrada manual e consciente pelo usuário.
+- **Remoção do Painel de Acesso Rápido em 1 Clique:** Remoção definitiva de botões de atalho na tela de login por solicitação da desenvolvedora para evitar exposição de credenciais e garantir privacidade e integridade do controle de acesso.
+- **Senhas Individuais Exclusivas por Perfil:** Definição de senhas únicas para cada perfil de teste (`admin`, `larissa`, `mariana`, `logistica`, `auditoria`), com hashes Bcrypt individuais gerados e atualizados no banco de dados e na especificação formal.
+
+### Revisão Humana Crítica vs. IA
+- *Proposta da IA:* A IA sugeriu manter botões de 1 clique e campos pré-preenchidos na tela de login para facilitar os testes rápidos.
+- *Intervenção da Aluna:* A aluna rejeitou enfaticamente a proposta ("se tiver isso aqui vai acabar não tendo segurança no site, e tire também a senha e o e-mail quando for fazer o login; cada usuário tem uma senha individual e que não apareça na hora que eu for fazer o login"), forçando a aplicação estrita de boas práticas de segurança da informação e privacidade de dados.
+
+---
+
 ## [v1.4.0] - 2026-11-10 (Versão de Entrega Oficial)
 ### Adicionado
 - **Arquitetura Desacoplada Zero-Install (GitHub Pages):** Criação da camada de espelhamento estático em HTML5/JavaScript moderno (`index.html`, `produtos.html`, `pedidos.html`, `contato.html`, `carrinho.html`, `checkout.html`, `login.html`, `cadastro.html`), permitindo acesso universal imediato sem que nenhum usuário ou avaliador precise instalar PHP, Apache, MySQL ou extensões locais.

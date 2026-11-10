@@ -89,13 +89,14 @@ php -S 127.0.0.1:8000
 
 ---
 
-## 🔑 Credenciais de Teste Pré-Configuradas (Senha Padrão: `senha123`)
+## 🔑 Credenciais de Teste Pré-Configuradas (Senhas Individuais Exclusivas)
 
-| Papel no Sistema | E-mail de Acesso | Senha Padrão | Funcionalidades de Teste |
+Cada perfil possui sua própria senha individual com criptografia Bcrypt. Na tela de login, os campos iniciam completamente em branco para garantir privacidade e segurança:
+
+| Papel no Sistema | E-mail de Acesso | Senha Individual Exclusiva | Funcionalidades de Teste |
 | :--- | :--- | :--- | :--- |
-| **Administradora Geral** | `admin@amora.com` | `senha123` | Painel de controle, estoque e homologação de estornos |
-| **Cliente Consumidora** | `mariana.vasconcelos@amora.com.br` | `senha123` | Catálogo, carrinho, checkout ViaCEP e rastreamento |
-| **Supervisor de Logística** | `logistica@amora.com` | `senha123` | Emissão de laudo pericial de transporte LogiAmora |
-| **Auditor Financeiro** | `auditoria@amora.com` | `senha123` | Conferência de conformidade e liquidação Pix |
-
-*(Na tela de login, há atalhos de 1 clique para entrar rapidamente em qualquer perfil).*
+| **Administradora Geral** | `admin@amora.com` | `AmoraAdmin@2026` | Painel de controle, estoque e homologação de estornos |
+| **Cliente Consumidora (Larissa)** | `larissa.benicio@gmail.com` | `Larissa@Amora2026` | Catálogo, carrinho, checkout ViaCEP e rastreamento |
+| **Cliente Consumidora (Mariana)** | `mariana.vasconcelos@amora.com.br` | `Mariana#Vasc26` | Teste com endereço real do IFRO Calama |
+| **Supervisor de Logística** | `logistica@amora.com` | `LogiSedex#2026` | Emissão de laudo pericial de transporte LogiAmora |
+| **Auditor Financeiro** | `auditoria@amora.com` | `AuditPix#2026` | Conferência de conformidade e liquidação Pix |

@@ -182,17 +182,16 @@ Para clonar, configurar e rodar o sistema localmente em qualquer computador limp
 
 ### 3.5 Como Testar
 
-#### Credenciais de Teste Pré-Configuradas (Senha Padrão: `senha123`)
-O banco de dados já possui perfis de teste pré-configurados com senhas Bcrypt válidas:
+#### Credenciais de Teste Pré-Configuradas (Senhas Individuais Exclusivas)
+Para garantir autenticidade e segurança, cada perfil possui sua própria senha individual exclusiva (com hash Bcrypt gravado no banco de dados). Na tela de login, por diretriz de privacidade e segurança, os campos iniciam completamente em branco (sem nenhum preenchimento automático ou exibição de dados de outros usuários):
 
-| Perfil | E-mail de Teste | Senha Padrão | Responsabilidade no Sistema |
+| Perfil | E-mail de Teste | Senha Individual Exclusiva | Responsabilidade no Sistema |
 | :--- | :--- | :--- | :--- |
-| **Administradora Geral** | `admin@amora.com` | `senha123` | Painel de controle, estoque e homologação de estornos |
-| **Cliente Consumidora** | `mariana.vasconcelos@amora.com.br` | `senha123` | Catálogo, carrinho, checkout ViaCEP e rastreamento |
-| **Supervisor de Logística** | `logistica@amora.com` | `senha123` | Emissão de laudo pericial da transportadora LogiAmora |
-| **Auditor Financeiro** | `auditoria@amora.com` | `senha123` | Validação de estornos e conformidade bancária Pix |
-
-*(Na tela de login, há também botões de atalho para entrar ou alternar com 1 clique em qualquer um dos perfis).*
+| **Administradora Geral** | `admin@amora.com` | `AmoraAdmin@2026` | Painel de controle, estoque e homologação de estornos |
+| **Cliente Consumidora (Larissa)** | `larissa.benicio@gmail.com` | `Larissa@Amora2026` | Catálogo, carrinho, checkout ViaCEP e rastreamento |
+| **Cliente Consumidora (Mariana)** | `mariana.vasconcelos@amora.com.br` | `Mariana#Vasc26` | Teste com endereço do IFRO Campus Calama |
+| **Supervisor de Logística** | `logistica@amora.com` | `LogiSedex#2026` | Emissão de laudo pericial da transportadora LogiAmora |
+| **Auditor Financeiro** | `auditoria@amora.com` | `AuditPix#2026` | Validação de estornos e conformidade bancária Pix |
 
 #### Roteiro de Teste do Fluxo Principal (8 Etapas em Ordem)
 1. **Navegação e Catálogo:** Acesse a página inicial ou a aba *Produtos* e filtre pelas categorias (Velas, Sabonetes, Amigurumis, Kits);
