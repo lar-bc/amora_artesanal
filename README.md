@@ -1,113 +1,101 @@
 # Amora Artesanal 🌸
 
 > **Vitrine Virtual & E-commerce de Presentes e Aromas Feitos à Mão**  
-> Desenvolvido com apoio de Inteligência Artificial  
+> Desenvolvido com apoio de Inteligência Artificial Responsável (Google Antigravity)  
 > **Autora:** Larissa Benício da Cruz  
-> **Turma:** 3º B Informática  
+> **Turma:** 3º Ano B Informática  
 > **Instituição:** Instituto Federal de Rondônia (IFRO) - Campus Porto Velho Calama  
 > **Disciplina:** Desenvolvimento de Sistemas  
+> **Professor Orientador:** Prof. Rafael Pitwak  
+> **Repositório GitHub:** [https://github.com/lar-bc/amora_artesanal](https://github.com/lar-bc/amora_artesanal)  
 
 ---
 
-## 🌐 ACESSE O SITE ONLINE AGORA (SÓ CLICAR NO LINK)
+## 🌐 ACESSE O SITE ONLINE AGORA (SEM INSTALAR NADA)
 
-Você pode abrir o site funcionando diretamente pelo seu navegador no computador ou celular, **sem precisar instalar nada**:
+Você pode abrir o site funcionando diretamente pelo navegador no celular ou computador:
 
 ### 👉 **[https://lar-bc.github.io/amora_artesanal](https://lar-bc.github.io/amora_artesanal)**
 
-> [!TIP]
-> **Como ativar o link no GitHub Pages (caso ainda não esteja ativo no seu repositório):**
-> 1. No seu repositório no GitHub, clique na aba **Settings** (Configurações).
-> 2. No menu lateral esquerdo, clique em **Pages**.
-> 3. Em **Build and deployment > Source**, selecione: **Deploy from a branch**.
-> 4. Em **Branch**, selecione `main` e a pasta `/(root)`, depois clique em **Save**.
-> 5. Pronto! Em 30 segundos o link **https://lar-bc.github.io/amora_artesanal** estará online para qualquer pessoa abrir!
+---
+
+## 📚 Documentos Oficiais do Projeto no Repositório
+
+- 📄 **[Especificação Formal Completa (spec.md)](spec.md):** Documento detalhado com arquitetura, casos de uso, diagrama relacional de 10 tabelas e a **Seção 7 (Instalação e Execução)** com comandos exatos e roteiro de testes.
+- 📝 **[Relato de Experiência ABNT (RELATO_DE_EXPERIENCIA.md)](RELATO_DE_EXPERIENCIA.md):** Artigo acadêmico completo com 7 seções cobrindo introdução, metodologia, desafios enfrentados, análise crítica e referências bibliográficas.
+- 📜 **[Registro de Revisão Humana (CHANGELOG.md)](CHANGELOG.md):** Histórico documentado de versões (v1.0.0 a v1.4.0) comprovando supervisão humana crítica sobre a IA.
+- 🗄️ **[Esquema Relacional do Banco (database/schema.sql)](database/schema.sql):** Script SQL autossuficiente com 10 tabelas relacionais, chaves estrangeiras e dados iniciais de seed.
+- ⚙️ **[Exemplo de Variáveis de Ambiente (.env.example)](.env.example):** Modelo de configuração para desenvolvimento e produção.
 
 ---
 
 ## 📖 Sobre o Projeto
 
-O **Amora Artesanal** é uma plataforma completa de e-commerce e vitrine virtual voltada para a comercialização e personalização de presentes e produtos artesanais feitos à mão, como:
-- **Velas Aromáticas** (cera vegetal e essências botânicas);
-- **Sabonetes Artesanais** (saponificação a frio, argilas e extratos naturais);
-- **Amigurumis** (peças de crochê em algodão antialérgico);
-- **Kits Presente** (combinações especiais em caixas artesanais).
-
-O sistema atende a dois perfis principais de usuários:
-1. **Cliente:** Navega pela vitrine, pesquisa e filtra por categoria, personaliza produtos antes da compra, gerencia o carrinho, finaliza pedidos e acompanha o status de entrega.
-2. **Administrador (Lojista):** Acessa a área restrita (`/admin`), gerencia o catálogo e estoque de produtos, atualiza o status de pedidos em tempo real e visualiza mensagens de contato.
+O **Amora Artesanal** é uma plataforma completa de comércio eletrônico concebida para comercialização e personalização de itens aromáticos e artesanais:
+- **Velas Aromáticas** (cera vegetal de coco, pavio 100% algodão e essências premium);
+- **Sabonetes Botânicos** (saponificação a frio com argilas e extratos medicinais);
+- **Amigurumis** (peças de crochê feitas ponto a ponto com fio antialérgico);
+- **Kits Presente** (combinações presenteáveis em caixas artesanais).
 
 ---
 
-## 🎯 Requisitos Implementados
+## 🎯 Diferenciais Técnicos e Inovações Implementadas
 
-### Requisitos Funcionais (RF):
-- **RF01:** Cadastro de clientes com nome, e-mail e senha protegida por hash Bcrypt.
-- **RF02:** Autenticação segura (login e logout) para clientes e administradores.
-- **RF03:** Listagem detalhada de produtos com imagem, nome, descrição, categoria, preço e estoque.
-- **RF04:** Busca de produtos por nome e filtros dinâmicos por categoria.
-- **RF05:** Personalização exclusiva de itens artesanais antes da inclusão no carrinho.
-- **RF06:** Gerenciamento dinâmico de carrinho de compras (adição, alteração de quantidades, remoção e cálculo em tempo real).
-- **RF07:** Gravação de pedidos e itens no banco de dados vinculados a cliente e endereço.
-- **RF08:** Histórico e rastreamento de pedidos do cliente com status atualizado.
-- **RF09:** Painel administrativo com CRUD completo de produtos (cadastro, edição, exclusão e estoque).
-- **RF10:** Atualização do status dos pedidos pelo administrador (`Pedido realizado`, `Em preparação`, `Enviado`, `Entregue`).
-- **RF11:** Formulário de contato e pedidos de encomendas personalizadas com visualização no painel admin.
-
-### Requisitos Não Funcionais (RNF):
-- **RNF01 (Segurança de Senhas):** Criptografia de senhas utilizando `password_hash` com algoritmo Bcrypt e verificação com `password_verify`.
-- **RNF02 (Validação e Sanitização):** Tratamento rigoroso de todos os formulários no lado do servidor em PHP.
-- **RNF03 (Responsividade):** Interface web totalmente adaptável para desktops, tablets e smartphones.
-- **RNF04 (Usabilidade e Identidade Visual):** Paleta artesanal delicada com tons de creme (`#fffaf5`), rosa claro (`#fdeeed`), rosa queimado (`#c86d7e`) e marrom suave (`#5c3d2e`), com bordas arredondadas e tipografia elegante.
+1. **Validação Geográfica Real (ViaCEP):**
+   - Consulta em tempo real aos Correios para autocompletar endereços e **bloquear ativamente CEPs fictícios**.
+   - Endereço real homologado para testes em Porto Velho: CEP `76820-441` (IFRO Campus Porto Velho Calama).
+2. **Rastreamento Logístico Multi-Modal (Leaflet.js + OpenStreetMap):**
+   - **Curta Duração (Urbano / Porto Velho):** Drone Autônomo LogiAmora SkyDelivery a 45 km/h com animação de hélices giratórias.
+   - **Longa Duração (Interestadual / Interior):** Furgão Rodoviário trafegando pela Rodovia BR-364 a 75 km/h com telemetria.
+3. **Protocolo Bilateral de Auditoria de Reembolso:**
+   - Prevenção contra estornos fraudulentos: exige laudo pericial da transportadora (`LogiAmora Transportes / Sedex`) com código de ocorrência e parecer homologado do Administrador com hash Pix.
+4. **Arquitetura Desacoplada Zero-Install:**
+   - Suíte completa em PHP 8.2 + SQLite/MySQL para execução em servidores locais;
+   - Camada paralela estática em HTML5/JavaScript moderno para deploy imediato no GitHub Pages.
 
 ---
 
 ## 🛠️ Stack Tecnológica
 
-- **Front-end:** HTML5 semântico e CSS3 puro, responsivo e moderno (100% livre de JavaScript).
-- **Back-end:** PHP 8+ com processamento Server-Side nativo, controle de rotas, sessões, formulários e PDO Prepared Statements.
-- **Banco de Dados:** MySQL / MariaDB (com fallback automático e autônomo para SQLite para execução rápida local).
-- **Ícones & Tipografia:** FontAwesome 6, Google Fonts (*Playfair Display* e *Poppins*).
+- **Front-end:** HTML5 semântico, CSS3 responsivo, JavaScript ES6+, Leaflet 1.9.4.
+- **Back-end:** PHP 8.2+ com PDO (suporte transparente a SQLite 3 e MySQL 8.0+).
+- **Banco de Dados Relacional:** 10 tabelas com integridade referencial estrita (`schema.sql`).
+- **APIs Integradas:** ViaCEP (Correios) e OpenStreetMap.
+- **Hospedagem & CI/CD:** GitHub Pages com GitHub Actions e Render/Docker.
 
 ---
 
-## 🚀 Como Executar o Projeto Localmente
+## 🚀 Como Executar Localmente (6 Comandos Exatos)
 
-### Opção 1: Servidor Embutido do PHP (Mais Rápido)
-1. Abra o terminal na raiz da pasta `amora_artesanal`:
-   ```bash
-   php -S localhost:8000
-   ```
-2. Abra no navegador: [http://localhost:8000](http://localhost:8000)
+```bash
+# 1. Clonar o repositório
+git clone https://github.com/lar-bc/amora_artesanal.git
 
-*O sistema detectará o ambiente e inicializará o banco de dados e os dados de exemplo automaticamente!*
+# 2. Acessar o diretório
+cd amora_artesanal
 
----
+# 3. Criar arquivo de configuração .env
+copy .env.example .env
 
-### Opção 2: Com XAMPP / Apache / MySQL
-1. Copie a pasta `amora_artesanal` para dentro do diretório `htdocs` do seu XAMPP (`C:\xampp\htdocs\amora_artesanal`).
-2. Inicie os módulos **Apache** e **MySQL** no Painel do XAMPP.
-3. No phpMyAdmin ou no terminal do MySQL, crie o banco de dados e importe os scripts:
-   - `database/schema.sql`
-   - `database/seeds.sql`
-4. Acesse: [http://localhost/amora_artesanal](http://localhost/amora_artesanal)
+# 4. Inicializar banco de dados e aplicar seeds
+php -r "require 'database/init_db.php'; inicializarBanco();"
 
----
+# 5. Iniciar servidor web embutido
+php -S 127.0.0.1:8000
 
-## 🔑 Credenciais de Demonstração (Seed)
-
-| Perfil | E-mail | Senha | Acesso |
-|---|---|---|---|
-| **Administrador (Lojista)** | `admin@amora.com` | `admin123` | Painel Admin (`/admin`) |
-| **Cliente de Testes** | `cliente@exemplo.com` | `cliente123` | Vitrine, Carrinho e Pedidos |
+# 6. Abrir no navegador
+# http://localhost:8000
+```
 
 ---
 
-## 🗄️ Modelo de Dados (DER)
+## 🔑 Credenciais de Teste Pré-Configuradas (Senha Padrão: `senha123`)
 
-- `usuarios`: `id`, `nome`, `email`, `senha_hash`, `tipo_usuario` ('cliente' ou 'admin'), `data_cadastro`
-- `categorias`: `id`, `nome_categoria`
-- `produtos`: `id`, `categoria_id` (FK), `nome`, `descricao`, `preco`, `estoque`, `imagem_url`
-- `pedidos`: `id`, `usuario_id` (FK), `data_pedido`, `valor_total`, `status`, `endereco_entrega`
-- `itens_pedido`: `id`, `pedido_id` (FK), `produto_id` (FK), `quantidade`, `preco_unitario`, `personalizacao`
-- `mensagens_contato`: `id`, `nome`, `email`, `mensagem`, `data_envio`, `lida`
+| Papel no Sistema | E-mail de Acesso | Senha Padrão | Funcionalidades de Teste |
+| :--- | :--- | :--- | :--- |
+| **Administradora Geral** | `admin@amora.com` | `senha123` | Painel de controle, estoque e homologação de estornos |
+| **Cliente Consumidora** | `mariana.vasconcelos@amora.com.br` | `senha123` | Catálogo, carrinho, checkout ViaCEP e rastreamento |
+| **Supervisor de Logística** | `logistica@amora.com` | `senha123` | Emissão de laudo pericial de transporte LogiAmora |
+| **Auditor Financeiro** | `auditoria@amora.com` | `senha123` | Conferência de conformidade e liquidação Pix |
+
+*(Na tela de login, há atalhos de 1 clique para entrar rapidamente em qualquer perfil).*

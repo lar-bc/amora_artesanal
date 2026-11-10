@@ -1,5 +1,9 @@
+# Variáveis de ambiente sensíveis
+.env
+
 # Scratch e arquivos temporários
 scratch/
 *.log
 *.zip
-
+.DS_Store
+Thumbs.db
